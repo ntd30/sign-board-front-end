@@ -1,0 +1,178 @@
+import {
+    AntDesignOutlined, AuditOutlined, DownOutlined, MenuOutlined, ProductOutlined, SearchOutlined,
+    SettingOutlined
+} from "@ant-design/icons";
+import { Button, Col, Drawer, Grid, Input, Menu, Row } from "antd"
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom"
+
+const { useBreakpoint } = Grid
+
+const Header = () => {
+    const [drawerVisible, setDrawerVisible] = useState(false)
+    const [current, setCurrent] = useState(''); // State quản lý menu item được chọn
+    const screens = useBreakpoint()
+    const location = useLocation()
+    const isMobile = !screens.md
+
+    useEffect(() => {
+        if (location && location.pathname) {
+            const allRoutes = ["product", "manufacture", "news", "design"]
+            const currentRoute = allRoutes.find(item => `/${item}` === location.pathname)
+            if (currentRoute) {
+                setCurrent(currentRoute)
+            } else {
+                setCurrent("home")
+            }
+        }
+    }, [])
+
+    const showDrawer = () => {
+        setDrawerVisible(true);
+    };
+
+    const closeDrawer = () => {
+        setDrawerVisible(false);
+    };
+
+    const handleMenuClick = (e) => {
+        // Đóng drawer nếu đang mở trên mobile
+        if (isMobile) {
+            closeDrawer();
+        }
+        setCurrent(e.key);
+    }
+
+    const items = [
+        {
+            label: <span to={"/"} >SẢN PHẨM{!isMobile && <DownOutlined />}</span>,
+            href: "/",
+            key: 'product',
+            icon: <ProductOutlined />,
+            children: [
+                {
+                    key: '12',
+                    label: "Biển quảng cáo",
+                    href: "/",
+                    children: [
+                        { key: '121', label: 'Biển chữ nổi quảng cáo' },
+                        { key: '122', label: 'Biển gỗ quảng cáo' },
+                        { key: '123', label: 'Biển hộp đèn âm bản' },
+                        { key: '124', label: 'Biển hộp đèn' },
+                        { key: '125', label: 'Biển Pano tấm lớn' },
+                        { key: '126', label: 'Biến tấm ốp Alu' },
+                    ],
+                },
+            ],
+        },
+        {
+            label: <Link to={"/manufacture"}>SẢN XUẤT</Link>,
+            key: 'manufacture',
+            icon: <SettingOutlined />
+        },
+        {
+            label: <Link to={"/news"}>TIN TỨC</Link>,
+            key: 'news',
+            icon: <AuditOutlined />,
+        },
+        {
+            label: <Link to={"/design"}>THIẾT KẾ</Link>,
+            key: 'design',
+            icon: <AntDesignOutlined />
+        },
+    ]
+
+    return (
+        <>
+            <Row style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '10px 40px',
+                borderBottom: '1px solid #eee'
+            }}>
+
+                {/* Logo */}
+                <Col xs={10} sm={10} md={4} lg={4} style={{ flex: 1 }}>
+                    <Link onClick={handleMenuClick} to={"/"}><img src="/img/logo.png" alt="Logo" style={{ height: 60 }} /></Link>
+                </Col>
+
+                {/* Menu */}
+                {!isMobile && (<Col md={12} lg={14} style={{ textAlign: "center" }}>
+                    <Menu
+                        onClick={handleMenuClick}
+                        selectedKeys={[current]}
+                        mode="horizontal"
+                        items={items}
+                        disabledOverflow
+                        style={{
+                            borderBottom: 'none',
+                            fontWeight: 'bold',
+                            lineHeight: '70px', // Căn giữa với chiều cao header
+                            display: 'inline-block'
+                        }}
+                    />
+                </Col>
+                )}
+
+                {/* Search + Cart + Login */}
+                <Col xs={14} sm={14} md={8} lg={6}
+                    style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: 16, alignItems: 'center' }}>
+                    {!isMobile ? ( // Input trên Desktop
+                        <Input
+                            placeholder="Tìm kiếm"
+                            prefix={<SearchOutlined />}
+                            style={{
+                                width: 160,
+                                borderColor: 'orange',
+                                borderRadius: 4
+                            }}
+                        />
+                    ) : ( // Nút Search Icon trên Mobile
+                        <Button type="text" shape="circle" icon={<SearchOutlined style={{ fontSize: 18 }} />} />
+                    )}
+
+                    {!isMobile && (
+                        <Link to="/login" style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>ĐĂNG NHẬP</Link>
+                    )}
+
+                    {/* --- Nút Hamburger (Mobile) --- */}
+                    {isMobile && (
+                        <Button
+                            type="text"
+                            onClick={showDrawer}
+                            icon={<MenuOutlined style={{ fontSize: 20 }} />}
+                        />
+                    )}
+                </Col>
+            </Row>
+
+            {/* Drawer cho Mobile Menu */}
+            {/* Chỉ render Drawer khi isMobile là true */}
+            <Drawer
+                title="Menu"
+                placement="right"
+                onClose={closeDrawer}
+                open={isMobile && drawerVisible} // Chỉ open khi là mobile và state là true
+                width={280} // Chiều rộng của Drawer
+                zIndex={1050} // Đảm bảo cao hơn các element khác nếu cần
+                destroyOnClose // Xóa khỏi DOM khi đóng để tối ưu
+            >
+                <Menu
+                    onClick={handleMenuClick} // Dùng chung handle click
+                    selectedKeys={[current]} // Đồng bộ selected key
+                    mode="inline" // Menu dọc
+                    items={items} // Dùng chung cấu trúc items
+                // defaultOpenKeys={['product', 'sub_bienquangcao']} // Mở sẵn submenu nếu muốn
+                />
+                {/* Có thể thêm Login/Search vào cuối Drawer */}
+                <div style={{ padding: '20px 16px', borderTop: '1px solid #f0f0f0' }}>
+                    {/* <Input placeholder="Tìm kiếm..." prefix={<SearchOutlined />} style={{ marginBottom: 10 }} /> */}
+                    <Link to="/login" onClick={closeDrawer} style={{ display: 'block' }}>Đăng nhập / Đăng ký</Link>
+                </div>
+            </Drawer>
+        </>
+    )
+}
+
+export default Header

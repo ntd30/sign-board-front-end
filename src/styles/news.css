@@ -1,0 +1,55 @@
+.parent-container {
+    display: flex;
+    justify-content: center;
+    /* Thêm align-items: center; */
+}
+
+/* Optional: Căn giữa nội dung bên trong khối .title nếu muốn */
+.title {
+    text-align: center;
+}
+
+.breadcrumb {
+    display: inline-block;
+    /* Giúp breadcrumb không chiếm toàn bộ chiều rộng khi text-align: center */
+    padding-left: 0;
+    list-style: none;
+    margin-top: 5px;
+    /* Thêm khoảng cách với h1 nếu cần */
+}
+
+.breadcrumb-item {
+    display: inline;
+    /* Hiển thị các mục trên cùng một hàng */
+}
+
+/* Style thêm cho breadcrumb nếu cần */
+.breadcrumb-item+.breadcrumb-item::before {
+    content: "/";
+    padding: 0 0.5em;
+    color: #6c757d;
+    /* Màu ví dụ */
+}
+
+.breadcrumb-item a {
+    text-decoration: none;
+}
+
+.breadcrumb-item.active {
+    color: #6c757d;
+    /* Màu ví dụ cho mục active */
+}
+
+.featured-section-container {
+    padding: 30px 0;
+    /* Padding trên dưới cho cả section */
+    max-width: 1200px;
+    /* Giới hạn chiều rộng tối đa nếu cần */
+    margin: 0 auto;
+    /* Căn giữa container */
+}
+
+.gradient-background {
+    background: linear-gradient(to bottom, #FFEB99, #FFFFFF);
+    margin-top: -5px;
+}

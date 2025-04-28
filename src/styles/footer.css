@@ -1,0 +1,122 @@
+/* AppFooter.css */
+
+.app-footer {
+    padding: 0;
+    /* Ghi đè padding mặc định của AntD Footer nếu cần */
+    background-color: transparent;
+    /* Để các div con kiểm soát màu nền */
+    color: rgba(255, 255, 255, 0.85);
+    /* Màu chữ mặc định cho footer */
+}
+
+.footer-content {
+    background-color: #1f1f1f;
+    /* Màu nền tối cho phần nội dung */
+    padding: 40px 50px;
+    /* Padding trên dưới, trái phải */
+}
+
+.footer-title {
+    color: #ffffff !important;
+    /* Màu tiêu đề trắng */
+    margin-bottom: 20px !important;
+    /* Khoảng cách dưới tiêu đề */
+    font-weight: bold !important;
+    /* In đậm */
+}
+
+.footer-links {
+    list-style: none;
+    /* Bỏ dấu chấm đầu dòng */
+    padding-left: 0;
+    /* Bỏ padding trái mặc định của ul */
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 10px;
+    /* Khoảng cách giữa các link */
+}
+
+.footer-link {
+    color: rgba(255, 255, 255, 0.65) !important;
+    /* Màu link nhạt hơn */
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footer-link:hover {
+    color: #ffffff !important;
+    /* Màu link trắng khi hover */
+}
+
+.contact-label {
+    color: rgba(255, 255, 255, 0.85);
+    /* Màu nhãn liên hệ */
+    margin-right: 8px;
+    /* Khoảng cách giữa icon/nhãn và chi tiết */
+}
+
+.contact-label .anticon {
+    color: #f5222d;
+    /* Màu đỏ cho icon địa chỉ (ví dụ) */
+    margin-right: 6px;
+    /* Khoảng cách giữa icon và chữ "Trụ sở chính:" */
+}
+
+/* Icon điện thoại, email (nếu muốn màu khác) */
+/* .contact-label .anticon-phone { color: #52c41a; } */
+/* .contact-label .anticon-mail { color: #1890ff; } */
+
+
+.contact-detail {
+    color: rgba(255, 255, 255, 0.65);
+    /* Màu chi tiết liên hệ */
+    display: block;
+    /* Hiển thị địa chỉ trên dòng mới nếu cần */
+    /* Hoặc dùng display: inline nếu muốn cùng dòng với nhãn */
+}
+
+.footer-content iframe {
+    border-radius: 4px;
+    /* Bo góc nhẹ cho bản đồ */
+    max-width: 100%;
+    /* Đảm bảo không tràn */
+}
+
+.footer-copyright {
+    background-color: #141414;
+    /* Màu nền tối hơn cho phần copyright */
+    text-align: center;
+    /* Căn giữa chữ */
+    padding: 15px 50px;
+    /* Padding trên dưới, trái phải */
+}
+
+.copyright-text {
+    color: rgba(255, 255, 255, 0.45);
+    /* Màu chữ copyright mờ hơn */
+    font-size: 12px;
+    /* Cỡ chữ nhỏ hơn */
+}
+
+/* Responsive adjustments (Ví dụ) */
+@media (max-width: 767px) {
+    .footer-content {
+        padding: 30px 20px;
+        /* Giảm padding trên mobile */
+    }
+
+    .footer-copyright {
+        padding: 10px 20px;
+    }
+
+    .footer-title {
+        margin-bottom: 15px !important;
+    }
+
+    .footer-content iframe {
+        height: 200px;
+        /* Giảm chiều cao bản đồ trên mobile */
+    }
+}
