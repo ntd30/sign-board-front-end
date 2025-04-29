@@ -1,8 +1,9 @@
 import {
-    AntDesignOutlined, AuditOutlined, DownOutlined, MenuOutlined, ProductOutlined, SearchOutlined,
-    SettingOutlined
+    AntDesignOutlined, AuditOutlined, DownOutlined, FireOutlined, MenuOutlined, ProductOutlined, SearchOutlined,
+    SettingOutlined,
+    TwitterOutlined
 } from "@ant-design/icons";
-import { Button, Col, Drawer, Grid, Input, Menu, message, Row } from "antd"
+import { Avatar, Button, Col, Drawer, Dropdown, Grid, Input, Menu, message, Row, Space } from "antd"
 import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { AuthContext } from "../context/auth.context";
@@ -19,6 +20,45 @@ const Header = () => {
     const isMobile = !screens.md
     const { user, setUser } = useContext(AuthContext)
     const navigate = useNavigate()
+
+    const items = [
+        {
+            label: <span to={"/"} >SẢN PHẨM{!isMobile && <DownOutlined />}</span>,
+            href: "/",
+            key: 'product',
+            icon: <ProductOutlined />,
+            children: [
+                {
+                    key: '12',
+                    label: "Biển quảng cáo",
+                    href: "/",
+                    children: [
+                        { key: '121', label: 'Biển chữ nổi quảng cáo' },
+                        { key: '122', label: 'Biển gỗ quảng cáo' },
+                        { key: '123', label: 'Biển hộp đèn âm bản' },
+                        { key: '124', label: 'Biển hộp đèn' },
+                        { key: '125', label: 'Biển Pano tấm lớn' },
+                        { key: '126', label: 'Biến tấm ốp Alu' },
+                    ],
+                },
+            ],
+        },
+        {
+            label: <Link to={"/manufacture"}>SẢN XUẤT</Link>,
+            key: 'manufacture',
+            icon: <SettingOutlined />
+        },
+        {
+            label: <Link to={"/news"}>TIN TỨC</Link>,
+            key: 'news',
+            icon: <AuditOutlined />,
+        },
+        {
+            label: <Link to={"/design"}>THIẾT KẾ</Link>,
+            key: 'design',
+            icon: <AntDesignOutlined />
+        },
+    ]
 
     useEffect(() => {
         if (location && location.pathname) {
@@ -60,43 +100,35 @@ const Header = () => {
         // setLoading(false)
     }
 
-    const items = [
+    const itemsDropdown = [
         {
-            label: <span to={"/"} >SẢN PHẨM{!isMobile && <DownOutlined />}</span>,
-            href: "/",
-            key: 'product',
-            icon: <ProductOutlined />,
-            children: [
-                {
-                    key: '12',
-                    label: "Biển quảng cáo",
-                    href: "/",
-                    children: [
-                        { key: '121', label: 'Biển chữ nổi quảng cáo' },
-                        { key: '122', label: 'Biển gỗ quảng cáo' },
-                        { key: '123', label: 'Biển hộp đèn âm bản' },
-                        { key: '124', label: 'Biển hộp đèn' },
-                        { key: '125', label: 'Biển Pano tấm lớn' },
-                        { key: '126', label: 'Biến tấm ốp Alu' },
-                    ],
-                },
-            ],
+            label: <Link to={'/admin'} style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>Trang Quản Trị</Link>,
+            key: '/',
+            icon: <FireOutlined />,
         },
-        {
-            label: <Link to={"/manufacture"}>SẢN XUẤT</Link>,
-            key: 'manufacture',
-            icon: <SettingOutlined />
-        },
-        {
-            label: <Link to={"/news"}>TIN TỨC</Link>,
-            key: 'news',
-            icon: <AuditOutlined />,
-        },
-        {
-            label: <Link to={"/design"}>THIẾT KẾ</Link>,
-            key: 'design',
-            icon: <AntDesignOutlined />
-        },
+        ...(!isMobile && user.id ? [{
+            label: <Button
+                type="link"
+                onClick={() => { }}
+                style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
+            >Thông tin cá nhân</Button >,
+            key: 'user-info',
+        },] : []),
+
+        ...(!isMobile && !user.id ? [{
+            label: <Link to="/login" style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}> Đăng nhập</Link >,
+            key: 'login'
+        },] : []),
+
+        ...(!isMobile && user.id ? [{
+            label: <Button
+                disabled={loading}
+                type="link"
+                onClick={handleLogout}
+                style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
+            >Đăng xuất</Button>,
+            key: 'logout'
+        },] : []),
     ]
 
     return (
@@ -149,18 +181,12 @@ const Header = () => {
                         <Button type="text" shape="circle" icon={<SearchOutlined style={{ fontSize: 18 }} />} />
                     )}
 
-                    {!isMobile && !user.id && (
-                        <Link to="/login" style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>ĐĂNG NHẬP</Link>
-                    )}
-
-                    {!isMobile && user.id && (
-                        <Button
-                            disabled={loading}
-                            type="link"
-                            onClick={handleLogout}
-                            style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
-                        >ĐĂNG XUẤT</Button>
-                    )}
+                    <Dropdown menu={{ items: itemsDropdown }} trigger={['hover']}>
+                        <Space style={{ cursor: "pointer" }}>
+                            Welcome {user?.id}
+                            <Avatar> {"Duy".substring(0, 2)?.toUpperCase()} </Avatar>
+                        </Space>
+                    </Dropdown>
 
                     {/* --- Nút Hamburger (Mobile) --- */}
                     {isMobile && (

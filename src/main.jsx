@@ -11,8 +11,10 @@ import DesignPage from './pages/design.page.jsx';
 import LoginPage from './pages/login.page.jsx';
 import RegisterPage from './pages/register.page.jsx';
 import { AuthWrapper } from './components/context/auth.context.jsx';
-import PrivateRoute from './pages/private.route.jsx';
 import ErrorPage from './pages/error.jsx';
+import LayoutAdmin from './components/admin/layout.admin.jsx';
+import DashboardPage from './pages/admin/dashboard.page.jsx';
+import PrivateRoute from './pages/private.route.jsx';
 
 const router = createBrowserRouter([
   {
@@ -25,23 +27,46 @@ const router = createBrowserRouter([
         element: <HomePage />,
       },
       {
-        path: "/news",
+        path: "news",
         element: <NewsPage />,
       },
       {
-        path: "/manufacture",
+        path: "manufacture",
         element: <ManufacturePage />,
       },
       {
-        path: "/design",
-        element: (
-          <PrivateRoute>
-            <DesignPage />
-          </PrivateRoute>
-        ),
+        path: "design",
+        element: <DesignPage />
       },
     ]
   },
+
+  {
+    path: "/admin",
+    element:
+      <PrivateRoute>
+        <LayoutAdmin />
+      </PrivateRoute>,
+    children: [
+      {
+        index: true,
+        element: <DashboardPage />
+      },
+      {
+        path: "category",
+        element: <NewsPage />,
+      },
+      {
+        path: "manufacture",
+        element: <ManufacturePage />,
+      },
+      {
+        path: "design",
+        element: <DesignPage />
+      },
+    ]
+  },
+
   {
     path: "/login",
     element: <LoginPage />,

@@ -1,5 +1,5 @@
-import { HomeOutlined, RobotOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Divider, Row, Typography } from 'antd';
+import { HomeOutlined, RobotOutlined, UploadOutlined } from '@ant-design/icons';
+import { Button, Card, Col, Divider, Row, Typography, Upload } from 'antd';
 
 const { Title, Paragraph } = Typography;
 
@@ -24,21 +24,28 @@ const DesignPage = () => {
     return (
         <div style={{ width: '60%', margin: 'auto' }}>
             <div style={{ textAlign: 'center', padding: 50 }}>
-                <Title level={2}>Tính năng thiết kế biển hiệu bằng AI</Title>
-                <Button
-                    type="primary"
-                    danger
-                    style={{
-                        // background: '#d80000',
-                        marginTop: '20px',
-                        borderRadius: 30,
-                        padding: '20px 30px',
-                        border: 'none',
-                        animation: 'ripple 2s infinite ease-in-out',
-                    }}
+                <Title level={2}>Thiết kế biển hiệu theo phong cách riêng của bạn</Title>
+
+                <Upload
+                    action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+                    listType="picture"
                 >
-                    Thiết kế ngay
-                </Button>
+                    <Button
+                        type="primary"
+                        danger
+                        icon={<UploadOutlined />}
+                        style={{
+                            // background: '#d80000',
+                            margin: '30px 0',
+                            borderRadius: 30,
+                            padding: '20px 30px',
+                            border: 'none',
+                            animation: 'ripple 2s infinite ease-in-out',
+                        }}
+                    >
+                        Tải lên ngay
+                    </Button>
+                </Upload>
 
                 <style>
                     {`
@@ -113,7 +120,7 @@ const DesignPage = () => {
                 <Col sm={24} lg={14}>
                     <img
                         src='/img/design/image.png'
-                        style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: 16}}
+                        style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: 16 }}
                     />
                 </Col>
                 <Col sm={24} lg={10}>
@@ -132,11 +139,11 @@ const DesignPage = () => {
                 <Col sm={24} lg={14}>
                     <img
                         src='/img/design/image.png'
-                        style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: 16}}
+                        style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: 16 }}
                     />
                 </Col>
             </Row>
-        </div>
+        </div >
     )
 }
 
