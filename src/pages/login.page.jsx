@@ -1,14 +1,29 @@
 import { ArrowRightOutlined } from "@ant-design/icons"
-import { Button, Col, Divider, Flex, Form, Input, Row } from "antd"
-import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Button, Col, Divider, Flex, Form, Input, message, Row } from "antd"
+import { useContext, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import { loginAPI } from "../services/api.service"
+import { AuthContext } from "../components/context/auth.context"
 
 const LoginPage = () => {
     const [form] = Form.useForm()
     const [loading, setLoading] = useState(false)
+    const navigate = useNavigate()
+    const { setUser } = useContext(AuthContext)
 
-    const onFinish = () => {
-        alert('Submit')
+    const onFinish = async (values) => {
+        setLoading(true)
+        const res = await loginAPI(values.email, values.password)
+
+        if (res.data) {
+            message.success("Đăng nhập thành công")
+            localStorage.setItem('access_token', res.data.access_token)
+            setUser(res.data.user)
+            navigate("/")
+        } else {
+            message.error(res.message)
+        }
+        setLoading(false)
     }
 
     return (
@@ -47,9 +62,7 @@ const LoginPage = () => {
 
                         <Flex justify="space-between" align="baseline">
                             <Form.Item label={null}>
-                                <Button type="primary" htmlType="submit" loading={loading}
-                                // onClick={() => form.submit()}
-                                >
+                                <Button type="primary" htmlType="submit" loading={loading}>
                                     Login
                                 </Button>
                             </Form.Item>

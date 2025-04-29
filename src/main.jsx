@@ -8,15 +8,17 @@ import HomePage from './pages/home.page.jsx';
 import NewsPage from './pages/news.page.jsx';
 import ManufacturePage from './pages/manufacture.page.jsx';
 import DesignPage from './pages/design.page.jsx';
-import React from 'react';
 import LoginPage from './pages/login.page.jsx';
-import { RegisterPage } from './pages/register.page.jsx';
+import RegisterPage from './pages/register.page.jsx';
+import { AuthWrapper } from './components/context/auth.context.jsx';
+import PrivateRoute from './pages/private.route.jsx';
+import ErrorPage from './pages/error.jsx';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    // errorElement: <ErrorPage />,
+    errorElement: <ErrorPage />,
     children: [
       {
         index: true,
@@ -33,9 +35,9 @@ const router = createBrowserRouter([
       {
         path: "/design",
         element: (
-          // <PrivateRoute>
+          <PrivateRoute>
             <DesignPage />
-          // </PrivateRoute>
+          </PrivateRoute>
         ),
       },
     ]
@@ -51,9 +53,9 @@ const router = createBrowserRouter([
 ]);
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-
+  // <React.StrictMode>
+  <AuthWrapper>
     <RouterProvider router={router} />
-
-  </React.StrictMode>
+  </AuthWrapper>
+  // </React.StrictMode>
 )

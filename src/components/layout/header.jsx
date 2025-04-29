@@ -2,18 +2,23 @@ import {
     AntDesignOutlined, AuditOutlined, DownOutlined, MenuOutlined, ProductOutlined, SearchOutlined,
     SettingOutlined
 } from "@ant-design/icons";
-import { Button, Col, Drawer, Grid, Input, Menu, Row } from "antd"
-import { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom"
+import { Button, Col, Drawer, Grid, Input, Menu, message, Row } from "antd"
+import { useContext, useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom"
+import { AuthContext } from "../context/auth.context";
+import { logoutAPI } from "../../services/api.service";
 
 const { useBreakpoint } = Grid
 
 const Header = () => {
     const [drawerVisible, setDrawerVisible] = useState(false)
     const [current, setCurrent] = useState(''); // State quản lý menu item được chọn
+    const [loading, setLoading] = useState(false)
     const screens = useBreakpoint()
     const location = useLocation()
     const isMobile = !screens.md
+    const { user, setUser } = useContext(AuthContext)
+    const navigate = useNavigate()
 
     useEffect(() => {
         if (location && location.pathname) {
@@ -41,6 +46,18 @@ const Header = () => {
             closeDrawer();
         }
         setCurrent(e.key);
+    }
+
+    const handleLogout = async () => {
+        setLoading(true)
+        const res = await logoutAPI()
+        if (res.data) {
+            localStorage.removeItem('access_token')
+            setUser({})
+            message.success("Đăng xuất thành công")
+            navigate('/')
+        }
+        // setLoading(false)
     }
 
     const items = [
@@ -132,8 +149,17 @@ const Header = () => {
                         <Button type="text" shape="circle" icon={<SearchOutlined style={{ fontSize: 18 }} />} />
                     )}
 
-                    {!isMobile && (
+                    {!isMobile && !user.id && (
                         <Link to="/login" style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>ĐĂNG NHẬP</Link>
+                    )}
+
+                    {!isMobile && user.id && (
+                        <Button
+                            disabled={loading}
+                            type="link"
+                            onClick={handleLogout}
+                            style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
+                        >ĐĂNG XUẤT</Button>
                     )}
 
                     {/* --- Nút Hamburger (Mobile) --- */}
