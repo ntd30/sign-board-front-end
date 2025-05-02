@@ -1,6 +1,6 @@
 import { Layout, Row, Col, Typography, Space } from 'antd';
 import { EnvironmentOutlined, PhoneOutlined, MailOutlined } from '@ant-design/icons';
-import '../../styles/footer.css'; // Tạo file CSS riêng để dễ quản lý
+import '../../../styles/footer.css'; // Tạo file CSS riêng để dễ quản lý
 
 const { Footer } = Layout;
 const { Title, Text, Link } = Typography;

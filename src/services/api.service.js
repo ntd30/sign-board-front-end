@@ -1,7 +1,7 @@
 import axios from './axios.customize'
 
-const fetchAllUsersAPI = () => {
-    const URL_BACKEND = `/api/v1/user`
+const fetchAllUsersAPI = (current, pageSize) => {
+    const URL_BACKEND = `/api/v1/user?current=${current}&pageSize=${pageSize}`
     return axios.get(URL_BACKEND)
 }
 
@@ -31,4 +31,31 @@ const registerAPI = (fullName, email, password, phone) => {
     return axios.post(URL_BACKEND, data)
 }
 
-export { fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI }
+const createUserAPI = (email, password, fullName, phone) => {
+    const URL_BACKEND = "api/v1/user"
+    const data = {
+        email: email,
+        password: password,
+        fullName: fullName,
+        phone: phone
+    }
+    return axios.post(URL_BACKEND, data)
+}
+
+const updateUserAPI = (id, email, fullName, phone) => {
+    const URL_BACKEND = "/api/v1/user"
+    const data = {
+        _id: id,
+        email: email,
+        fullName: fullName,
+        phone: phone
+    }
+    return axios.put(URL_BACKEND, data)
+}
+
+const deleteUserAPI = (id) => {
+    const URL_BACKEND = `/api/v1/user/${id}`
+    return axios.delete(URL_BACKEND)
+}
+
+export { fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI }

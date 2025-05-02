@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { fetchAllUsersAPI } from "../services/api.service"
+import { fetchAllUsersAPI } from "../../services/api.service"
 
 const ManufacturePage = () => {
     const [dataUsers, setDataUsers] = useState([])

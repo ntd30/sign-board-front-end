@@ -1,6 +1,6 @@
 import { Card, Col, Divider, Row, Typography } from "antd"
 const { Text } = Typography
-import "../styles/news.css"
+import "../../styles/news.css"
 import { Link } from "react-router-dom";
 
 const NewsPage = () => {

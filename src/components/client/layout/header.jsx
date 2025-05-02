@@ -1,13 +1,12 @@
 import {
     AntDesignOutlined, AuditOutlined, DownOutlined, FireOutlined, MenuOutlined, ProductOutlined, SearchOutlined,
     SettingOutlined,
-    TwitterOutlined
 } from "@ant-design/icons";
 import { Avatar, Button, Col, Drawer, Dropdown, Grid, Input, Menu, message, Row, Space } from "antd"
 import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { AuthContext } from "../context/auth.context";
-import { logoutAPI } from "../../services/api.service";
+import { AuthContext } from "../../context/auth.context";
+import { logoutAPI } from "../../../services/api.service";
 
 const { useBreakpoint } = Grid
 
@@ -183,7 +182,7 @@ const Header = () => {
 
                     <Dropdown menu={{ items: itemsDropdown }} trigger={['hover']}>
                         <Space style={{ cursor: "pointer" }}>
-                            Welcome {user?.id}
+                            Welcome {user?.fullName}
                             <Avatar> {"Duy".substring(0, 2)?.toUpperCase()} </Avatar>
                         </Space>
                     </Dropdown>

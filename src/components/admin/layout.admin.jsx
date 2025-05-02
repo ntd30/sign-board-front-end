@@ -13,27 +13,27 @@ const menuItems = [
         icon: <AppstoreOutlined />
     },
     {
-        label: <Link to='/admin/category'>Quản lý Danh mục</Link>,
+        label: <Link to='/admin/category'>Danh mục</Link>,
         key: '/admin/category',
         icon: <UnorderedListOutlined />
     },
     {
-        label: <Link to='/admin'>Quản lý Sản phẩm</Link>,
+        label: <Link to='/admin'>Sản phẩm</Link>,
         key: '/admin/product',
         icon: <AliwangwangOutlined />
     },
     {
-        label: <Link to='/admin'>Quản lý Tin tức</Link>,
+        label: <Link to='/admin'>Tin tức</Link>,
         key: '/admin/news',
         icon: <GlobalOutlined />
     },
     {
-        label: <Link to='/admin'>Quản lý Người dùng</Link>,
-        key: '/admin/user',
+        label: <Link to='/admin/users'>Người dùng</Link>,
+        key: '/admin/users',
         icon: <UserOutlined />
     },
     {
-        label: <Link to='/admin'>Quản lý Bản thiết kế</Link>,
+        label: <Link to='/admin'>Bản thiết kế</Link>,
         key: '/admin/design',
         icon: <EditOutlined />
     },
@@ -43,7 +43,6 @@ const LayoutAdmin = () => {
     const [collapsed, setCollapsed] = useState(false)
     const [loading, setLoading] = useState(false)
     const { user, setUser } = useContext(AuthContext)
-    console.log("user.id: ", user.id)
     const navigate = useNavigate()
 
     const handleLogout = async () => {
@@ -103,7 +102,7 @@ const LayoutAdmin = () => {
 
                         <Dropdown menu={{ items: itemsDropdown }} trigger={['hover']}>
                             <Space style={{ cursor: "pointer" }}>
-                                Welcome {user?.id}
+                                Welcome {user?.fullName}
                                 <Avatar> {"Duy".substring(0, 2)?.toUpperCase()} </Avatar>
                             </Space>
                         </Dropdown>
