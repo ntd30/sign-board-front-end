@@ -1,6 +1,8 @@
 import {
-    AntDesignOutlined, AuditOutlined, DownOutlined, FireOutlined, MenuOutlined, ProductOutlined, SearchOutlined,
+    AntDesignOutlined, AuditOutlined, DownOutlined, FireOutlined, LoginOutlined, LogoutOutlined, MenuOutlined, ProductOutlined, SearchOutlined,
     SettingOutlined,
+    UserAddOutlined,
+    UserOutlined,
 } from "@ant-design/icons";
 import { Avatar, Button, Col, Drawer, Dropdown, Grid, Input, Menu, message, Row, Space } from "antd"
 import { useContext, useEffect, useState } from "react";
@@ -13,12 +15,76 @@ const { useBreakpoint } = Grid
 const Header = () => {
     const [drawerVisible, setDrawerVisible] = useState(false)
     const [current, setCurrent] = useState(''); // State quản lý menu item được chọn
-    const [loading, setLoading] = useState(false)
     const screens = useBreakpoint()
     const location = useLocation()
     const isMobile = !screens.md
     const { user, setUser } = useContext(AuthContext)
     const navigate = useNavigate()
+
+    const handleLogout = async () => {
+        const res = await logoutAPI()
+        if (res.data) {
+            localStorage.removeItem('access_token')
+            setUser({})
+            message.success("Đăng xuất thành công")
+            navigate('/')
+        }
+    }
+
+    const itemsMobile = [
+        {
+            label: <span to={"/"} >SẢN PHẨM{!isMobile && <DownOutlined />}</span>,
+            href: "/",
+            key: 'product',
+            icon: <ProductOutlined />,
+            children: [
+                {
+                    key: '12',
+                    label: "Biển quảng cáo",
+                    href: "/",
+                    children: [
+                        { key: '121', label: 'Biển chữ nổi quảng cáo' },
+                        { key: '122', label: 'Biển gỗ quảng cáo' },
+                        { key: '123', label: 'Biển hộp đèn âm bản' },
+                        { key: '124', label: 'Biển hộp đèn' },
+                        { key: '125', label: 'Biển Pano tấm lớn' },
+                        { key: '126', label: 'Biến tấm ốp Alu' },
+                    ],
+                },
+            ],
+        },
+        {
+            label: <Link to={"/manufacture"}>SẢN XUẤT</Link>,
+            key: 'manufacture',
+            icon: <SettingOutlined />
+        },
+        {
+            label: <Link to={"/news"}>TIN TỨC</Link>,
+            key: 'news',
+            icon: <AuditOutlined />,
+        },
+        {
+            label: <Link to={"/design"}>THIẾT KẾ</Link>,
+            key: 'design',
+            icon: <AntDesignOutlined />
+        },
+        ...(!user.id ? [{
+            label: <Link
+                to={"/login"}
+                style={{ cursor: "pointer" }}
+            >Đăng nhập</Link>,
+            key: 'login',
+            icon: <LoginOutlined />
+        },] : []),
+        ...(user.id ? [{
+            label: <label
+                onClick={handleLogout}
+                style={{ cursor: "pointer" }}
+            >Đăng xuất</label>,
+            key: 'logout',
+            icon: <LogoutOutlined />
+        },] : []),
+    ]
 
     const items = [
         {
@@ -87,46 +153,35 @@ const Header = () => {
         setCurrent(e.key);
     }
 
-    const handleLogout = async () => {
-        setLoading(true)
-        const res = await logoutAPI()
-        if (res.data) {
-            localStorage.removeItem('access_token')
-            setUser({})
-            message.success("Đăng xuất thành công")
-            navigate('/')
-        }
-        // setLoading(false)
-    }
-
     const itemsDropdown = [
-        {
-            label: <Link to={'/admin'} style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>Trang Quản Trị</Link>,
-            key: '/',
+        ...(user.role === "ADMIN" ? [{
+            label: <Link to={'/admin'}>Trang Quản Trị</Link>,
+            key: 'admin',
             icon: <FireOutlined />,
-        },
+        },] : []),
         ...(!isMobile && user.id ? [{
-            label: <Button
-                type="link"
-                onClick={() => { }}
-                style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
-            >Thông tin cá nhân</Button >,
+            label: <Link to={'/news'} >Thông tin cá nhân</Link >,
             key: 'user-info',
+            icon: <UserOutlined />
         },] : []),
 
-        ...(!isMobile && !user.id ? [{
-            label: <Link to="/login" style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}> Đăng nhập</Link >,
-            key: 'login'
-        },] : []),
+        // ...(!isMobile && user.id ? [{
+        //     label: <Button
+        //         disabled={loading}
+        //         type="text"
+        //         onClick={handleLogout}
+        //         style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
+        //     >Đăng xuất</Button>,
+        //     key: 'logout'
+        // },] : []),
 
         ...(!isMobile && user.id ? [{
-            label: <Button
-                disabled={loading}
-                type="link"
+            label: <label
                 onClick={handleLogout}
-                style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
-            >Đăng xuất</Button>,
-            key: 'logout'
+                style={{ cursor: "pointer" }}
+            >Đăng xuất</label>,
+            key: 'logout',
+            icon: <LogoutOutlined />
         },] : []),
     ]
 
@@ -180,12 +235,16 @@ const Header = () => {
                         <Button type="text" shape="circle" icon={<SearchOutlined style={{ fontSize: 18 }} />} />
                     )}
 
-                    <Dropdown menu={{ items: itemsDropdown }} trigger={['hover']}>
-                        <Space style={{ cursor: "pointer" }}>
-                            Welcome {user?.fullName}
-                            <Avatar> {"Duy".substring(0, 2)?.toUpperCase()} </Avatar>
-                        </Space>
-                    </Dropdown>
+                    {!isMobile && user?.id ?
+                        <Dropdown menu={{ items: itemsDropdown }} trigger={['hover']}>
+                            <Space style={{ cursor: "pointer" }}>
+                                <span>Welcome {user?.fullName}</span>
+                                <Avatar> {user?.fullName?.substring(0, 2)?.toUpperCase()} </Avatar>
+                            </Space>
+                        </Dropdown>
+                        :
+                        !isMobile && <Link to="/login" style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>ĐĂNG NHẬP</Link>
+                    }
 
                     {/* --- Nút Hamburger (Mobile) --- */}
                     {isMobile && (
@@ -213,14 +272,9 @@ const Header = () => {
                     onClick={handleMenuClick} // Dùng chung handle click
                     selectedKeys={[current]} // Đồng bộ selected key
                     mode="inline" // Menu dọc
-                    items={items} // Dùng chung cấu trúc items
+                    items={itemsMobile} // Dùng chung cấu trúc items
                 // defaultOpenKeys={['product', 'sub_bienquangcao']} // Mở sẵn submenu nếu muốn
                 />
-                {/* Có thể thêm Login/Search vào cuối Drawer */}
-                <div style={{ padding: '20px 16px', borderTop: '1px solid #f0f0f0' }}>
-                    {/* <Input placeholder="Tìm kiếm..." prefix={<SearchOutlined />} style={{ marginBottom: 10 }} /> */}
-                    <Link to="/login" onClick={closeDrawer} style={{ display: 'block' }}>Đăng nhập / Đăng ký</Link>
-                </div>
             </Drawer>
         </>
     )

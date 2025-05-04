@@ -1,4 +1,7 @@
-import { AliwangwangOutlined, AppstoreOutlined, BugOutlined, EditOutlined, GlobalOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UnorderedListOutlined, UserOutlined } from "@ant-design/icons";
+import {
+    AliwangwangOutlined, AppstoreOutlined, BugOutlined, EditOutlined, GlobalOutlined, HomeOutlined,
+    LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UnorderedListOutlined, UserOutlined
+} from "@ant-design/icons";
 import { Avatar, Button, Dropdown, Layout, Menu, message, Space } from "antd"
 import React, { useContext, useState } from "react";
 import { Link, Outlet, useNavigate } from "react-router-dom";
@@ -18,8 +21,8 @@ const menuItems = [
         icon: <UnorderedListOutlined />
     },
     {
-        label: <Link to='/admin'>Sản phẩm</Link>,
-        key: '/admin/product',
+        label: <Link to='/admin/products'>Sản phẩm</Link>,
+        key: '/admin/products',
         icon: <AliwangwangOutlined />
     },
     {
@@ -41,12 +44,10 @@ const menuItems = [
 
 const LayoutAdmin = () => {
     const [collapsed, setCollapsed] = useState(false)
-    const [loading, setLoading] = useState(false)
     const { user, setUser } = useContext(AuthContext)
     const navigate = useNavigate()
 
     const handleLogout = async () => {
-        setLoading(true)
         const res = await logoutAPI()
         if (res.data) {
             localStorage.removeItem('access_token')
@@ -60,21 +61,22 @@ const LayoutAdmin = () => {
         {
             label: <Link to={'/'}>Trang chủ</Link>,
             key: 'home',
+            icon: <HomeOutlined />
         },
         {
-            label: <Button
+            label: <label
                 style={{ cursor: 'pointer' }}
                 onClick={handleLogout}
-                disabled={loading}
-            >Đăng xuất</Button>,
+            >Đăng xuất</label>,
             key: 'logout',
+            icon: <LogoutOutlined />
         },
     ]
 
     return (
         <>
             <Layout
-                style={{ minHeight: '100vh'}}
+                style={{ minHeight: '100vh' }}
             >
                 <Sider theme="light" collapsible collapsed={collapsed}>
                     <div className="demo-logo-vertical" />
@@ -102,13 +104,13 @@ const LayoutAdmin = () => {
 
                         <Dropdown menu={{ items: itemsDropdown }} trigger={['hover']}>
                             <Space style={{ cursor: "pointer" }}>
-                                Welcome {user?.fullName}
-                                <Avatar> {"Duy".substring(0, 2)?.toUpperCase()} </Avatar>
+                                <span>Welcome {user?.fullName}</span>
+                                <Avatar> {user?.fullName?.substring(0, 2)?.toUpperCase()} </Avatar>
                             </Space>
                         </Dropdown>
                     </div>
 
-                    <Content style={{padding: '15px'}}>
+                    <Content style={{ padding: '15px' }}>
                         <Outlet />
                     </Content>
                 </Layout>

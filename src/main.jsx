@@ -16,6 +16,7 @@ import LayoutAdmin from './components/admin/layout.admin.jsx';
 import DashboardPage from './pages/admin/dashboard.jsx';
 import PrivateRoute from './pages/private.route.jsx';
 import UserPage from './pages/admin/user.jsx';
+import ProductPage from './pages/admin/product.jsx';
 
 const router = createBrowserRouter([
   {
@@ -58,16 +59,8 @@ const router = createBrowserRouter([
         element: <UserPage />,
       },
       {
-        path: "category",
-        element: <NewsPage />,
-      },
-      {
-        path: "manufacture",
-        element: <ManufacturePage />,
-      },
-      {
-        path: "design",
-        element: <DesignPage />
+        path: "products",
+        element: <ProductPage />,
       },
     ]
   },
