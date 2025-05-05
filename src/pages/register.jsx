@@ -1,24 +1,29 @@
 import { Button, Input, Form, notification, Row, Col, Divider } from "antd"
 import { registerAPI } from "../services/api.service";
 import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../components/context/auth.context";
 
 const RegisterPage = () => {
     const [form] = Form.useForm()
-    const navigate = useNavigate();
+    const navigate = useNavigate()
+    const { setUser } = useContext(AuthContext)
 
     const onFinish = async (values) => {
-        const res = await registerAPI(values.fullName, values.email, values.password, values.phone)
+        const res = await registerAPI(values.username, values.email, values.password, values.fullName)
 
         if (res.data) {
+            localStorage.setItem('access_token', res.data.access_token)
+            setUser(res.data.user)
             notification.success({
-                message: "Register user",
+                message: "Đăng ký người dùng",
                 description: "Đăng ký người dùng thành công"
             })
-            navigate("/login")
+            navigate("/")
         } else {
             notification.error({
-                message: "Error register user",
-                description: JSON.stringify(res.message)
+                message: "Lỗi đăng ký người dùng",
+                description: JSON.stringify(res)
             })
         }
     }
@@ -41,9 +46,9 @@ const RegisterPage = () => {
                         {/* <h3 style={{ textAlign: "center" }}>Đăng ký tài khoản</h3> */}
 
                         <Form.Item
-                            label="Full name"
-                            name="fullName"
-                            rules={[{ required: true, message: 'Please input your full name!' }]}
+                            label="Tên đăng nhập"
+                            name="username"
+                            rules={[{ required: true, message: 'Tên đăng nhập không được để trống!' }]}
                         >
                             <Input />
                         </Form.Item>
@@ -51,43 +56,40 @@ const RegisterPage = () => {
                         <Form.Item
                             label="Email"
                             name="email"
-                            rules={[{ required: true, message: 'Please input your email!' }]}
+                            rules={[{ required: true, message: 'email không được để trống!' }]}
                         >
                             <Input />
                         </Form.Item>
 
                         <Form.Item
-                            label="Password"
+                            label="Mật khẩu"
                             name="password"
-                            rules={[{ required: true, message: 'Please input your password!' }]}
+                            rules={[
+                                { required: true, message: 'Mật khẩu không được để trống!' },
+                                {min: 6, message: 'Mật khẩu phải có tối thiểu 6 ký tự'}
+                            ]}
                         >
                             <Input.Password />
                         </Form.Item>
 
                         <Form.Item
-                            label="Phone number"
-                            name="phone"
-                            rules={[
-                                {
-                                    required: true,
-                                    pattern: new RegExp(/\d+/g),
-                                    message: "Wrong format!"
-                                }
-                            ]}
+                            label="Họ và tên"
+                            name="fullName"
+                            rules={[{ required: true, message: 'Họ và tên không được để trống!' }]}
                         >
                             <Input />
                         </Form.Item>
 
                         <Form.Item label={null}>
                             <Button type="primary" htmlType="submit">
-                                Register
+                                Đăng ký
                             </Button>
                         </Form.Item>
 
                     </Form >
                 </fieldset>
                 <Divider />
-                <p>Đã có tài khoản? <Link to={"/login"}>Đăng nhập tại đây</Link></p>
+                <p style={{ textAlign: "center" }}>Đã có tài khoản? <Link to={"/login"}>Đăng nhập tại đây</Link></p>
             </Col>
         </Row>
     )

@@ -98,7 +98,7 @@ const Header = () => {
                     label: "Biển quảng cáo",
                     href: "/",
                     children: [
-                        { key: '121', label: 'Biển chữ nổi quảng cáo' },
+                        { key: '121', label: <Link to={"/list-product"}>Biển chữ nổi quảng cáo</Link> },
                         { key: '122', label: 'Biển gỗ quảng cáo' },
                         { key: '123', label: 'Biển hộp đèn âm bản' },
                         { key: '124', label: 'Biển hộp đèn' },
@@ -154,7 +154,7 @@ const Header = () => {
     }
 
     const itemsDropdown = [
-        ...(user.role === "ADMIN" ? [{
+        ...(user.roleName === "Admin" ? [{
             label: <Link to={'/admin'}>Trang Quản Trị</Link>,
             key: 'admin',
             icon: <FireOutlined />,

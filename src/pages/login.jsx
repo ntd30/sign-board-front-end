@@ -13,7 +13,7 @@ const LoginPage = () => {
 
     const onFinish = async (values) => {
         setLoading(true)
-        const res = await loginAPI(values.email, values.password)
+        const res = await loginAPI(values.username, values.password)
 
         if (res.data) {
             message.success("Đăng nhập thành công")
@@ -21,7 +21,7 @@ const LoginPage = () => {
             setUser(res.data.user)
             navigate("/")
         } else {
-            message.error(res.message)
+            message.error(res)
         }
         setLoading(false)
     }
@@ -42,20 +42,20 @@ const LoginPage = () => {
                         form={form}
                     >
                         <Form.Item
-                            label="Email"
-                            name="email"
-                            rules={[
-                                { required: true, message: 'Email không được bỏ trống!' },
-                                { type: "email", message: 'Email không đúng định dạng!' },
-                            ]}
+                            label="Tên đăng nhập"
+                            name="username"
+                            rules={[{ required: true, message: 'Tên đăng nhập không được bỏ trống!' }]}
                         >
                             <Input />
                         </Form.Item>
 
                         <Form.Item
-                            label="Password"
+                            label="Mật khẩu"
                             name="password"
-                            rules={[{ required: true, message: 'Mật khẩu không được bỏ trống!' }]}
+                            rules={[
+                                { required: true, message: 'Mật khẩu không được bỏ trống!' },
+                                { min: 6, message: 'Mật khẩu phải có tối thiểu 6 ký tự' }
+                            ]}
                         >
                             <Input.Password />
                         </Form.Item>
@@ -63,11 +63,11 @@ const LoginPage = () => {
                         <Flex justify="space-between" align="baseline">
                             <Form.Item label={null}>
                                 <Button type="primary" htmlType="submit" loading={loading}>
-                                    Login
+                                    Đăng nhập
                                 </Button>
                             </Form.Item>
 
-                            <Link to={"/"}>Go to Homepage <ArrowRightOutlined /></Link>
+                            <Link to={"/"}>Trở về trang chủ <ArrowRightOutlined /></Link>
                         </Flex>
 
 

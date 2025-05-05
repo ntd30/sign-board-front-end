@@ -10,7 +10,7 @@ export default function ErrorPage() {
       status="404"
       title="Oops!"
       subTitle={<i>{error.statusText || error.message}</i>}
-      extra={<Button type="primary"><Link to="/">Back Home</Link></Button>}
+      extra={<Button type="primary"><Link to="/">Trở về trang chủ</Link></Button>}
     />
   );
 }

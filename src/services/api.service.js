@@ -6,7 +6,7 @@ const fetchAllUsersAPI = (current, pageSize) => {
 }
 
 const loginAPI = (username, password) => {
-    const URL_BACKEND = "/api/v1/auth/login"
+    const URL_BACKEND = "/api/auth/login"
     const data = {
         username: username,
         password: password,
@@ -20,13 +20,13 @@ const logoutAPI = () => {
     return axios.post(URL_BACKEND)
 }
 
-const registerAPI = (fullName, email, password, phone) => {
-    const URL_BACKEND = "/api/v1/user/register"
+const registerAPI = (username, email, password, fullName) => {
+    const URL_BACKEND = "/api/auth/register"
     const data = {
-        fullName: fullName,
+        username: username,
         email: email,
         password: password,
-        phone: phone
+        fullName: fullName
     }
     return axios.post(URL_BACKEND, data)
 }

@@ -11,12 +11,13 @@ import DesignPage from './pages/client/design.jsx';
 import LoginPage from './pages/login.jsx';
 import RegisterPage from './pages/register.jsx';
 import { AuthWrapper } from './components/context/auth.context.jsx';
-import ErrorPage from './pages/error.jsx';
 import LayoutAdmin from './components/admin/layout.admin.jsx';
 import DashboardPage from './pages/admin/dashboard.jsx';
 import PrivateRoute from './pages/private.route.jsx';
 import UserPage from './pages/admin/user.jsx';
 import ProductPage from './pages/admin/product.jsx';
+import ListProduct from './pages/client/list.product.jsx';
+import ErrorPage from './pages/error.jsx'
 
 const router = createBrowserRouter([
   {
@@ -40,15 +41,19 @@ const router = createBrowserRouter([
         path: "design",
         element: <DesignPage />
       },
+      {
+        path: "list-product",
+        element: <ListProduct />
+      },
     ]
   },
 
   {
     path: "/admin",
     element:
-      // <PrivateRoute>
-      <LayoutAdmin />,
-    // </PrivateRoute>,
+      <PrivateRoute>
+        <LayoutAdmin />,
+      </PrivateRoute>,
     children: [
       {
         index: true,
