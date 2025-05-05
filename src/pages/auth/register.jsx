@@ -1,8 +1,11 @@
-import { Button, Input, Form, notification, Row, Col, Divider } from "antd"
-import { registerAPI } from "../services/api.service";
+import { Button, Input, Form, notification, Row, Col, Divider, Card, Typography } from "antd"
+import { registerAPI } from "../../services/api.service";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../components/context/auth.context";
+import { AuthContext } from "../../components/context/auth.context";
+import { IdcardOutlined, LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
+
+const { Title } = Typography
 
 const RegisterPage = () => {
     const [form] = Form.useForm()
@@ -31,13 +34,10 @@ const RegisterPage = () => {
     return (
         <Row justify={"center"} style={{ marginTop: "30px" }}>
             <Col xs={24} md={16} lg={6}>
-                <fieldset style={{
-                    padding: "15px",
-                    margin: "5px",
-                    border: "1px solid #ccc",
-                    borderRadius: "5px"
-                }}>
-                    <legend>Đăng Ký</legend>
+                <Card style={{ borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
+                    <Title level={2} style={{ textAlign: 'center', marginBottom: '30px' }}>
+                        Đăng ký
+                    </Title>
                     <Form
                         onFinish={onFinish}
                         layout="vertical"
@@ -45,12 +45,13 @@ const RegisterPage = () => {
                     >
                         {/* <h3 style={{ textAlign: "center" }}>Đăng ký tài khoản</h3> */}
 
+                        {/* Tên đăng nhập */}
                         <Form.Item
                             label="Tên đăng nhập"
                             name="username"
-                            rules={[{ required: true, message: 'Tên đăng nhập không được để trống!' }]}
+                            rules={[{ required: true, message: 'Tên đăng nhập không được bỏ trống!' }]}
                         >
-                            <Input />
+                            <Input prefix={<UserOutlined />} placeholder="Username" size="large" />
                         </Form.Item>
 
                         <Form.Item
@@ -58,18 +59,19 @@ const RegisterPage = () => {
                             name="email"
                             rules={[{ required: true, message: 'email không được để trống!' }]}
                         >
-                            <Input />
+                            <Input prefix={<MailOutlined />} placeholder="Email" size="large" />
                         </Form.Item>
 
+                        {/* Mật khẩu */}
                         <Form.Item
                             label="Mật khẩu"
                             name="password"
                             rules={[
-                                { required: true, message: 'Mật khẩu không được để trống!' },
-                                {min: 6, message: 'Mật khẩu phải có tối thiểu 6 ký tự'}
+                                { required: true, message: 'Mật khẩu không được bỏ trống!' },
+                                { min: 6, message: 'Mật khẩu phải có tối thiểu 6 ký tự' }
                             ]}
                         >
-                            <Input.Password />
+                            <Input.Password prefix={<LockOutlined />} placeholder="Password" size="large" />
                         </Form.Item>
 
                         <Form.Item
@@ -77,17 +79,18 @@ const RegisterPage = () => {
                             name="fullName"
                             rules={[{ required: true, message: 'Họ và tên không được để trống!' }]}
                         >
-                            <Input />
+                            <Input prefix={<IdcardOutlined />} placeholder="Full name" />
                         </Form.Item>
 
-                        <Form.Item label={null}>
-                            <Button type="primary" htmlType="submit">
+                        {/* Nút Đăng ký */}
+                        <Form.Item>
+                            <Button type="primary" htmlType="submit" size="large">
                                 Đăng ký
                             </Button>
                         </Form.Item>
 
                     </Form >
-                </fieldset>
+                </Card>
                 <Divider />
                 <p style={{ textAlign: "center" }}>Đã có tài khoản? <Link to={"/login"}>Đăng nhập tại đây</Link></p>
             </Col>

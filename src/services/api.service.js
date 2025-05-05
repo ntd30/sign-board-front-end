@@ -16,8 +16,28 @@ const loginAPI = (username, password) => {
 }
 
 const logoutAPI = () => {
-    const URL_BACKEND = "/api/v1/auth/logout"
+    const URL_BACKEND = "/api/auth/logout"
     return axios.post(URL_BACKEND)
+}
+
+const loginWithGoogle = () => {
+    const URL_BACKEND = "/api/auth/google-login"
+
+    return axios.get(URL_BACKEND)
+}
+
+const getAuthCode = (email) => {
+    const URL_BACKEND = `/api/auth/forgot-password?email=${email}`
+    return axios.post(URL_BACKEND)
+}
+
+const resetPasswordAPI = (token, newPassword) => {
+    const URL_BACKEND = `/api/auth/reset-password`
+    const data = {
+        token: token,
+        newPassword: newPassword,
+    }
+    return axios.post(URL_BACKEND, data)
 }
 
 const registerAPI = (username, email, password, fullName) => {
@@ -66,7 +86,7 @@ const fetchAllProductsAPI = (current, pageSize) => {
 const createProductAPI = (name, description, price) => {
     const URL_BACKEND = "api/v1/products"
     const data = {
-        name: name, 
+        name: name,
         description: description,
         price: price
     }
@@ -89,5 +109,8 @@ const updateProductAPI = (id, name, description, price) => {
     return axios.put(URL_BACKEND, data)
 }
 
-export { fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI, 
-    fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI }
+export {
+    fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI,
+    fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI,
+    loginWithGoogle, getAuthCode, resetPasswordAPI
+}
