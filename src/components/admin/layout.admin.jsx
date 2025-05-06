@@ -102,7 +102,7 @@ const LayoutAdmin = () => {
                             }}
                         />
 
-                        <Dropdown menu={{ items: itemsDropdown }} trigger={['hover']}>
+                        <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                             <Space style={{ cursor: "pointer" }}>
                                 <span>Welcome {user?.fullName}</span>
                                 <Avatar> {user?.fullName?.substring(0, 2)?.toUpperCase()} </Avatar>

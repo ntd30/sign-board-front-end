@@ -154,26 +154,11 @@ const Header = () => {
     }
 
     const itemsDropdown = [
-        ...(user.roleName === "Admin" ? [{
-            label: <Link to={'/admin'}>Trang Quản Trị</Link>,
-            key: 'admin',
-            icon: <FireOutlined />,
-        },] : []),
         ...(!isMobile && user.id ? [{
             label: <Link to={'/news'} >Thông tin cá nhân</Link >,
             key: 'user-info',
             icon: <UserOutlined />
         },] : []),
-
-        // ...(!isMobile && user.id ? [{
-        //     label: <Button
-        //         disabled={loading}
-        //         type="text"
-        //         onClick={handleLogout}
-        //         style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}
-        //     >Đăng xuất</Button>,
-        //     key: 'logout'
-        // },] : []),
 
         ...(!isMobile && user.id ? [{
             label: <label

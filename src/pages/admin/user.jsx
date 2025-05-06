@@ -14,9 +14,9 @@ const UserPage = () => {
         setLoadingTable(true)
         const res = await fetchAllUsersAPI(current, pageSize)
         if (res.data) {
-            setTotal(res.data.meta.total)
+            setTotal(res.data.totalElements)
         }
-        setDataUsers(res.data.result)
+        setDataUsers(res.data.content)
         setLoadingTable(false)
     }
 

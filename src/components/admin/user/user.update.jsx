@@ -1,4 +1,4 @@
-import { Form, Input, InputNumber, Modal, notification, Select } from "antd"
+import { Button, Form, Input, InputNumber, Modal, notification, Select } from "antd"
 import { useEffect, useState } from "react"
 import { updateUserAPI } from "../../../services/api.service"
 
@@ -9,12 +9,16 @@ const UserUpdate = (props) => {
     const [form] = Form.useForm()
 
     useEffect(() => {
-        if (dataUpdate && dataUpdate._id) {
+        if (dataUpdate && dataUpdate.id) {
             form.setFieldsValue({
-                id: dataUpdate._id,
+                id: dataUpdate.id,
+                username: dataUpdate.username,
                 email: dataUpdate.email,
                 fullName: dataUpdate.fullName,
-                phone: dataUpdate.phone
+                phoneNumber: dataUpdate.phoneNumber,
+                address: dataUpdate.address,
+                active: dataUpdate.active,
+                roleName: dataUpdate.roleName
             })
         }
     }, [dataUpdate])
@@ -22,8 +26,8 @@ const UserUpdate = (props) => {
     const handleUpdateUser = async (values) => {
         setLoadingBtn(true)
 
-        const { id, email, fullName, phone } = values
-        const res = await updateUserAPI(id, email, fullName, phone)
+        const { id, fullName, phoneNumber, address, active, roleName } = values
+        const res = await updateUserAPI(id, fullName, phoneNumber, address, active, roleName)
 
         if (res.data) {
             resetAndCloseModal()
@@ -59,9 +63,20 @@ const UserUpdate = (props) => {
                 onFinish={handleUpdateUser}
                 form={form}
             >
+                <Form.Item label="Id" name="id">
+                    <Input disabled />
+                </Form.Item>
+
                 <Form.Item
-                    label="Id"
-                    name="id"
+                    label="Username"
+                    name="username"
+                >
+                    <Input disabled />
+                </Form.Item>
+
+                <Form.Item
+                    label="Email"
+                    name="email"
                 >
                     <Input disabled />
                 </Form.Item>
@@ -69,24 +84,50 @@ const UserUpdate = (props) => {
                 <Form.Item
                     label="Tên đầy đủ"
                     name="fullName"
-                    rules={[
-                        { required: true, message: 'Tên đầy đủ không được bỏ trống!' }
-                    ]}
+                    rules={[{ required: true, message: 'Tên đầy đủ không được bỏ trống!' }]}
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item
                     label="Số điện thoại"
-                    name="phone"
-                    rules={[
-                        { required: true, message: 'Price không được bỏ trống!' }
-                    ]}
+                    name="phoneNumber"
+                    rules={[{ required: true, message: 'Số điện thoại không được bỏ trống!' }]}
                 >
                     <Input />
                 </Form.Item>
 
+                <Form.Item
+                    label="Địa chỉ"
+                    name="address"
+                    rules={[{ required: true, message: 'Địa chỉ không được bỏ trống!' }]}
+                >
+                    <Input />
+                </Form.Item>
+
+                <Form.Item
+                    label="Trạng thái"
+                    name="active"
+                    rules={[{ required: true, message: 'Trạng thái không được bỏ trống!' }]}
+                >
+                    <Select>
+                        <Select.Option value={true}>Hoạt động</Select.Option>
+                        <Select.Option value={false}>Tạm khóa</Select.Option>
+                    </Select>
+                </Form.Item>
+
+                <Form.Item
+                    label="Quyền hạn"
+                    name="roleName"
+                    rules={[{ required: true, message: 'Quyền hạn không được bỏ trống!' }]}
+                >
+                    <Select>
+                        <Select.Option value="Admin">Admin</Select.Option>
+                        <Select.Option value="User">Customer</Select.Option>
+                    </Select>
+                </Form.Item>
             </Form>
+
         </Modal>
     )
 }

@@ -1,8 +1,8 @@
 import { Button, Input, Form, notification, Row, Col, Divider, Card, Typography } from "antd"
-import { registerAPI } from "../../services/api.service";
+import { registerAPI } from "../../../services/api.service";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
-import { AuthContext } from "../../components/context/auth.context";
+import { AuthContext } from "../../../components/context/auth.context";
 import { IdcardOutlined, LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
 
 const { Title } = Typography

@@ -1,6 +1,6 @@
 import { SafetyOutlined } from "@ant-design/icons"
 import { Alert, Button, Card, Col, Form, Input, InputNumber, notification, Row, Typography } from "antd"
-import { resetPasswordAPI } from "../../services/api.service"
+import { resetPasswordAPI } from "../../../services/api.service"
 import { useLocation, useNavigate } from "react-router-dom"
 
 const { Title, Text } = Typography

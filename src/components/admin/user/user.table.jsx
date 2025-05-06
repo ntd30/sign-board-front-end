@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Drawer, notification, Popconfirm, Space, Table } from "antd";
+import { notification, Popconfirm, Space, Table } from "antd";
 import { useEffect, useState } from "react";
 import UserDetail from "./user.detail";
 import UserUpdate from "./user.update";
@@ -59,14 +59,18 @@ const UserTable = (props) => {
                 <>
                     {index + 1 + pageSize * (current - 1)}
                 </>
-            ),
+            )
         },
         {
             title: 'Id',
-            dataIndex: '_id',
+            dataIndex: 'id',
             render: (text, record) => (
                 <a onClick={() => handleGetDetailUser(record)}>{text}</a>
             ),
+        },
+        {
+            title: 'Username',
+            dataIndex: 'username',
         },
         {
             title: 'Email',
@@ -78,7 +82,20 @@ const UserTable = (props) => {
         },
         {
             title: 'Số điện thoại',
-            dataIndex: 'phone',
+            dataIndex: 'phoneNumber',
+        },
+        {
+            title: 'Địa chỉ',
+            dataIndex: 'address',
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'active',
+            render: (value) => (value ? '✅ Hoạt động' : '❌ Tạm khóa'),
+        },
+        {
+            title: 'Quyền hạn',
+            dataIndex: 'roleName',
         },
         {
             title: 'Action',

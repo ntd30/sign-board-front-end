@@ -2,12 +2,12 @@ import { ArrowRightOutlined, GoogleOutlined, LockOutlined, UserOutlined } from "
 import { Button, Card, Col, Divider, Flex, Form, Input, message, Row, Space, Typography } from "antd"
 import { useContext, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
-import { loginAPI, loginWithGoogle } from "../../services/api.service"
-import { AuthContext } from "../../components/context/auth.context"
+import { loginAPI, loginWithGoogle } from "../../../services/api.service"
+import { AuthContext } from "../../../components/context/auth.context"
 
 const { Title, Text } = Typography
 
-const LoginPage = () => {
+const LoginAdminPage = () => {
     const [form] = Form.useForm()
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
@@ -18,24 +18,19 @@ const LoginPage = () => {
         const res = await loginAPI(values.username, values.password)
 
         if (res.data) {
-            message.success("Đăng nhập thành công")
-            localStorage.setItem('access_token', res.data.access_token)
-            setUser(res.data.user)
-            navigate("/")
+            if (res.data.user.roleName !== "Admin") {
+                message.error("Đăng nhập thất bại")
+                navigate("/login-admin")
+            } else {
+                message.success("Đăng nhập thành công")
+                localStorage.setItem('access_token', res.data.token)
+                setUser(res.data.user)
+                navigate("/admin")
+            }
         } else {
             message.error(res)
         }
         setLoading(false)
-    }
-
-    const handleGoogleLogin = async () => {
-        const res = await loginWithGoogle()
-
-        console.log(res)
-    }
-
-    const handleForgotPassword = () => {
-        navigate("/forgot-password")
     }
 
     return (
@@ -45,7 +40,7 @@ const LoginPage = () => {
             <Col xs={24} md={16} lg={6}>
                 <Card style={{ borderRadius: "8px", boxShadow: "0 4px 12px rgba(0,0,0,0.1)" }}>
                     <Title level={2} style={{ textAlign: 'center', marginBottom: '30px' }}>
-                        Đăng nhập
+                        Đăng nhập Trang quản trị
                     </Title>
                     <Form
                         onFinish={onFinish}
@@ -73,13 +68,6 @@ const LoginPage = () => {
                             <Input.Password prefix={<LockOutlined />} placeholder="Password" size="large" />
                         </Form.Item>
 
-                        {/* Quên mật khẩu */}
-                        <Form.Item style={{ marginBottom: '15px' }}>
-                            <Link onClick={handleForgotPassword} style={{ float: 'right', fontSize: '14px' }}>
-                                Quên mật khẩu?
-                            </Link>
-                        </Form.Item>
-
                         {/* Nút Đăng nhập */}
                         <Form.Item>
                             <Button type="primary" htmlType="submit" loading={loading} block size="large">
@@ -88,25 +76,7 @@ const LoginPage = () => {
                         </Form.Item>
 
                         {/* Đường phân cách */}
-                        <Divider plain style={{ fontSize: '14px', color: '#8c8c8c', margin: '20px 0' }}>Hoặc đăng nhập với</Divider>
-
-                        {/* Nút Đăng nhập Google */}
-                        <Form.Item>
-                            <Button
-                                icon={<GoogleOutlined />}
-                                onClick={handleGoogleLogin}
-                                block
-                                size="large"
-                            >
-                                Google
-                            </Button>
-                        </Form.Item>
-
-                        {/* Link Đăng ký */}
-                        <div style={{ textAlign: "start", marginTop: "25px" }}>
-                            <Text type="secondary">Chưa có tài khoản? </Text>
-                            <Link to="/register">Đăng ký tại đây</Link>
-                        </div>
+                        <Divider plain style={{ fontSize: '14px', color: '#8c8c8c', margin: '20px 0' }} />
 
                         {/* Link Trở về trang chủ */}
                         <div style={{ textAlign: "start", marginTop: "15px" }}>
@@ -124,4 +94,4 @@ const LoginPage = () => {
     )
 }
 
-export default LoginPage
+export default LoginAdminPage

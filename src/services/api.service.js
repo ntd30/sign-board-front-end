@@ -1,7 +1,7 @@
 import axios from './axios.customize'
 
 const fetchAllUsersAPI = (current, pageSize) => {
-    const URL_BACKEND = `/api/v1/user?current=${current}&pageSize=${pageSize}`
+    const URL_BACKEND = `/api/admin/users?page=${current}&size=${pageSize}`
     return axios.get(URL_BACKEND)
 }
 
@@ -51,24 +51,28 @@ const registerAPI = (username, email, password, fullName) => {
     return axios.post(URL_BACKEND, data)
 }
 
-const createUserAPI = (email, password, fullName, phone) => {
-    const URL_BACKEND = "api/v1/user"
+const createUserAPI = (username, email, password, fullName, phoneNumber, address, roleName) => {
+    const URL_BACKEND = "api/admin/users/create"
     const data = {
+        username: username,
         email: email,
         password: password,
         fullName: fullName,
-        phone: phone
+        phoneNumber: phoneNumber,
+        address: address,
+        roleName: roleName
     }
     return axios.post(URL_BACKEND, data)
 }
 
-const updateUserAPI = (id, email, fullName, phone) => {
-    const URL_BACKEND = "/api/v1/user"
+const updateUserAPI = (id, fullName, phoneNumber, address, active, roleName) => {
+    const URL_BACKEND = `/api/admin/users/${id}`
     const data = {
-        _id: id,
-        email: email,
         fullName: fullName,
-        phone: phone
+        phoneNumber: phoneNumber,
+        address: address,
+        isActive: active,
+        roleName: roleName
     }
     return axios.put(URL_BACKEND, data)
 }

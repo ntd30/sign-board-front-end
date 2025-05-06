@@ -1,6 +1,6 @@
 import { Button, Card, Col, Form, Input, Row, Typography } from "antd"
 import { useNavigate } from "react-router-dom"
-import { getAuthCode } from "../../services/api.service"
+import { getAuthCode } from "../../../services/api.service"
 
 const { Title, Text } = Typography
 
@@ -9,12 +9,14 @@ const ForgotPassword = () => {
     const navigate = useNavigate()
 
     const handleForgotPassword = async (values) => {
-        navigate("/confirm-code", {
-            state: {
-                email: values.email
-            }
-        })
         const res = await getAuthCode(values.email)
+        if (res) {
+            navigate("/confirm-code", {
+                state: {
+                    email: values.email
+                }
+            })
+        }
     }
 
     return (

@@ -11,10 +11,14 @@ const UserDetail = (props) => {
         >
             {dataUpdate ?
                 <>
-                    <p><b>Id:</b> {dataUpdate._id}</p>
+                    <p><b>Id:</b> {dataUpdate.id}</p>
+                    <p><b>Username:</b> {dataUpdate.username}</p>
                     <p><b>Email:</b> {dataUpdate.email}</p>
                     <p><b>Họ và tên:</b> {dataUpdate.fullName}</p>
-                    <p><b>Số điện thoại:</b> {dataUpdate.phone}</p>
+                    <p><b>Số điện thoại:</b> {dataUpdate.phoneNumber}</p>
+                    <p><b>Địa chỉ:</b> {dataUpdate.address}</p>
+                    <p><b>Trạng thái:</b> {dataUpdate.active ? '✅ Hoạt động' : '❌ Tạm khóa'}</p>
+                    <p><b>Quyền hạn:</b> {dataUpdate.roleName}</p>
                 </>
                 :
                 <>

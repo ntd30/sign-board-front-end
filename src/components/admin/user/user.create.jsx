@@ -13,10 +13,10 @@ const UserCreate = (props) => {
     const handleCreateUser = async (values) => {
         setLoadingBtn(true)
 
-        const { email, password, fullName, phone } = values
+        const { username, email, password, fullName, phoneNumber, address, roleName } = values
 
         const resCreateUser = await createUserAPI(
-            email, password, fullName, phone
+            username, email, password, fullName, phoneNumber, address, roleName
         )
 
         if (resCreateUser.data) {
@@ -28,7 +28,7 @@ const UserCreate = (props) => {
             })
         } else {
             notification.error({
-                message: "Error create book",
+                message: "Lỗi thêm mới người dùng",
                 description: JSON.stringify(resCreateUser.message)
             })
         }
@@ -45,10 +45,10 @@ const UserCreate = (props) => {
     return (
         <div style={{ margin: "10px 0" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <h2>Table Users</h2>
-                <Button type="primary" onClick={() => setIsModalOpen(true)}>Create User</Button>
+                <h2>Quản lý người dùng</h2>
+                <Button type="primary" onClick={() => setIsModalOpen(true)}>Tạo mới</Button>
             </div>
-            <Modal title="Create Book" maskClosable={false} okText="CREATE"
+            <Modal title="Tạo mới người dùng" maskClosable={false} okText="Thêm" cancelText="Hủy"
                 open={isModalOpen}
                 onOk={() => form.submit()}
                 okButtonProps={{
@@ -61,11 +61,23 @@ const UserCreate = (props) => {
                     onFinish={handleCreateUser}
                     form={form}
                 >
+
+                    <Form.Item
+                        label="Tên đăng nhập"
+                        name="username"
+                        rules={[
+                            { required: true, message: 'Tên đăng nhập không được bỏ trống!' }
+                        ]}
+                    >
+                        <Input />
+                    </Form.Item>
+
                     <Form.Item
                         label="Email"
                         name="email"
                         rules={[
-                            { required: true, message: 'Email không được bỏ trống!' }
+                            { required: true, message: 'Email không được bỏ trống!' },
+                            { type: 'email', message: 'Email không đúng định dạng' }
                         ]}
                     >
                         <Input />
@@ -78,7 +90,7 @@ const UserCreate = (props) => {
                             { required: true, message: 'Mật khẩu không được bỏ trống!' }
                         ]}
                     >
-                        <Input />
+                        <Input.Password />
                     </Form.Item>
 
                     <Form.Item
@@ -90,9 +102,27 @@ const UserCreate = (props) => {
 
                     <Form.Item
                         label="Số điện thoại"
-                        name="phone"
+                        name="phoneNumber"
                     >
                         <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Địa chỉ"
+                        name="address"
+                    >
+                        <Input />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Quyền hạn"
+                        name="roleName"
+                        initialValue={"Customer"}
+                    >
+                        <Select>
+                            <Select.Option value="Admin">Admin</Select.Option>
+                            <Select.Option value="Customer">Customer</Select.Option>
+                        </Select>
                     </Form.Item>
 
                 </Form>
