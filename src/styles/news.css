@@ -52,4 +52,5 @@
 .gradient-background {
     background: linear-gradient(to bottom, #FFEB99, #FFFFFF);
     margin-top: -5px;
+    padding: 20px 0 0 20px;
 }

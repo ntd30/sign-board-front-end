@@ -113,8 +113,18 @@ const updateProductAPI = (id, name, description, price) => {
     return axios.put(URL_BACKEND, data)
 }
 
+const fetchAllCategoriesAPI = () => {
+    const URL_BACKEND = "/api/categories/parent"
+    return axios.get(URL_BACKEND)
+}
+
+const fetchAllNewsAPI = () => {
+    const URL_BACKEND = "/api/cms/news"
+    return axios.get(URL_BACKEND)
+}
+
 export {
     fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI,
     fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI,
-    loginWithGoogle, getAuthCode, resetPasswordAPI
+    loginWithGoogle, getAuthCode, resetPasswordAPI, fetchAllCategoriesAPI, fetchAllNewsAPI
 }

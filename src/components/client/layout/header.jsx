@@ -1,8 +1,6 @@
 import {
     AntDesignOutlined, AuditOutlined, DownOutlined, FireOutlined, LoginOutlined, LogoutOutlined, MenuOutlined, ProductOutlined, SearchOutlined,
-    SettingOutlined,
-    UserAddOutlined,
-    UserOutlined,
+    SettingOutlined, UserOutlined
 } from "@ant-design/icons";
 import { Avatar, Button, Col, Drawer, Dropdown, Grid, Input, Menu, message, Row, Space } from "antd"
 import { useContext, useEffect, useState } from "react";
@@ -16,10 +14,22 @@ const Header = () => {
     const [drawerVisible, setDrawerVisible] = useState(false)
     const [current, setCurrent] = useState(''); // State quản lý menu item được chọn
     const screens = useBreakpoint()
-    const location = useLocation()
     const isMobile = !screens.md
+    const location = useLocation()
     const { user, setUser } = useContext(AuthContext)
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (location && location.pathname) {
+            const allRoutes = ["product", "manufacture", "news", "design"]
+            const currentRoute = allRoutes.find(item => `/${item}` === location.pathname)
+            if (currentRoute) {
+                setCurrent(currentRoute)
+            } else {
+                setCurrent("home")
+            }
+        }
+    }, [])
 
     const handleLogout = async () => {
         const res = await logoutAPI()
@@ -107,6 +117,7 @@ const Header = () => {
                     ],
                 },
             ],
+            // children: renderMenuItems(categories)
         },
         {
             label: <Link to={"/manufacture"}>SẢN XUẤT</Link>,
@@ -124,18 +135,6 @@ const Header = () => {
             icon: <AntDesignOutlined />
         },
     ]
-
-    useEffect(() => {
-        if (location && location.pathname) {
-            const allRoutes = ["product", "manufacture", "news", "design"]
-            const currentRoute = allRoutes.find(item => `/${item}` === location.pathname)
-            if (currentRoute) {
-                setCurrent(currentRoute)
-            } else {
-                setCurrent("home")
-            }
-        }
-    }, [])
 
     const showDrawer = () => {
         setDrawerVisible(true);
