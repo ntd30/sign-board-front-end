@@ -3,7 +3,7 @@ import { Carousel } from "antd";
 const Banner2 = () => {
     return (
         <>
-            <img src="img/home/banner2.png"/>
+            <img width="100%" height="100%" src="img/home/banner2.png"/>
         </>
     )
 }

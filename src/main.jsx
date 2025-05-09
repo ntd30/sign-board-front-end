@@ -46,7 +46,7 @@ const router = createBrowserRouter([
         element: <DesignPage />
       },
       {
-        path: "list-product",
+        path: "products",
         element: <ListProduct />
       },
     ]

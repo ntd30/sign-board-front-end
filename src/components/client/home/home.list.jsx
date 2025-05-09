@@ -2,10 +2,11 @@ import { RightOutlined } from '@ant-design/icons'
 import { Row, Col, Card, Typography } from 'antd'
 import { fetchAllCategoriesAPI } from '../../../services/api.service'
 import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 
 const { Meta } = Card
 
-const { Text, Link } = Typography
+const { Text } = Typography
 
 // --- CSS Tối thiểu dưới dạng Object Style ---
 
@@ -36,6 +37,7 @@ const linkStyle = {
   position: 'relative',     // Cần cho z-index
   zIndex: 1,                // Đảm bảo nằm trên border
   marginBottom: '2px',      // Nhấc nhẹ lên khỏi đường border
+  cursor: 'pointer'
 }
 
 const products = [
@@ -73,6 +75,7 @@ const products = [
 
 const HomeList = () => {
   const [categories, setCategories] = useState([])
+  const navigate = useNavigate()
 
   useEffect(() => {
     loadCategories()
@@ -81,61 +84,111 @@ const HomeList = () => {
   const loadCategories = async () => {
     const res = await fetchAllCategoriesAPI()
     setCategories(res.data)
+    // console.log(res.data[0])
+  }
+
+  const handleGetProductByParentCategory = (parentCategoryName, childCategories) => {
+    navigate("/products", {
+      state: {
+        parentCategoryName: parentCategoryName,
+        products: childCategories.flatMap(childCategory => childCategory.products)
+      }
+    })
+  }
+
+  const handleGetProductByChildCategory = (parentCategoryName, childCategoryName, products) => {
+    navigate("/products", {
+      state: {
+        parentCategoryName: parentCategoryName,
+        childCategoryName: childCategoryName,
+        products: products
+      }
+    })
   }
 
   return (
     <>
       <div style={{ width: "60%", margin: "50px auto" }}>
-        <div>
-          <Row
-            justify="space-between" // Đẩy sang 2 bên
-            align="bottom"          // Căn đáy
-            style={rowStyle}        // Áp dụng style cho Row (có border-bottom)
-            wrap={false}            // Không xuống dòng
-          >
-            {/* Cột trái */}
-            <Col flex="none">       {/* flex="none" để cột co lại theo nội dung */}
-              <div style={titleLabelStyle}> {/* Áp dụng style cho nhãn */}
-                <Text strong style={{ color: 'white', display: 'block' }}> {/* Đảm bảo Text có màu trắng */}
-                  BIỂN QUẢNG CÁO
-                </Text>
-              </div>
-            </Col>
+        {categories.slice(0, 3).map(parentCategory => (
+          <div key={parentCategory.id}>
+            <div>
+              <Row
+                justify="space-between" // Đẩy sang 2 bên
+                align="bottom"          // Căn đáy
+                style={rowStyle}        // Áp dụng style cho Row (có border-bottom)
+                wrap={false}            // Không xuống dòng
+              >
+                {/* Cột trái */}
+                <Col flex="none">       {/* flex="none" để cột co lại theo nội dung */}
+                  <div style={titleLabelStyle}> {/* Áp dụng style cho nhãn */}
+                    <Text strong style={{ color: 'white', display: 'block' }}> {/* Đảm bảo Text có màu trắng */}
+                      {parentCategory.name}
+                    </Text>
+                  </div>
+                </Col>
 
-            {/* Cột phải */}
-            <Col flex="none">
-              <Link href="#" style={linkStyle}> {/* Áp dụng style cho link */}
-                Xem thêm <RightOutlined />
-              </Link>
-            </Col>
-          </Row>
-        </div>
-
-        <div>
-          <Row gutter={24}>
-            {/* Banner bên trái */}
-            <Col xs={24} lg={9}>
-              <img src="/img/bien-quang-cao.png" alt="banner" style={{ width: '100%', borderRadius: 8 }} />
-            </Col>
-
-            {/* Danh sách sản phẩm bên phải */}
-            <Col xs={24} lg={15}>
-              <Row gutter={[16, 24]}>
-                {categories.map(item => (
-                  <Col sm={24} md={12} lg={8} key={item.title}>
-                    <Card
-                      hoverable
-                      cover={<img src={item.imageURL} />}
-                    >
-                      <Meta title={item.name} description={item.description} />
-                    </Card>
-                  </Col>
-                ))}
+                {/* Cột phải */}
+                <Col flex="none">
+                  <span
+                    style={linkStyle}
+                    onClick={() => handleGetProductByParentCategory(parentCategory.name, parentCategory.childCategories)}
+                  >
+                    Xem thêm <RightOutlined />
+                  </span>
+                </Col>
               </Row>
-            </Col>
-          </Row>
-        </div>
-      </div>
+            </div >
+
+            <div>
+              <Row gutter={24}>
+                {/* Banner bên trái */}
+                <Col xs={24} lg={9}>
+                  <img
+                    src={`${import.meta.env.VITE_BACKEND_URL}${parentCategory.imageURL}`}
+                    alt={parentCategory.slug}
+                    style={{ width: '100%', height: 600, objectFit: 'fill', borderRadius: 8 }} />
+                </Col>
+
+                {/* Danh sách sản phẩm bên phải */}
+                <Col xs={24} lg={15}>
+                  <Row gutter={[16, 24]}>
+                    {parentCategory.childCategories.map(childCategory => (
+                      <Col sm={24} md={12} lg={8} key={childCategory.id}
+                        onClick={() => handleGetProductByChildCategory(parentCategory.name, childCategory.name, childCategory.products)}
+                      >
+                        <Card
+                          hoverable
+                          cover={
+                            <img
+                              alt={childCategory.slug}
+                              src={`${import.meta.env.VITE_BACKEND_URL}${childCategory.imageURL}`}
+                              style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }}
+                            />
+                          }
+                        >
+                          <Meta
+                            title={childCategory.name}
+                            description={
+                              <div style={{
+                                overflow: 'hidden',
+                                whiteSpace: 'nowrap',
+                                textOverflow: 'ellipsis'
+                              }}>
+                                {childCategory.description}
+                              </div>
+                            }
+                          />
+                        </Card>
+                      </Col>
+                    ))}
+                  </Row>
+                </Col>
+              </Row >
+            </div>
+          </div>
+        ))
+        }
+      </div >
     </>
   )
 }

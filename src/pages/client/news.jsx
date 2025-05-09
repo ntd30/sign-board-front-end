@@ -15,7 +15,6 @@ const NewsPage = () => {
     const loadNews = async () => {
         const res = await fetchAllNewsAPI()
         setDataNews(res.data)
-        console.log(res.data)
     }
 
     const featuredPost = {
@@ -97,7 +96,7 @@ const NewsPage = () => {
                                 <Col key={index} xs={24} md={8}>
                                     <Card
                                         hoverable
-                                        cover={<img alt={post?.slug} src={`${import.meta.env.VITE_BACKEND_URL}${post.featuredImageUrl}`} />}
+                                        cover={<img alt={post?.slug} src={`${import.meta.env.VITE_BACKEND_URL}${post?.featuredImageUrl}`} />}
                                     >
                                         <Card.Meta title={post?.title} />
                                     </Card>

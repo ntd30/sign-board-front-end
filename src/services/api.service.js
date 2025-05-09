@@ -123,8 +123,13 @@ const fetchAllNewsAPI = () => {
     return axios.get(URL_BACKEND)
 }
 
+const fetchAllProjectsAPI = () => {
+    const URL_BACKEND = "/api/cms/featured-projects"
+    return axios.get(URL_BACKEND)
+}
+
 export {
     fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI,
     fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI,
-    loginWithGoogle, getAuthCode, resetPasswordAPI, fetchAllCategoriesAPI, fetchAllNewsAPI
+    loginWithGoogle, getAuthCode, resetPasswordAPI, fetchAllCategoriesAPI, fetchAllNewsAPI, fetchAllProjectsAPI
 }
