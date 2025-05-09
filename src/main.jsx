@@ -22,6 +22,7 @@ import ForgotPassword from './pages/client/auth/forgot.password.jsx';
 import ConfirmCode from './pages/client/auth/confirm.code.jsx';
 import LoginAdminPage from './pages/admin/auth/login.admin.jsx';
 import PrivateRouteAdmin from './pages/private.route.admin.jsx';
+import ProductDetailPage from './pages/client/product.detail.jsx';
 
 const router = createBrowserRouter([
   {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
         path: "products",
         element: <ListProduct />
       },
+      {
+        path: "products/detail",
+        element: <ProductDetailPage/>
+      }
     ]
   },
 

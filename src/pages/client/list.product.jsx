@@ -1,15 +1,21 @@
 import { Card, Col, Row } from "antd"
 import Meta from "antd/es/card/Meta"
-import { Link, useLocation } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
 const ListProduct = () => {
+    const navigate = useNavigate()
     const location = useLocation()
     const parentCategoryName = location?.state?.parentCategoryName
     const childCategoryName = location?.state?.childCategoryName
     const products = location?.state?.products
 
-    // console.log(products)
-    // console.log(products[0]?.images[0]?.imageUrl)
+    const handleGetProductDetail = (product) => {
+        navigate("/products/detail", {
+            state: {
+                product: product
+            }
+        })
+    }
 
     return (
         <div style={{ maxWidth: '60%', margin: '80px auto' }}>
@@ -43,6 +49,7 @@ const ListProduct = () => {
                                     // src="/img/bien-hop-den.png"
                                     style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }}
                                 />}
+                                onClick={() => handleGetProductDetail(product)}
                             >
                                 <Meta title={product.name}
                                     description={

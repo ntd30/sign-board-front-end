@@ -79,7 +79,7 @@ const DesignPage = () => {
                         style={cardStyle}
                         cover={
                             <img
-                                src="/img/design/logo.png" // *** THAY ĐƯỜNG DẪN ***
+                                src="/img/logo_robot.jpg" // *** THAY ĐƯỜNG DẪN ***
                                 alt="AI Robot"
                                 // preview={false}
                                 style={coverImageStyle} // Style cho ảnh cover
@@ -106,9 +106,9 @@ const DesignPage = () => {
                             </div>
                         }
                     >
-                        <Title level={3}>Mô tả biển hiệu thật theo phong thủy của bạn</Title>
+                        <Title level={3}>Mô tả biển hiệu thật theo ý tưởng của bạn</Title>
                         <Paragraph>
-                            Nhập nội dung bạn muốn, AI của chúng tôi thiết kế AI cho bạn một điều bất ngờ.
+                            Bạn có ý tưởng biển hiệu độc đáo? Hãy tải ảnh lên và khoe nó với mọi người!
                         </Paragraph>
                     </Card>
                 </Col>
@@ -116,7 +116,7 @@ const DesignPage = () => {
 
             <Divider variant="dotted" style={{ borderColor: '#7cb305', margin: '50px auto' }} />
 
-            <Row gutter={24}>
+            <Row gutter={24} style={{ marginBottom: 50 }}>
                 <Col sm={24} lg={14}>
                     <img
                         src='/img/design/image.png'
@@ -124,23 +124,10 @@ const DesignPage = () => {
                     />
                 </Col>
                 <Col sm={24} lg={10}>
-                    <Title level={4}>Thiết kế biển hiệu bằng AI – Biến ý tưởng thành hiện thực</Title>
-                    <Paragraph>Chỉ cần nhập mô tả bằng văn bản, công nghệ AI thông minh sẽ ngay lập tức tạo ra bản thiết kế biển hiệu hoàn hảo theo ý bạn. Không cần bản vẽ hay hình ảnh phức tạp – chỉ vài dòng mô tả, hãy cùng AI kiến tạo không gian sống hoàn hảo theo đúng ý bạn!</Paragraph>
-                </Col>
-            </Row>
-
-            <Divider variant="dotted" style={{ borderColor: '#7cb305', margin: '50px auto' }} />
-
-            <Row gutter={24}>
-                <Col sm={24} lg={10}>
-                    <Title level={4}>Thiết kế biển hiệu bằng AI – Biến ý tưởng thành hiện thực</Title>
-                    <Paragraph>Chỉ cần nhập mô tả bằng văn bản, công nghệ AI thông minh sẽ ngay lập tức tạo ra bản thiết kế biển hiệu hoàn hảo theo ý bạn. Không cần bản vẽ hay hình ảnh phức tạp – chỉ vài dòng mô tả, hãy cùng AI kiến tạo không gian sống hoàn hảo theo đúng ý bạn!</Paragraph>
-                </Col>
-                <Col sm={24} lg={14}>
-                    <img
-                        src='/img/design/image.png'
-                        style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: 16 }}
-                    />
+                    <Title level={4}>Chia sẻ ngay thiết kế biển hiệu của bạn với cộng đồng!</Title>
+                    <Paragraph>
+                        Bạn có một thiết kế biển hiệu độc đáo và đầy sáng tạo? Hãy tự tin chia sẻ tác phẩm nghệ thuật của bạn với cộng đồng những người yêu thích thiết kế trên khắp mọi nơi bằng cách tải lên hình ảnh một cách đơn giản, để không chỉ trưng bày tài năng cá nhân mà còn góp phần tạo nên một không gian trực tuyến phong phú, nơi mọi người có thể khám phá, học hỏi và tìm kiếm nguồn cảm hứng bất tận từ vô vàn những ý tưởng biển hiệu ấn tượng.
+                    </Paragraph>
                 </Col>
             </Row>
         </div >
