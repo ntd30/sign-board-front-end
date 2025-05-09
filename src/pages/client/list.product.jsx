@@ -8,8 +8,8 @@ const ListProduct = () => {
     const childCategoryName = location?.state?.childCategoryName
     const products = location?.state?.products
 
-    console.log(products)
-    console.log(products[0]?.images[0]?.imageUrl)
+    // console.log(products)
+    // console.log(products[0]?.images[0]?.imageUrl)
 
     return (
         <div style={{ maxWidth: '60%', margin: '80px auto' }}>
@@ -17,19 +17,23 @@ const ListProduct = () => {
             <h1>DANH SÁCH SẢN PHẨM</h1>
             <ol className="breadcrumb" style={{ fontSize: "20px" }}>
                 <li className="breadcrumb-item active"><Link to="/">Trang chủ</Link></li>
-                {!childCategoryName ?
+                {/* {!childCategoryName ?
                     <li className="breadcrumb-item active">{parentCategoryName}</li>
                     :
                     <>
                         <li className="breadcrumb-item active"><Link to={"/"}>{parentCategoryName}</Link></li>
                         <li className="breadcrumb-item active">{childCategoryName}</li>
                     </>
-                }
+                } */}
+
+                <li className="breadcrumb-item active">{parentCategoryName}</li>
+
+                {childCategoryName && <li className="breadcrumb-item active">{childCategoryName}</li>}
             </ol>
 
             <div>
                 <Row gutter={[40, 50]}>
-                    {products.map(product => (
+                    {products?.map(product => (
                         <Col sm={24} md={12} lg={8} key={product.id}>
                             <Card
                                 hoverable

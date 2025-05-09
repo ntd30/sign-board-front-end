@@ -6,18 +6,29 @@ import { Avatar, Button, Col, Drawer, Dropdown, Grid, Input, Menu, message, Row,
 import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { AuthContext } from "../../context/auth.context";
-import { logoutAPI } from "../../../services/api.service";
+import { fetchAllCategoriesAPI, logoutAPI } from "../../../services/api.service";
 
 const { useBreakpoint } = Grid
 
 const Header = () => {
     const [drawerVisible, setDrawerVisible] = useState(false)
     const [current, setCurrent] = useState(''); // State quản lý menu item được chọn
+    const [categories, setCategories] = useState([])
+    const [subCategories, setSubCategories] = useState([])
+
     const screens = useBreakpoint()
     const isMobile = !screens.md
+
     const location = useLocation()
     const { user, setUser } = useContext(AuthContext)
+
     const navigate = useNavigate()
+
+    // const loadCategories = async () => {
+    //     const res = await fetchAllCategoriesAPI()
+    //     setCategories(res.data)
+    //     // console.log(res.data[0])
+    // }
 
     useEffect(() => {
         if (location && location.pathname) {
@@ -29,7 +40,53 @@ const Header = () => {
                 setCurrent("home")
             }
         }
+
+        loadCategories()
     }, [])
+
+    const loadCategories = async () => {
+        const res = await fetchAllCategoriesAPI()
+        // setCategories(res.data)
+        const parentCat = res.data.map(parent => {
+            // children
+            const childCat = parent.childCategories ? parent.childCategories.map(item => ({
+                key: item.id,
+                label:
+                    <div
+                        onClick={() => handleGetProductByChildCategory(parent.name, item.name, item.products)}
+                    >
+                        {item.name}
+                    </div >
+            })) : []
+
+            // parent
+            return {
+                key: parent.id,
+                label: <div onClick={() => handleGetProductByParentCategory(parent.name, parent.childCategories)}>{parent.name}</div>,
+                children: childCat
+            }
+        })
+        setCategories(parentCat)
+    }
+
+    const handleGetProductByParentCategory = (parentCategoryName, childCategories) => {
+        navigate("/products", {
+            state: {
+                parentCategoryName: parentCategoryName,
+                products: childCategories.flatMap(childCategory => childCategory.products)
+            }
+        })
+    }
+
+    const handleGetProductByChildCategory = (parentCategoryName, childCategoryName, products) => {
+        navigate("/products", {
+            state: {
+                parentCategoryName: parentCategoryName,
+                childCategoryName: childCategoryName,
+                products: products
+            }
+        })
+    }
 
     const handleLogout = async () => {
         const res = await logoutAPI()
@@ -102,22 +159,7 @@ const Header = () => {
             href: "/",
             key: 'product',
             icon: <ProductOutlined />,
-            children: [
-                {
-                    key: '12',
-                    label: "Biển quảng cáo",
-                    href: "/",
-                    children: [
-                        { key: '121', label: <Link to={"/list-product"}>Biển chữ nổi quảng cáo</Link> },
-                        { key: '122', label: 'Biển gỗ quảng cáo' },
-                        { key: '123', label: 'Biển hộp đèn âm bản' },
-                        { key: '124', label: 'Biển hộp đèn' },
-                        { key: '125', label: 'Biển Pano tấm lớn' },
-                        { key: '126', label: 'Biến tấm ốp Alu' },
-                    ],
-                },
-            ],
-            // children: renderMenuItems(categories)
+            children: categories
         },
         {
             label: <Link to={"/manufacture"}>SẢN XUẤT</Link>,
@@ -192,6 +234,7 @@ const Header = () => {
                         mode="horizontal"
                         items={items}
                         disabledOverflow
+
                         style={{
                             borderBottom: 'none',
                             fontWeight: 'bold',
