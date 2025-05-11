@@ -1,4 +1,5 @@
-import { Form, Input, Modal } from "antd"
+import { MailTwoTone, PhoneTwoTone } from "@ant-design/icons"
+import { Button, Col, Form, Input, Modal, Row, Typography } from "antd"
 
 const ProductContact = (props) => {
     const { isContactOpen, setIsContactOpen } = props
@@ -9,60 +10,88 @@ const ProductContact = (props) => {
     }
 
     return (
-        <Modal title="Nhập thông tin liên hệ" maskClosable={false} okText="Gửi" cancelText="Hủy"
-            open={isContactOpen}
-            onOk={() => form.submit()}
-            // okButtonProps={{ loading: loadingBtn }}
-            onCancel={() => setIsContactOpen(false)}
-        >
-            <Form
-                layout="vertical"
-                onFinish={handleContact}
-                form={form}
+        <>
+            <Modal
+                title={<Typography.Title level={3} style={{ color: '#1890ff', textAlign: 'center', marginBottom: 0 }}>LIÊN HỆ NGAY</Typography.Title>}
+                maskClosable={false}
+                // okText="Gửi thông tin liên hệ"
+                // cancelText="Hủy"
+                open={isContactOpen}
+                // onOk={() => form.submit()}
+                // okButtonProps={{ loading: loadingBtn }}
+                onCancel={() => setIsContactOpen(false)}
+                width={800}
+                footer={null}
             >
-                <Form.Item
-                    label="Họ tên"
-                    name="name"
-                    rules={[
-                        { required: true, message: 'Vui lòng nhập Họ tên!' }
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
+                <Row gutter={24} style={{ marginTop: 50 }}>
+                    <Col span={12}>
+                        <Form
+                            layout="vertical"
+                            onFinish={handleContact}
+                            form={form}
+                        >
+                            <Form.Item
+                                label="Họ tên"
+                                name="name"
+                                rules={[
+                                    { required: true, message: 'Vui lòng nhập Họ tên!' }
+                                ]}
+                            >
+                                <Input />
+                            </Form.Item>
 
-                <Form.Item
-                    label="Số điện thoại"
-                    name="phone"
-                    rules={[
-                        { required: true, message: 'Vui lòng nhập Số điện thoại!' }
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
+                            <Form.Item
+                                label="Số điện thoại"
+                                name="phone"
+                                rules={[
+                                    { required: true, message: 'Vui lòng nhập Số điện thoại!' }
+                                ]}
+                            >
+                                <Input />
+                            </Form.Item>
 
-                <Form.Item
-                    label="Email"
-                    name="email"
-                    rules={[
-                        { required: true, message: 'Vui lòng nhập Email!' },
-                        { type: "email", message: "Email không hợp lệ" }
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
+                            <Form.Item
+                                label="Email"
+                                name="email"
+                                rules={[
+                                    { required: true, message: 'Vui lòng nhập Email!' },
+                                    { type: "email", message: "Email không hợp lệ" }
+                                ]}
+                            >
+                                <Input />
+                            </Form.Item>
 
-                <Form.Item
-                    label="Địa chỉ"
-                    name="address"
-                    rules={[
-                        { required: true, message: 'Vui lòng nhập Địa chỉ!' }
-                    ]}
-                >
-                    <Input />
-                </Form.Item>
+                            <Form.Item
+                                label="Địa chỉ"
+                                name="address"
+                                rules={[
+                                    { required: true, message: 'Vui lòng nhập Địa chỉ!' }
+                                ]}
+                            >
+                                <Input />
+                            </Form.Item>
 
-            </Form>
-        </Modal>
+                            <Button key="submit" type="primary" style={{ width: "100%" }} onClick={() => form.submit()}>
+                                Gửi thông tin liên hệ
+                            </Button>
+
+                        </Form>
+                    </Col>
+
+                    <Col span={12} style={{ backgroundColor: "ButtonFace", borderRadius: "10px" }}>
+                        <div style={{ marginBottom: '20px', color: 'rgba(0, 0, 0, 0.85)' }}>
+                            <b style={{ display: "block", textAlign: "center" }}>HOẶC LIÊN HỆ VỚI THÔNG TIN BÊN DƯỚI ĐỂ HỖ TRỢ NGAY BÂY GIỜ</b>
+                            <div style={{ marginTop: '8px' }}>
+                                <Typography.Text><span style={{ marginRight: '8px' }}><MailTwoTone /></span> techbyte@gmail.com</Typography.Text>
+                            </div>
+                            <div>
+                                <Typography.Text><span style={{ marginRight: '8px' }}><PhoneTwoTone /></span> 0912345678  </Typography.Text>
+                            </div>
+                        </div>
+                    </Col>
+                </Row>
+            </Modal>
+        </>
     )
 }
 

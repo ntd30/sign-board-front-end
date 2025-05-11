@@ -12,7 +12,7 @@ const ProductDetailPage = () => {
   const location = useLocation()
   const product = location?.state?.product
 
-  console.log(product)
+  // console.log(product)
 
   return (
     <>

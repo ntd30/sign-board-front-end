@@ -14,7 +14,6 @@ import LayoutAdmin from './components/admin/layout.admin.jsx';
 import DashboardPage from './pages/admin/dashboard.jsx';
 import PrivateRoute from './pages/private.route.jsx';
 import UserPage from './pages/admin/user.jsx';
-import ProductPage from './pages/admin/product.jsx';
 import ListProduct from './pages/client/list.product.jsx';
 import ErrorPage from './pages/error.jsx'
 import LoginPage from './pages/client/auth/login.jsx';
@@ -23,6 +22,7 @@ import ConfirmCode from './pages/client/auth/confirm.code.jsx';
 import LoginAdminPage from './pages/admin/auth/login.admin.jsx';
 import PrivateRouteAdmin from './pages/private.route.admin.jsx';
 import ProductDetailPage from './pages/client/product.detail.jsx';
+import PermissionPage from './pages/admin/permission.jsx';
 
 const router = createBrowserRouter([
   {
@@ -77,9 +77,9 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element:
-      <PrivateRouteAdmin>
+      // <PrivateRouteAdmin>
         <LayoutAdmin />,
-      </PrivateRouteAdmin>,
+      // </PrivateRouteAdmin>,
     children: [
       {
         index: true,
@@ -87,12 +87,16 @@ const router = createBrowserRouter([
       },
       {
         path: "users",
-        element: <UserPage />,
+        element: <UserPage />
       },
+      // {
+      //   path: "roles",
+      //   element: <RolePage />
+      // }
       {
-        path: "products",
-        element: <ProductPage />,
-      },
+        path: "permissions",
+        element: <PermissionPage />
+      }
     ]
   },
 

@@ -1,5 +1,6 @@
 import { HomeOutlined, RobotOutlined, UploadOutlined } from '@ant-design/icons';
 import { Button, Card, Col, Divider, Row, Typography, Upload } from 'antd';
+import { useState } from 'react';
 
 const { Title, Paragraph } = Typography;
 
@@ -21,31 +22,80 @@ const coverImageStyle = {
 }
 
 const DesignPage = () => {
+    const [selectedFile, setSelectedFile] = useState(null)
+    const [preview, setPreview] = useState(null)
+
+    const handleOnChangeFile = event => {
+        if (!event.target.files || event.target.files.length === 0) {
+            setSelectedFile(null)
+            setPreview(null)
+            return
+        }
+
+        // I've kept this example simple by using the first image instead of multiple
+        const file = event.target.files[0]
+        if (file) {
+            setSelectedFile(file)
+            setPreview(URL.createObjectURL(file))
+        }
+    }
+
+    const handleUpload = async () => {
+        if (!selectedFile) {
+            notification.error({
+                message: "Error create book",
+                description: "Vui lòng upload ảnh thumbnail"
+            })
+            return
+        }
+
+        // const resUpload = await uploadFile(selectedFile, 'book')
+    }
+
+
     return (
         <div style={{ width: '60%', margin: 'auto' }}>
             <div style={{ textAlign: 'center', padding: 50 }}>
                 <Title level={2}>Thiết kế biển hiệu theo phong cách riêng của bạn</Title>
 
-                <Upload
-                    action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-                    listType="picture"
-                >
-                    <Button
-                        type="primary"
-                        danger
-                        icon={<UploadOutlined />}
+                <div>
+                    <label htmlFor="btnUpload"
                         style={{
-                            // background: '#d80000',
-                            margin: '30px 0',
+                            display: "block",
+                            width: "fit-content",
+                            cursor: "pointer",
+                            margin: "25px auto",
                             borderRadius: 30,
-                            padding: '20px 30px',
+                            padding: '15px 30px',
                             border: 'none',
+                            color: 'white',
+                            backgroundColor: 'rgba(216, 0, 0, 0.8)',
                             animation: 'ripple 2s infinite ease-in-out',
                         }}
-                    >
-                        Tải lên ngay
-                    </Button>
-                </Upload>
+                    ><UploadOutlined /> Tải lên ngay</label>
+                    <input type="file" id="btnUpload" style={{ display: "none" }}
+                        onChange={event => handleOnChangeFile(event)}
+                        onClick={event => event.target.value = null}
+                    />
+                </div>
+
+                {preview ?
+                    <div style={{ width: 500, margin: "auto" }}>
+                        <div style={{
+                            marginTop: "50px",
+                            marginBottom: "15px",
+                            // width: "500px",
+                            height: "500px",
+                        }}>
+                            <img style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                                src={preview} alt="" />
+                        </div>
+
+                        <Button onClick={handleUpload} type='primary' danger block size='large'>Gửi</Button>
+                    </div>
+                    :
+                    <div></div>
+                }
 
                 <style>
                     {`

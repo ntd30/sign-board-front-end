@@ -128,8 +128,70 @@ const fetchAllProjectsAPI = () => {
     return axios.get(URL_BACKEND)
 }
 
+const uploadFile = (file, folder) => {
+    const URL_BACKEND = "/api/v1/file/upload"
+
+    const bodyFormData = new FormData()
+    bodyFormData.append("fileImg", file)
+
+    let config = {
+        headers: {
+            'upload-type': folder,
+            'Content-Type': 'multipart/form-data'
+        }
+    }
+    return axios.post(URL_BACKEND, bodyFormData, config)
+}
+
+const fetchAllRolesAPI = (current, pageSize) => {
+    const URL_BACKEND = `/api/admin/roles?page=${current}&size=${pageSize}`
+    return axios.get(URL_BACKEND)
+}
+
+const createRoleAPI = () => {
+    const URL_BACKEND = "api/admin/roles/create"
+    const data = {
+
+    }
+    return axios.post(URL_BACKEND, data)
+}
+
+const fetchAllPermissionsAPI = (current, pageSize) => {
+    const URL_BACKEND = `/api/admin/permissions?page=${current}&size=${pageSize}`
+    return axios.get(URL_BACKEND)
+}
+
+const createPermissionAPI = (name, apiPath, method, module) => {
+    const URL_BACKEND = "api/admin/permissions"
+    const data = {
+        name: name, 
+        apiPath: apiPath, 
+        method: method, 
+        module: module
+    }
+    return axios.post(URL_BACKEND, data)
+}
+
+const updatePermissionAPI = (id, name, apiPath, method, module) => {
+    const URL_BACKEND = "api/admin/permissions"
+    const data = {
+        id: id,
+        name: name, 
+        apiPath: apiPath, 
+        method: method, 
+        module: module
+    }
+    return axios.put(URL_BACKEND, data)
+}
+
+const deletePermissionAPI = (id) => {
+    const URL_BACKEND = `api/admin/permissions/${id}`
+    return axios.delete(URL_BACKEND)
+}
+
 export {
     fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI,
-    fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI,
-    loginWithGoogle, getAuthCode, resetPasswordAPI, fetchAllCategoriesAPI, fetchAllNewsAPI, fetchAllProjectsAPI
+    fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI, loginWithGoogle, getAuthCode,
+    resetPasswordAPI, fetchAllCategoriesAPI, fetchAllNewsAPI, fetchAllProjectsAPI, uploadFile, fetchAllRolesAPI,
+    createRoleAPI, fetchAllPermissionsAPI, createPermissionAPI, updatePermissionAPI, deletePermissionAPI
 }

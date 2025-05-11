@@ -49,8 +49,8 @@ const AppFooter = () => {
               </div>
               <div>
                 <Text strong className="contact-label"><MailOutlined /> Email:</Text>
-                 {/* Nên dùng thẻ Link cho email */}
-                <Link href="mailto:ak@datvn.vn" className="contact-detail footer-link">ak@datvn.vn</Link> {/* Sửa lại email nếu cần */}
+                {/* Nên dùng thẻ Link cho email */}
+                <Link href="mailto:nguyentienduy14119@gmail.com" className="contact-detail footer-link">ak@datvn.vn</Link> {/* Sửa lại email nếu cần */}
               </div>
             </Space>
           </Col>
@@ -60,7 +60,7 @@ const AppFooter = () => {
             {/* Nhúng iframe từ Google Maps */}
             {/* Thay thế src bằng mã nhúng bản đồ của bạn */}
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.311661740765!2d105.77896477590993!3d20.97996358911461!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135acc67838a83d%3A0x89925f611645a1a5!2zQuG6p3UgVMOqIEPDtG5nIE5naOG7hyBUZWNoIEJ5dGU!5e0!3m2!1svi!2s!4v1714040651782!5m2!1svi!2s" // Thay link này
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3826.1981910875847!2d105.78366786885267!3d20.958258798493727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ad2c52118147%3A0xe1131005d075626a!2zxJBhIFPhu7ksIEtp4bq_biBIxrBuZywgSMOgIMSQw7RuZywgSGFub2ksIFZpZXRuYW0!5e1!3m2!1sen!2s!4v1746923124633!5m2!1sen!2s" // Thay link này
               width="100%"
               height="350px" // Điều chỉnh chiều cao nếu cần
               style={{ border: 0 }}

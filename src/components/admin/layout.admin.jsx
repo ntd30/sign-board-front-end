@@ -1,5 +1,5 @@
 import {
-    AliwangwangOutlined, AppstoreOutlined, BugOutlined, EditOutlined, GlobalOutlined, HomeOutlined,
+    AliwangwangOutlined, ApiOutlined, AppstoreOutlined, BugOutlined, EditOutlined, ExceptionOutlined, GlobalOutlined, HomeOutlined,
     LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UnorderedListOutlined, UserOutlined
 } from "@ant-design/icons";
 import { Avatar, Button, Dropdown, Layout, Menu, message, Space } from "antd"
@@ -26,11 +26,6 @@ const menuItems = [
         icon: <AliwangwangOutlined />
     },
     {
-        label: <Link to='/admin'>Tin tức</Link>,
-        key: '/admin/news',
-        icon: <GlobalOutlined />
-    },
-    {
         label: <Link to='/admin/users'>Người dùng</Link>,
         key: '/admin/users',
         icon: <UserOutlined />
@@ -39,6 +34,21 @@ const menuItems = [
         label: <Link to='/admin'>Bản thiết kế</Link>,
         key: '/admin/design',
         icon: <EditOutlined />
+    },
+    {
+        label: <Link to='/admin/roles'>Vai trò</Link>,
+        key: '/admin/roles',
+        icon: <ExceptionOutlined />
+    },
+    {
+        label: <Link to='/admin/permissions'>Quyền hạn</Link>,
+        key: '/admin/permissions',
+        icon: <ApiOutlined />
+    },
+    {
+        label: <Link to='/admin'>Tin tức</Link>,
+        key: '/admin/news',
+        icon: <GlobalOutlined />
     },
 ]
 

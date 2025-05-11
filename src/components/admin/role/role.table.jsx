@@ -1,19 +1,19 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Drawer, notification, Popconfirm, Space, Table } from "antd";
+import { notification, Popconfirm, Space, Table } from "antd";
 import { useEffect, useState } from "react";
-import { deleteProductAPI } from "../../../services/api.service";
-import ProductDetail from "./product.detail";
-import ProductUpdate from "./product.update";
+import RoleDetail from "./role.detail";
+import RoleUpdate from "./role.update";
+import { deleteRoleAPI } from "../../../services/api.service";
 
-const ProductTable = (props) => {
-    const { dataProducts, loadProducts, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props
+const RoleTable = (props) => {
+    const { dataRoles, loadRoles, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props
 
     const [isDetailOpen, setIsDetailOpen] = useState(false)
     const [isUpdateOpen, setIsUpdateOpen] = useState(false)
     const [dataUpdate, setDataUpdate] = useState(null)
 
     useEffect(() => {
-        loadProducts()
+        loadRoles()
     }, [current, pageSize])
 
     const onChange = (pagination) => {
@@ -25,25 +25,25 @@ const ProductTable = (props) => {
         }
     }
 
-    const handleGetDetailProduct = record => {
+    const handleGetDetailRole = record => {
         setDataUpdate(record)
         setIsDetailOpen(true)
     }
 
-    const handleEditProduct = (record) => {
+    const handleEditRole = (record) => {
         setDataUpdate(record)
         setIsUpdateOpen(true)
     }
 
-    const handleDeleteProduct = async (idDelete) => {
-        const res = await deleteProductAPI(idDelete)
+    const handleDeleteRole = async (idDelete) => {
+        const res = await deleteRoleAPI(idDelete)
 
         if (res.data) {
             notification.success({
                 message: "Xóa người dùng",
                 description: "Xóa người dùng thành công!"
             })
-            await loadProducts()
+            await loadRoles()
         } else {
             notification.error({
                 message: "Lỗi khi xóa người dùng",
@@ -59,26 +59,43 @@ const ProductTable = (props) => {
                 <>
                     {index + 1 + pageSize * (current - 1)}
                 </>
-            ),
+            )
         },
         {
             title: 'Id',
-            dataIndex: '_id',
+            dataIndex: 'id',
             render: (text, record) => (
-                <a onClick={() => handleGetDetailProduct(record)}>{text}</a>
+                <a onClick={() => handleGetDetailRole(record)}>{text}</a>
             ),
         },
         {
-            title: 'Tên sản phẩm',
-            dataIndex: 'name',
+            title: 'Rolename',
+            dataIndex: 'username',
         },
         {
-            title: 'Mô tả',
-            dataIndex: 'description',
+            title: 'Email',
+            dataIndex: 'email',
         },
         {
-            title: 'Giá tiền',
-            dataIndex: 'price',
+            title: 'Họ và Tên',
+            dataIndex: 'fullName',
+        },
+        {
+            title: 'Số điện thoại',
+            dataIndex: 'phoneNumber',
+        },
+        {
+            title: 'Địa chỉ',
+            dataIndex: 'address',
+        },
+        {
+            title: 'Trạng thái',
+            dataIndex: 'active',
+            render: (value) => (value ? '✅ Hoạt động' : '❌ Tạm khóa'),
+        },
+        {
+            title: 'Quyền hạn',
+            dataIndex: 'roleName',
         },
         {
             title: 'Action',
@@ -86,13 +103,13 @@ const ProductTable = (props) => {
                 <Space size="middle" style={{ gap: "20px" }}>
                     <EditOutlined
                         style={{ color: "orange", cursor: "pointer" }}
-                        onClick={() => handleEditProduct(record)}
+                        onClick={() => handleEditRole(record)}
                     />
 
                     <Popconfirm
-                        title="Xóa sản phẩm"
-                        description="Bạn có chắc muốn xóa sản phẩm này?"
-                        onConfirm={() => handleDeleteProduct(record._id)}
+                        title="Xóa người dùng"
+                        description="Bạn có chắc muốn xóa người dùng này?"
+                        onConfirm={() => handleDeleteRole(record._id)}
                         onCancel={() => { }}
                         okText="Xác nhận"
                         cancelText="Hủy"
@@ -107,7 +124,7 @@ const ProductTable = (props) => {
 
     return (
         <>
-            <Table dataSource={dataProducts} columns={columns}
+            <Table dataSource={dataRoles} columns={columns}
                 pagination={
                     {
                         current: current,
@@ -121,21 +138,21 @@ const ProductTable = (props) => {
                 loading={loadingTable}
             />
 
-            <ProductDetail
+            <RoleDetail
                 isDetailOpen={isDetailOpen}
                 setIsDetailOpen={setIsDetailOpen}
                 dataUpdate={dataUpdate}
             />
 
-            <ProductUpdate
+            <RoleUpdate
                 isUpdateOpen={isUpdateOpen}
                 setIsUpdateOpen={setIsUpdateOpen}
                 dataUpdate={dataUpdate}
                 // setDataUpdate={setDataUpdate}
-                loadProducts={loadProducts}
+                loadRoles={loadRoles}
             />
         </>
     )
 }
 
-export default ProductTable
+export default RoleTable
