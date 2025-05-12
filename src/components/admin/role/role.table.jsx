@@ -1,9 +1,6 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { notification, Popconfirm, Space, Table } from "antd";
-import { useEffect, useState } from "react";
-import RoleDetail from "./role.detail";
-import RoleUpdate from "./role.update";
-import { deleteRoleAPI } from "../../../services/api.service";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons"
+import { notification, Popconfirm, Space, Table, Tag } from "antd"
+import { useEffect, useState } from "react"
 
 const RoleTable = (props) => {
     const { dataRoles, loadRoles, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props
@@ -36,20 +33,21 @@ const RoleTable = (props) => {
     }
 
     const handleDeleteRole = async (idDelete) => {
-        const res = await deleteRoleAPI(idDelete)
+        // const res = await deleteRoleAPI(idDelete)
 
-        if (res.data) {
-            notification.success({
-                message: "Xóa người dùng",
-                description: "Xóa người dùng thành công!"
-            })
-            await loadRoles()
-        } else {
-            notification.error({
-                message: "Lỗi khi xóa người dùng",
-                description: JSON.stringify(res.message)
-            })
-        }
+        // if (res) {
+        //     notification.success({
+        //         message: "Xóa Vai trò",
+        //         description: "Xóa Vai trò thành công!"
+        //     })
+        //     await loadRoles()
+        // } else {
+        //     notification.error({
+        //         message: "Lỗi khi xóa Vai trò",
+        //         description: JSON.stringify(res)
+        //     })
+        // }
+        alert("Delete")
     }
 
     const columns = [
@@ -69,33 +67,27 @@ const RoleTable = (props) => {
             ),
         },
         {
-            title: 'Rolename',
-            dataIndex: 'username',
+            title: 'Tên',
+            dataIndex: 'name',
         },
         {
-            title: 'Email',
-            dataIndex: 'email',
-        },
-        {
-            title: 'Họ và Tên',
-            dataIndex: 'fullName',
-        },
-        {
-            title: 'Số điện thoại',
-            dataIndex: 'phoneNumber',
-        },
-        {
-            title: 'Địa chỉ',
-            dataIndex: 'address',
+            title: 'Mô tả',
+            dataIndex: 'description',
         },
         {
             title: 'Trạng thái',
             dataIndex: 'active',
-            render: (value) => (value ? '✅ Hoạt động' : '❌ Tạm khóa'),
+            render: (value) => <Tag color={value ? "lime" : "red"}>
+                {value ? "ACTIVE" : "INACTIVE"}
+            </Tag>
         },
         {
-            title: 'Quyền hạn',
-            dataIndex: 'roleName',
+            title: 'Ngày tạo',
+            dataIndex: 'createdAt',
+        },
+        {
+            title: 'Ngày cập nhật',
+            dataIndex: 'updatedAt',
         },
         {
             title: 'Action',
@@ -107,9 +99,9 @@ const RoleTable = (props) => {
                     />
 
                     <Popconfirm
-                        title="Xóa người dùng"
-                        description="Bạn có chắc muốn xóa người dùng này?"
-                        onConfirm={() => handleDeleteRole(record._id)}
+                        title="Xóa Vai trò"
+                        description="Bạn có chắc muốn xóa Vai trò này?"
+                        onConfirm={() => handleDeleteRole(record.id)}
                         onCancel={() => { }}
                         okText="Xác nhận"
                         cancelText="Hủy"
@@ -138,7 +130,7 @@ const RoleTable = (props) => {
                 loading={loadingTable}
             />
 
-            <RoleDetail
+            {/* <RoleDetail
                 isDetailOpen={isDetailOpen}
                 setIsDetailOpen={setIsDetailOpen}
                 dataUpdate={dataUpdate}
@@ -150,7 +142,7 @@ const RoleTable = (props) => {
                 dataUpdate={dataUpdate}
                 // setDataUpdate={setDataUpdate}
                 loadRoles={loadRoles}
-            />
+            /> */}
         </>
     )
 }

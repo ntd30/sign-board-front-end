@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import PermissionDetail from "./permission.detail"
 import PermissionUpdate from "./permission.update"
 import { deletePermissionAPI } from "../../../services/api.service"
+import { colorMethod } from "../../../config/permission"
 
 const PermissionTable = (props) => {
     const { dataPermissions, loadPermissions, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props
@@ -79,6 +80,9 @@ const PermissionTable = (props) => {
         {
             title: 'Phương thức',
             dataIndex: 'method',
+            render: (_, record) => (
+                <p style={{ paddingLeft: 10, fontWeight: 'bold', marginBottom: 0, color: colorMethod(record?.method) }}>{record?.method || ''}</p>
+            )
         },
         {
             title: 'Module',

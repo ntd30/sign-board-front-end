@@ -23,6 +23,8 @@ import LoginAdminPage from './pages/admin/auth/login.admin.jsx';
 import PrivateRouteAdmin from './pages/private.route.admin.jsx';
 import ProductDetailPage from './pages/client/product.detail.jsx';
 import PermissionPage from './pages/admin/permission.jsx';
+import GoogleAuthCallback from './pages/client/auth/google.auth.jsx';
+import RolePage from './pages/admin/role.jsx';
 
 const router = createBrowserRouter([
   {
@@ -52,7 +54,7 @@ const router = createBrowserRouter([
       },
       {
         path: "products/detail",
-        element: <ProductDetailPage/>
+        element: <ProductDetailPage />
       }
     ]
   },
@@ -73,13 +75,17 @@ const router = createBrowserRouter([
     path: "/register",
     element: <RegisterPage />,
   },
+  {
+    path: `${import.meta.env.VITE_BACKEND_URL}/oauth2/authorization/google`,
+    element: <GoogleAuthCallback />,
+  },
 
   {
     path: "/admin",
     element:
       // <PrivateRouteAdmin>
-        <LayoutAdmin />,
-      // </PrivateRouteAdmin>,
+      <LayoutAdmin />,
+    // </PrivateRouteAdmin>,
     children: [
       {
         index: true,
@@ -89,10 +95,10 @@ const router = createBrowserRouter([
         path: "users",
         element: <UserPage />
       },
-      // {
-      //   path: "roles",
-      //   element: <RolePage />
-      // }
+      {
+        path: "roles",
+        element: <RolePage />
+      },
       {
         path: "permissions",
         element: <PermissionPage />

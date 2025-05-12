@@ -28,10 +28,12 @@ const LoginPage = () => {
         setLoading(false)
     }
 
-    const handleGoogleLogin = async () => {
-        const res = await loginWithGoogle()
+    const handleGoogleLogin = () => {
+        // const res = await loginWithGoogle()
 
-        console.log(res)
+        navigate(`${import.meta.env.VITE_BACKEND_URL}/login/oauth2/authorization/google`)
+
+        // console.log(res)
     }
 
     const handleForgotPassword = () => {
@@ -92,14 +94,16 @@ const LoginPage = () => {
 
                         {/* Nút Đăng nhập Google */}
                         <Form.Item>
-                            <Button
-                                icon={<GoogleOutlined />}
-                                onClick={handleGoogleLogin}
-                                block
-                                size="large"
-                            >
-                                Google
-                            </Button>
+                            <a href={`${import.meta.env.VITE_BACKEND_URL}/oauth2/authorization/google`}>
+                                <Button
+                                    icon={<GoogleOutlined />}
+                                    onClick={handleGoogleLogin}
+                                    block
+                                    size="large"
+                                >
+                                    Google
+                                </Button>
+                            </a>
                         </Form.Item>
 
                         {/* Link Đăng ký */}
