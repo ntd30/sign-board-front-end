@@ -1,0 +1,160 @@
+import { Button, Cascader, Col, Form, Input, InputNumber, Modal, notification, Row, Select } from "antd"
+import { useEffect, useState } from "react";
+import { createProductAPI } from "../../../services/api.service";
+import { ALL_MODULES } from "../../../config/permission";
+
+const { TextArea } = Input
+
+const ProductCreate = (props) => {
+    const { loadProducts, dataCategories, getCategoriesSelect } = props
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const [loadingBtn, setLoadingBtn] = useState(false)
+
+    const [form] = Form.useForm()
+
+    useEffect(() => {
+        getCategoriesSelect()
+    }, [])
+
+    const handleCreateProduct = async (values) => {
+        setLoadingBtn(true)
+
+        const { name, categoryId, description, length, width, height } = values
+
+        const resCreateProduct = await createProductAPI(
+            name, categoryId[categoryId.length - 1], description, length + "x" + width + "x" + height + " mm"
+        )
+
+        if (resCreateProduct.data) {
+            resetAndCloseModal()
+            await loadProducts()
+            notification.success({
+                message: "Thêm Sản phẩm",
+                description: "Thêm Sản phẩm mới thành công"
+            })
+        } else {
+            notification.error({
+                message: "Lỗi thêm mới Sản phẩm",
+                description: JSON.stringify(resCreateProduct.message)
+            })
+        }
+
+        setLoadingBtn(false)
+    }
+
+    const resetAndCloseModal = () => {
+        setIsModalOpen(false)
+        form.resetFields()
+    }
+
+    return (
+        <div style={{ margin: "10px 0" }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <h2>Quản lý Sản phẩm</h2>
+                <Button type="primary" onClick={() => setIsModalOpen(true)}>Tạo mới</Button>
+            </div>
+            <Modal title="Tạo mới Sản phẩm" maskClosable={false} okText="Thêm" cancelText="Hủy"
+                open={isModalOpen}
+                onOk={() => form.submit()}
+                okButtonProps={{
+                    loading: loadingBtn
+                }}
+                onCancel={resetAndCloseModal}
+                width={900}
+            >
+                <Form
+                    layout="vertical"
+                    onFinish={handleCreateProduct}
+                    form={form}
+                >
+
+                    <Row gutter={16}>
+                        <Col lg={12} md={12} sm={24} xs={24}>
+                            <Form.Item
+                                label="Tên Sản phẩm"
+                                name="name"
+                                rules={[
+                                    { required: true, message: 'Vui lòng không bỏ trống!' }
+                                ]}
+                            >
+                                <Input placeholder="Nhập tên" />
+                            </Form.Item>
+                        </Col>
+
+                        <Col lg={12} md={12} sm={24} xs={24}>
+                            <Form.Item
+                                label="Thuộc Danh mục"
+                                name="categoryId"
+                                rules={[
+                                    { required: true, message: 'Vui lòng không bỏ trống!' }
+                                ]}
+                            >
+                                <Cascader options={dataCategories} placeholder="Nhập tên danh mục" />
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={24}>
+                            <Form.Item
+                                label="Mô tả"
+                                name="description"
+                                rules={[
+                                    { required: true, message: 'Vui lòng không bỏ trống!' }
+                                ]}
+                            >
+                                <TextArea placeholder="Nhập mô tả" />
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={24} style={{ marginBottom: 10 }}>
+                            <label>Kích thước</label>
+                        </Col>
+
+                        <Col lg={8} md={8} sm={24} xs={24}>
+                            <Form.Item
+                                label="Dài"
+                                name="length"
+                                rules={[{
+                                    required: true, message: 'Vui lòng không bỏ trống'
+                                }]}
+                                layout="horizontal"
+                            >
+                                <InputNumber />
+                            </Form.Item>
+                        </Col>
+
+                        <Col lg={8} md={8} sm={24} xs={24}>
+                            <Form.Item
+                                label="Rộng"
+                                name="width"
+                                rules={[{
+                                    required: true, message: 'Vui lòng không bỏ trống'
+                                }]}
+                                layout="horizontal"
+                            >
+                                <InputNumber />
+                            </Form.Item>
+                        </Col>
+
+                        <Col lg={8} md={8} sm={24} xs={24}>
+                            <Form.Item
+                                label="Cao"
+                                name="height"
+                                rules={[{
+                                    required: true, message: 'Vui lòng không bỏ trống'
+                                }]}
+                                layout="horizontal"
+                            >
+                                <InputNumber />
+                            </Form.Item>
+                        </Col>
+
+                    </Row>
+
+                </Form>
+            </Modal>
+        </div>
+    )
+}
+
+export default ProductCreate

@@ -25,6 +25,7 @@ import ProductDetailPage from './pages/client/product.detail.jsx';
 import PermissionPage from './pages/admin/permission.jsx';
 import GoogleAuthCallback from './pages/client/auth/google.auth.jsx';
 import RolePage from './pages/admin/role.jsx';
+import ProductPage from './pages/admin/product.jsx';
 
 const router = createBrowserRouter([
   {
@@ -94,6 +95,10 @@ const router = createBrowserRouter([
       {
         path: "users",
         element: <UserPage />
+      },
+      {
+        path: "products",
+        element: <ProductPage />
       },
       {
         path: "roles",

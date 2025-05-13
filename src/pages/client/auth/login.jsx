@@ -32,8 +32,6 @@ const LoginPage = () => {
         // const res = await loginWithGoogle()
 
         navigate(`${import.meta.env.VITE_BACKEND_URL}/login/oauth2/authorization/google`)
-
-        // console.log(res)
     }
 
     const handleForgotPassword = () => {

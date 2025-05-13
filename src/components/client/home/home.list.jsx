@@ -83,7 +83,6 @@ const HomeList = () => {
 
   const loadCategories = async () => {
     const res = await fetchAllCategoriesAPI()
-    setCategories(res.data)
     // console.log(res.data[0])
   }
 

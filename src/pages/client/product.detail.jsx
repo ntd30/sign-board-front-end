@@ -12,8 +12,6 @@ const ProductDetailPage = () => {
   const location = useLocation()
   const product = location?.state?.product
 
-  // console.log(product)
-
   return (
     <>
       <Content style={{ maxWidth: '70%', margin: '80px auto' }}>

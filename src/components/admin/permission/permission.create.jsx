@@ -37,7 +37,6 @@ const PermissionCreate = (props) => {
         setLoadingBtn(false)
     }
 
-
     const resetAndCloseModal = () => {
         setIsModalOpen(false)
         form.resetFields()

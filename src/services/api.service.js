@@ -83,22 +83,23 @@ const deleteUserAPI = (id) => {
 }
 
 const fetchAllProductsAPI = (current, pageSize) => {
-    const URL_BACKEND = `/api/v1/products?current=${current}&pageSize=${pageSize}`
+    const URL_BACKEND = `/api/products/list?page=${current}&size=${pageSize}`
     return axios.get(URL_BACKEND)
 }
 
-const createProductAPI = (name, description, price) => {
-    const URL_BACKEND = "api/v1/products"
+const createProductAPI = (name, categoryId, description, dimensions) => {
+    const URL_BACKEND = "api/admin/product/create"
     const data = {
         name: name,
+        categoryId: categoryId,
         description: description,
-        price: price
+        dimensions: dimensions
     }
     return axios.post(URL_BACKEND, data)
 }
 
 const deleteProductAPI = (id) => {
-    const URL_BACKEND = `/api/v1/products/${id}`
+    const URL_BACKEND = `/api/admin/product/delete/${id}`
     return axios.delete(URL_BACKEND)
 }
 
@@ -113,6 +114,7 @@ const updateProductAPI = (id, name, description, price) => {
     return axios.put(URL_BACKEND, data)
 }
 
+// parent category
 const fetchAllCategoriesAPI = () => {
     const URL_BACKEND = "/api/categories/parent"
     return axios.get(URL_BACKEND)

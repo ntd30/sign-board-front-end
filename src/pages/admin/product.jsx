@@ -1,42 +1,59 @@
-// import { useState } from "react"
-// import { fetchAllProductsAPI } from "../../services/api.service"
-// import ProductCreate from "../../components/admin/product/product.create"
-// import ProductTable from "../../components/admin/product/product.table"
+import { Children, useState } from "react"
+import { fetchAllCategoriesAPI, fetchAllProductsAPI } from "../../services/api.service"
+import ProductCreate from "../../components/admin/product/product.create"
+import ProductTable from "../../components/admin/product/product.table"
 
-// const ProductPage = () => {
-//     const [dataProducts, setDataProducts] = useState([])
-//     const [current, setCurrent] = useState(1)
-//     const [pageSize, setPageSize] = useState(5)
-//     const [total, setTotal] = useState(0)
-//     const [loadingTable, setLoadingTable] = useState(false)
+const ProductPage = () => {
+    const [dataProducts, setDataProducts] = useState([])
+    const [dataCategories, setDataCategories] = useState([])
 
-//     const loadProducts = async () => {
-//         setLoadingTable(true)
-//         const res = await fetchAllProductsAPI(current, pageSize)
-//         if (res.data) {
-//             setTotal(res.data.meta.total)
-//         }
-//         setDataProducts(res.data.result)
-//         setLoadingTable(false)
-//     }
+    const [current, setCurrent] = useState(1)
+    const [pageSize, setPageSize] = useState(5)
+    const [total, setTotal] = useState(0)
+    const [loadingTable, setLoadingTable] = useState(false)
 
-//     return (
-//         <>
-//             <ProductCreate
-//                 loadProducts={loadProducts}
-//             />
-//             <ProductTable
-//                 current={current}
-//                 setCurrent={setCurrent}
-//                 pageSize={pageSize}
-//                 setPageSize={setPageSize}
-//                 total={total}
-//                 loadProducts={loadProducts}
-//                 dataProducts={dataProducts}
-//                 loadingTable={loadingTable}
-//             />
-//         </>
-//     )
-// }
+    const loadProducts = async () => {
+        setLoadingTable(true)
+        const res = await fetchAllProductsAPI(current, pageSize)
+        if (res.data) {
+            setTotal(res.data.totalElements)
+        }
+        setDataProducts(res.data.content)
+        setLoadingTable(false)
+    }
 
-// export default ProductPage
+    const getCategoriesSelect = async () => {
+        const res = await fetchAllCategoriesAPI()
+        setDataCategories(res.data.map((item) => ({
+            value: item.id,
+            label: item.name,
+            children: item.childCategories ? item.childCategories.map((child) => ({
+                value: child.id,
+                label: child.name
+            })) : []
+        })))
+    }
+
+    return (
+        <>
+            <ProductCreate
+                loadProducts={loadProducts}
+                dataCategories={dataCategories}
+                getCategoriesSelect={getCategoriesSelect}
+            />
+            <ProductTable
+                current={current}
+                setCurrent={setCurrent}
+                pageSize={pageSize}
+                setPageSize={setPageSize}
+                total={total}
+                loadProducts={loadProducts}
+                dataProducts={dataProducts}
+                loadingTable={loadingTable}
+                dataCategories={dataCategories}
+            />
+        </>
+    )
+}
+
+export default ProductPage
