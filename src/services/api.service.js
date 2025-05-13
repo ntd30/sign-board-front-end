@@ -148,10 +148,12 @@ const fetchAllRolesAPI = (current, pageSize) => {
     return axios.get(URL_BACKEND)
 }
 
-const createRoleAPI = () => {
-    const URL_BACKEND = "api/admin/roles/create"
+const createRoleAPI = (name, active, description) => {
+    const URL_BACKEND = "/api/admin/roles"
     const data = {
-
+        name: name, 
+        active: active, 
+        description: description
     }
     return axios.post(URL_BACKEND, data)
 }

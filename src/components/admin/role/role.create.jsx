@@ -1,6 +1,7 @@
 import { Button, Card, Col, Form, Input, InputNumber, Modal, notification, Row, Select, Switch } from "antd"
 import ModuleApi from "./module.api"
 import { useState } from "react"
+import { createRoleAPI } from "../../../services/api.service"
 
 const { TextArea } = Input
 
@@ -12,7 +13,7 @@ const RoleCreate = (props) => {
 
   const [form] = Form.useForm()
 
-  const handleCreateRole = (values) => {
+  const handleCreateRole = async (values) => {
     setLoadingBtn(true)
 
     const { name, active, description } = values
@@ -22,25 +23,23 @@ const RoleCreate = (props) => {
     console.log("description", description)
     console.log("permissionIds", permissionIds)
 
-    // const { name, apiPath, method, module } = values
+    const resCreateRole = await createRoleAPI(
+      name, active, description
+    )
 
-    // const resCreateRole = await createRoleAPI(
-    //     name, apiPath, method, module
-    // )
-
-    // if (resCreateRole.data) {
-    //     resetAndCloseModal()
-    //     await loadRoles()
-    //     notification.success({
-    //         message: "Thêm Vai trò",
-    //         description: "Thêm Vai trò mới thành công"
-    //     })
-    // } else {
-    //     notification.error({
-    //         message: "Lỗi thêm mới Vai trò",
-    //         description: JSON.stringify(resCreateRole.message)
-    //     })
-    // }
+    if (resCreateRole.data) {
+        resetAndCloseModal()
+        await loadRoles()
+        notification.success({
+            message: "Thêm Vai trò",
+            description: "Thêm Vai trò mới thành công"
+        })
+    } else {
+        notification.error({
+            message: "Lỗi thêm mới Vai trò",
+            description: JSON.stringify(resCreateRole)
+        })
+    }
 
     setLoadingBtn(false)
     resetAndCloseModal()
