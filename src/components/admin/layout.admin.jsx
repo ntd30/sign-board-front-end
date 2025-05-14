@@ -31,8 +31,8 @@ const menuItems = [
         icon: <UserOutlined />
     },
     {
-        label: <Link to='/admin'>Bản thiết kế</Link>,
-        key: '/admin/design',
+        label: <Link to='/admin/designs'>Bản thiết kế</Link>,
+        key: '/admin/designs',
         icon: <EditOutlined />
     },
     {

@@ -232,10 +232,21 @@ const deleteCategoryAPI = (id) => {
     return axios.delete(URL_BACKEND)
 }
 
+const fetchAllDesignsAPI = (current, pageSize) => {
+    const URL_BACKEND = `/api/admin/user-designs?page=${current - 1}&size=${pageSize}`
+    return axios.get(URL_BACKEND)
+}
+
+const loadProductsByCategoryAPI = (categoryId, current, pageSize) => {
+    const URL_BACKEND = `/api/categories/${categoryId}/products?page=${current}&size=${pageSize}`
+    return axios.get(URL_BACKEND)
+}
+
 export {
     fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI,
     fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI, loginWithGoogle, getAuthCode,
     resetPasswordAPI, fetchAllCategoriesAPI, fetchAllNewsAPI, fetchAllProjectsAPI, uploadDesign, fetchAllRolesAPI,
     createRoleAPI, fetchAllPermissionsAPI, createPermissionAPI, updatePermissionAPI, deletePermissionAPI, fetchAllParentCategoriesAPI,
-    createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI
+    createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI, fetchAllDesignsAPI,
+    loadProductsByCategoryAPI
 }

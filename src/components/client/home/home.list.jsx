@@ -72,6 +72,14 @@ const HomeList = () => {
   //   })
   // }
 
+  const handleGetProductDetail = (product) => {
+    navigate("/products/detail", {
+      state: {
+        product: product
+      }
+    });
+  };
+
   return (
     <>
       <div style={{ width: "60%", margin: "50px auto" }}>
@@ -105,6 +113,7 @@ const HomeList = () => {
                           style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }}
                         />
                       }
+                      onClick={() => handleGetProductDetail(product)}
                     >
                       <Meta
                         title={product.name}

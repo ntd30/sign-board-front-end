@@ -1,54 +1,67 @@
-import { Card, Col, Row } from "antd"
-import Meta from "antd/es/card/Meta"
-import { Link, useLocation, useNavigate } from "react-router-dom"
+import { Card, Col, Pagination, Row } from "antd";
+import Meta from "antd/es/card/Meta";
+import { useEffect, useState } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { loadProductsByCategoryAPI } from "../../services/api.service";
 
-const ListProduct = () => {
-    const navigate = useNavigate()
-    const location = useLocation()
-    const parentCategoryName = location?.state?.parentCategoryName
-    const childCategoryName = location?.state?.childCategoryName
-    const products = location?.state?.products
+const ListProductCard = () => {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const parentCategoryId = location?.state?.parentCategoryId;
+    const parentCategoryName = location?.state?.parentCategoryName;
+    const childCategoryId = location?.state?.childCategoryId;
+    const childCategoryName = location?.state?.childCategoryName;
+
+    const [products, setProducts] = useState([]);
+    const [current, setCurrent] = useState(1);
+    const [pageSize, setPageSize] = useState(9); // Số lượng card trên mỗi trang
+    const [total, setTotal] = useState(0);
+    const [loadingTable, setLoadingTable] = useState(false);
+
+    useEffect(() => {
+        loadProductsByCategory();
+    }, [current, pageSize, parentCategoryId, childCategoryId]);
+
+    const loadProductsByCategory = async () => {
+        setLoadingTable(true);
+        const res = await loadProductsByCategoryAPI(parentCategoryId ? parentCategoryId : childCategoryId, current, pageSize);
+        if (res?.data) {
+            setTotal(res?.data?.totalElements);
+        }
+        setProducts(res?.data?.content);
+        setLoadingTable(false);
+    };
 
     const handleGetProductDetail = (product) => {
         navigate("/products/detail", {
             state: {
                 product: product
             }
-        })
-    }
+        });
+    };
 
-    // console.log(products)
+    const handlePaginationChange = (page, pageSize) => {
+        setCurrent(page);
+        setPageSize(pageSize);
+    };
 
     return (
-        <div style={{ maxWidth: '60%', margin: '80px auto' }}>
-
+        <div style={{ maxWidth: '80%', margin: '80px auto' }}>
             <h1>DANH SÁCH SẢN PHẨM</h1>
             <ol className="breadcrumb" style={{ fontSize: "20px" }}>
                 <li className="breadcrumb-item active"><Link to="/">Trang chủ</Link></li>
-                {/* {!childCategoryName ?
-                    <li className="breadcrumb-item active">{parentCategoryName}</li>
-                    :
-                    <>
-                        <li className="breadcrumb-item active"><Link to={"/"}>{parentCategoryName}</Link></li>
-                        <li className="breadcrumb-item active">{childCategoryName}</li>
-                    </>
-                } */}
-
                 <li className="breadcrumb-item active">{parentCategoryName}</li>
-
                 {childCategoryName && <li className="breadcrumb-item active">{childCategoryName}</li>}
             </ol>
-
             <div>
-                <Row gutter={[40, 50]}>
+                <Row gutter={[24, 32]}>
                     {products?.map(product => (
                         <Col sm={24} md={12} lg={8} key={product?.id}>
                             <Card
                                 hoverable
                                 cover={<img
-                                    alt=""
-                                    src={`${import.meta.env.VITE_BACKEND_URL}/images/${product?.images[0]?.imageUrl}`}
-                                    // src="/img/bien-hop-den.png"
+                                    alt={product?.name}
+                                    src={`${import.meta.env.VITE_BACKEND_URL}/images/${product?.images?.[0]?.imageUrl}`}
                                     style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }}
                                 />}
                                 onClick={() => handleGetProductDetail(product)}
@@ -69,8 +82,20 @@ const ListProduct = () => {
                     ))}
                 </Row>
             </div>
+            {total > pageSize && (
+                <Pagination
+                    current={current}
+                    pageSize={pageSize}
+                    total={total}
+                    onChange={handlePaginationChange}
+                    style={{ marginTop: 32, textAlign: 'center' }}
+                    showSizeChanger
+                    pageSizeOptions={[9, 15, 24]}
+                    showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} sản phẩm`}
+                />
+            )}
         </div>
-    )
-}
+    );
+};
 
-export default ListProduct
+export default ListProductCard;

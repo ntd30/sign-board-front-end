@@ -20,8 +20,6 @@ const ProductUpdate = (props) => {
             numbersOnlyArray = [...numbersArray.slice(0, -1), lastNumber]
         }
 
-        console.log("dataupdate", dataUpdate?.category)
-
         if (dataUpdate && dataUpdate.id) {
 
             form.setFieldsValue({
@@ -71,8 +69,6 @@ const ProductUpdate = (props) => {
         setLoadingBtn(true)
 
         const formData = new FormData()
-
-        console.log("name", values.categoryName)
 
         const productData = {
             name: values.name,

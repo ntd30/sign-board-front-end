@@ -27,6 +27,7 @@ import GoogleAuthCallback from './pages/client/auth/google.auth.jsx';
 import RolePage from './pages/admin/role.jsx';
 import ProductPage from './pages/admin/product.jsx';
 import CategoryPage from './pages/admin/category.jsx';
+import DesignAdminPage from './pages/admin/design.jsx';
 
 const router = createBrowserRouter([
   {
@@ -112,6 +113,10 @@ const router = createBrowserRouter([
       {
         path: "permissions",
         element: <PermissionPage />
+      },
+      {
+        path: "designs",
+        element: <DesignAdminPage />
       }
     ]
   },

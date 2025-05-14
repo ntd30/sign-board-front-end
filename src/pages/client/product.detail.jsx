@@ -26,7 +26,7 @@ const ProductDetailPage = () => {
           <Col xs={24} md={12}>
             <Image
               src={`${import.meta.env.VITE_BACKEND_URL}/images/${product?.images[0]?.imageUrl}`}
-              alt={product.slug}
+              alt={product?.slug}
               style={{ width: 'auto', maxHeight: 500, objectFit: 'cover', display: 'block' }}
             />
 
@@ -44,15 +44,15 @@ const ProductDetailPage = () => {
 
           {/* Title, desc,... */}
           <Col xs={24} md={12}>
-            <Title level={2} style={{ marginTop: 0 }} >{product.name}</Title>
+            <Title level={2} style={{ marginTop: 0 }} >{product?.name}</Title>
             <Rate disabled defaultValue={5} style={{ marginBottom: '16px' }} character="★" />
-            <Text strong style={{ fontSize: '1.5em', display: 'block' }}>
-              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)}
-            </Text>
+            {/* <Text strong style={{ fontSize: '1.5em', display: 'block' }}>
+              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product?.price)}
+            </Text> */}
 
             <Divider />
 
-            <p>{product.description}</p>
+            <p>{product?.description}</p>
 
             <Divider />
 

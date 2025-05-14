@@ -46,8 +46,6 @@ const Header = () => {
 
     const loadCategories = async () => {
         const res = await fetchAllParentCategoriesAPI()
-
-        console.log("res>", res)
         // setCategories(res.data)
         const parentCat = res?.data?.map(parent => {
             // children
@@ -55,7 +53,7 @@ const Header = () => {
                 key: item.id,
                 label:
                     <div
-                        onClick={() => handleGetProductByChildCategory(parent.name, item.name, item.products)}
+                        onClick={() => handleGetProductByChildCategory(item.id, parent.name, item.name)}
                     >
                         {item.name}
                     </div >
@@ -64,29 +62,28 @@ const Header = () => {
             // parent
             return {
                 key: parent.id,
-                label: <div onClick={() => handleGetProductByParentCategory(parent.name, parent.childCategories)}>{parent.name}</div>,
+                label: <div onClick={() => handleGetProductByParentCategory(parent.id, parent.name)}>{parent.name}</div>,
                 children: childCat
             }
         })
         setCategories(parentCat)
     }
 
-    const handleGetProductByParentCategory = (parentCategoryName, childCategories) => {
-        console.log("chilCat", childCategories)
+    const handleGetProductByParentCategory = (parentCategoryId, parentCategoryName) => {
         navigate("/products", {
             state: {
-                parentCategoryName: parentCategoryName,
-                products: childCategories.flatMap(childCategory => childCategory.products)
+                parentCategoryId: parentCategoryId,
+                parentCategoryName: parentCategoryName
             }
         })
     }
 
-    const handleGetProductByChildCategory = (parentCategoryName, childCategoryName, products) => {
+    const handleGetProductByChildCategory = (childCategoryId, parentCategoryName, childCategoryName) => {
         navigate("/products", {
             state: {
+                childCategoryId: childCategoryId,
                 parentCategoryName: parentCategoryName,
                 childCategoryName: childCategoryName,
-                products: products
             }
         })
     }
