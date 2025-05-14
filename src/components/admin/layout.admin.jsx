@@ -16,8 +16,8 @@ const menuItems = [
         icon: <AppstoreOutlined />
     },
     {
-        label: <Link to='/admin/category'>Danh mục</Link>,
-        key: '/admin/category',
+        label: <Link to='/admin/categories'>Danh mục</Link>,
+        key: '/admin/categories',
         icon: <UnorderedListOutlined />
     },
     {
@@ -58,13 +58,10 @@ const LayoutAdmin = () => {
     const navigate = useNavigate()
 
     const handleLogout = async () => {
-        const res = await logoutAPI()
-        if (res.data) {
-            localStorage.removeItem('access_token')
-            setUser({})
-            message.success("Đăng xuất thành công")
-            navigate('/')
-        }
+        localStorage.removeItem('access_token')
+        setUser({})
+        message.success("Đăng xuất thành công")
+        navigate('/')
     }
 
     const itemsDropdown = [

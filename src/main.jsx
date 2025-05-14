@@ -26,6 +26,7 @@ import PermissionPage from './pages/admin/permission.jsx';
 import GoogleAuthCallback from './pages/client/auth/google.auth.jsx';
 import RolePage from './pages/admin/role.jsx';
 import ProductPage from './pages/admin/product.jsx';
+import CategoryPage from './pages/admin/category.jsx';
 
 const router = createBrowserRouter([
   {
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
       },
       {
         path: "design",
-        element: <DesignPage />
+        element: <PrivateRoute><DesignPage /></PrivateRoute>
       },
       {
         path: "products",
@@ -84,9 +85,9 @@ const router = createBrowserRouter([
   {
     path: "/admin",
     element:
-      // <PrivateRouteAdmin>
-      <LayoutAdmin />,
-    // </PrivateRouteAdmin>,
+      <PrivateRouteAdmin>
+        <LayoutAdmin />
+      </PrivateRouteAdmin>,
     children: [
       {
         index: true,
@@ -99,6 +100,10 @@ const router = createBrowserRouter([
       {
         path: "products",
         element: <ProductPage />
+      },
+      {
+        path: "categories",
+        element: <CategoryPage />
       },
       {
         path: "roles",

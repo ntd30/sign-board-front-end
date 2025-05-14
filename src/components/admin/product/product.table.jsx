@@ -76,6 +76,20 @@ const ProductTable = (props) => {
             dataIndex: 'description',
         },
         {
+            title: 'Ảnh',
+            dataIndex: 'images',
+            render: (_, record) => {
+                const images = record.images || [];
+                return images.length > 0 ? `${images.length} ảnh` : "0 ảnh";
+            },
+            hidden: true
+        },
+        {
+            title: 'Danh mục',
+            dataIndex: 'category',
+            render: (_, record) => record.category?.name,
+        },
+        {
             title: 'Kích thước',
             dataIndex: 'dimensions',
         },

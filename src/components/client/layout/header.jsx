@@ -6,7 +6,7 @@ import { Avatar, Button, Col, Drawer, Dropdown, Grid, Input, Menu, message, Row,
 import { useContext, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { AuthContext } from "../../context/auth.context";
-import { fetchAllCategoriesAPI, logoutAPI } from "../../../services/api.service";
+import { fetchAllCategoriesAPI, fetchAllParentCategoriesAPI, logoutAPI } from "../../../services/api.service";
 
 const { useBreakpoint } = Grid
 
@@ -45,9 +45,11 @@ const Header = () => {
     }, [])
 
     const loadCategories = async () => {
-        const res = await fetchAllCategoriesAPI()
+        const res = await fetchAllParentCategoriesAPI()
+
+        console.log("res>", res)
         // setCategories(res.data)
-        const parentCat = res.data.map(parent => {
+        const parentCat = res?.data?.map(parent => {
             // children
             const childCat = parent.childCategories ? parent.childCategories.map(item => ({
                 key: item.id,
@@ -70,6 +72,7 @@ const Header = () => {
     }
 
     const handleGetProductByParentCategory = (parentCategoryName, childCategories) => {
+        console.log("chilCat", childCategories)
         navigate("/products", {
             state: {
                 parentCategoryName: parentCategoryName,
@@ -88,14 +91,11 @@ const Header = () => {
         })
     }
 
-    const handleLogout = async () => {
-        const res = await logoutAPI()
-        if (res.data) {
-            localStorage.removeItem('access_token')
-            setUser({})
-            message.success("Đăng xuất thành công")
-            navigate('/')
-        }
+    const handleLogout = () => {
+        localStorage.removeItem('access_token')
+        setUser({})
+        message.success("Đăng xuất thành công")
+        navigate('/')
     }
 
     const itemsMobile = [
@@ -120,11 +120,11 @@ const Header = () => {
                 },
             ],
         },
-        {
-            label: <Link to={"/manufacture"}>SẢN XUẤT</Link>,
-            key: 'manufacture',
-            icon: <SettingOutlined />
-        },
+        // {
+        //     label: <Link to={"/manufacture"}>SẢN XUẤT</Link>,
+        //     key: 'manufacture',
+        //     icon: <SettingOutlined />
+        // },
         {
             label: <Link to={"/news"}>TIN TỨC</Link>,
             key: 'news',
@@ -161,11 +161,11 @@ const Header = () => {
             icon: <ProductOutlined />,
             children: categories
         },
-        {
-            label: <Link to={"/manufacture"}>SẢN XUẤT</Link>,
-            key: 'manufacture',
-            icon: <SettingOutlined />
-        },
+        // {
+        //     label: <Link to={"/manufacture"}>SẢN XUẤT</Link>,
+        //     key: 'manufacture',
+        //     icon: <SettingOutlined />
+        // },
         {
             label: <Link to={"/news"}>TIN TỨC</Link>,
             key: 'news',

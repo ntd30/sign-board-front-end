@@ -87,37 +87,57 @@ const fetchAllProductsAPI = (current, pageSize) => {
     return axios.get(URL_BACKEND)
 }
 
-const createProductAPI = (name, categoryId, description, dimensions) => {
-    const URL_BACKEND = "api/admin/product/create"
-    const data = {
-        name: name,
-        categoryId: categoryId,
-        description: description,
-        dimensions: dimensions
-    }
-    return axios.post(URL_BACKEND, data)
-}
+const createProductAPI = (formData) => {
+    const URL_BACKEND = "api/admin/product/create";
+    return axios.post(URL_BACKEND, formData);
+};
 
 const deleteProductAPI = (id) => {
     const URL_BACKEND = `/api/admin/product/delete/${id}`
     return axios.delete(URL_BACKEND)
 }
 
-const updateProductAPI = (id, name, description, price) => {
-    const URL_BACKEND = "/api/v1/products"
-    const data = {
-        _id: id,
-        name: name,
-        description: description,
-        price: price
+const updateProductAPI = async (productId, formData) => {
+    const URL_BACKEND = `api/admin/product/edit/${productId}`
+    try {
+        const response = await axios.put(URL_BACKEND, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        });
+        return response.data;
+    } catch (error) {
+        throw error.response?.data || { message: "Lỗi khi gọi API cập nhật sản phẩm" };
     }
-    return axios.put(URL_BACKEND, data)
 }
 
-// parent category
-const fetchAllCategoriesAPI = () => {
-    const URL_BACKEND = "/api/categories/parent"
+const fetchAllParentCategoriesAPI = () => {
+    const URL_BACKEND = `/api/categories/parent`
     return axios.get(URL_BACKEND)
+}
+
+const fetchAllCategoriesAPI = (current, pageSize) => {
+    const URL_BACKEND = `/api/categories/list?page=${current}&size=${pageSize}`
+    return axios.get(URL_BACKEND)
+}
+
+const createCategoryAPI = (name, parentCategory, description) => {
+    const URL_BACKEND = "/api/admin/category/create"
+    const data = {
+        name: name,
+        parentCategory: parentCategory,
+        description: description
+    }
+    return axios.post(URL_BACKEND, data)
+
+}
+const updateCategoryAPI = (id, name, description) => {
+    const URL_BACKEND = `/api/admin/category/edit/${id}`
+    const data = {
+        name: name,
+        description: description
+    }
+    return axios.put(URL_BACKEND, data)
 }
 
 const fetchAllNewsAPI = () => {
@@ -130,15 +150,15 @@ const fetchAllProjectsAPI = () => {
     return axios.get(URL_BACKEND)
 }
 
-const uploadFile = (file, folder) => {
-    const URL_BACKEND = "/api/v1/file/upload"
+const uploadDesign = (userId, designImage, designLink) => {
+    const URL_BACKEND = `/api/user-designs/${userId}`
 
     const bodyFormData = new FormData()
-    bodyFormData.append("fileImg", file)
+    bodyFormData.append("designImage", designImage)
+    bodyFormData.append("designLink", designLink)
 
     let config = {
         headers: {
-            'upload-type': folder,
             'Content-Type': 'multipart/form-data'
         }
     }
@@ -150,12 +170,26 @@ const fetchAllRolesAPI = (current, pageSize) => {
     return axios.get(URL_BACKEND)
 }
 
+const fetchRoleByIdAPI = (roleId) => {
+    const URL_BACKEND = `/api/admin/roles/${roleId}`
+    return axios.get(URL_BACKEND)
+}
+
 const createRoleAPI = (name, active, description) => {
     const URL_BACKEND = "/api/admin/roles"
     const data = {
-        name: name, 
-        active: active, 
+        name: name,
+        active: active,
         description: description
+    }
+    return axios.post(URL_BACKEND, data)
+}
+
+const ganNhieuQuyenChoVaiTro = (roleId, permissionIds) => {
+    const URL_BACKEND = `/api/admin/permissions/assign`
+    const data = {
+        roleId: roleId,
+        permissionIds: permissionIds
     }
     return axios.post(URL_BACKEND, data)
 }
@@ -168,9 +202,9 @@ const fetchAllPermissionsAPI = (current, pageSize) => {
 const createPermissionAPI = (name, apiPath, method, module) => {
     const URL_BACKEND = "api/admin/permissions"
     const data = {
-        name: name, 
-        apiPath: apiPath, 
-        method: method, 
+        name: name,
+        apiPath: apiPath,
+        method: method,
         module: module
     }
     return axios.post(URL_BACKEND, data)
@@ -180,9 +214,9 @@ const updatePermissionAPI = (id, name, apiPath, method, module) => {
     const URL_BACKEND = "api/admin/permissions"
     const data = {
         id: id,
-        name: name, 
-        apiPath: apiPath, 
-        method: method, 
+        name: name,
+        apiPath: apiPath,
+        method: method,
         module: module
     }
     return axios.put(URL_BACKEND, data)
@@ -193,9 +227,15 @@ const deletePermissionAPI = (id) => {
     return axios.delete(URL_BACKEND)
 }
 
+const deleteCategoryAPI = (id) => {
+    const URL_BACKEND = `api/admin/category/delete/${id}`
+    return axios.delete(URL_BACKEND)
+}
+
 export {
     fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI,
     fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI, loginWithGoogle, getAuthCode,
-    resetPasswordAPI, fetchAllCategoriesAPI, fetchAllNewsAPI, fetchAllProjectsAPI, uploadFile, fetchAllRolesAPI,
-    createRoleAPI, fetchAllPermissionsAPI, createPermissionAPI, updatePermissionAPI, deletePermissionAPI
+    resetPasswordAPI, fetchAllCategoriesAPI, fetchAllNewsAPI, fetchAllProjectsAPI, uploadDesign, fetchAllRolesAPI,
+    createRoleAPI, fetchAllPermissionsAPI, createPermissionAPI, updatePermissionAPI, deletePermissionAPI, fetchAllParentCategoriesAPI,
+    createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI
 }

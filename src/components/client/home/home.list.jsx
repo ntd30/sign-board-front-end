@@ -1,6 +1,6 @@
 import { RightOutlined } from '@ant-design/icons'
 import { Row, Col, Card, Typography } from 'antd'
-import { fetchAllCategoriesAPI } from '../../../services/api.service'
+import { fetchAllParentCategoriesAPI, fetchAllProductsAPI, fetchAllProjectsAPI } from '../../../services/api.service'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
@@ -40,153 +40,91 @@ const linkStyle = {
   cursor: 'pointer'
 }
 
-const products = [
-  {
-    title: 'BIỂN HỘP ĐÈN',
-    count: 6,
-    image: '/img/bien-hop-den.png',
-  },
-  {
-    title: 'BIỂN HỘP ĐÈN ÂM BẢN',
-    count: 4,
-    image: '/img/bien-hop-den.png',
-  },
-  {
-    title: 'BIỂN TẤM ỐP ALU',
-    count: 4,
-    image: '/img/bien-hop-den.png',
-  },
-  {
-    title: 'BIỂN PANO TẤM LỚN',
-    count: 3,
-    image: '/img/bien-hop-den.png',
-  },
-  {
-    title: 'BIỂN GỖ QUẢNG CÁO',
-    count: 2,
-    image: '/img/bien-hop-den.png',
-  },
-  {
-    title: 'BIỂN CHỮ NỔI QUẢNG CÁO',
-    count: 3,
-    image: '/img/bien-hop-den.png',
-  },
-];
-
 const HomeList = () => {
-  const [categories, setCategories] = useState([])
+  const [products, setProducts] = useState([])
   const navigate = useNavigate()
 
   useEffect(() => {
-    loadCategories()
+    loadProducts()
   }, [])
 
-  const loadCategories = async () => {
-    const res = await fetchAllCategoriesAPI()
-    // console.log(res.data[0])
+  const loadProducts = async () => {
+    const res = await fetchAllProductsAPI(1, 6)
+    setProducts(res?.data?.content)
   }
 
-  const handleGetProductByParentCategory = (parentCategoryName, childCategories) => {
-    navigate("/products", {
-      state: {
-        parentCategoryName: parentCategoryName,
-        products: childCategories.flatMap(childCategory => childCategory.products)
-      }
-    })
-  }
+  // const handleGetProductByParentCategory = (parentCategoryName, childCategories) => {
+  //   navigate("/products", {
+  //     state: {
+  //       parentCategoryName: parentCategoryName,
+  //       products: childCategories.flatMap(childCategory => childCategory.products)
+  //     }
+  //   })
+  // }
 
-  const handleGetProductByChildCategory = (parentCategoryName, childCategoryName, products) => {
-    navigate("/products", {
-      state: {
-        parentCategoryName: parentCategoryName,
-        childCategoryName: childCategoryName,
-        products: products
-      }
-    })
-  }
+  // const handleGetProductByChildCategory = (parentCategoryName, childCategoryName, products) => {
+  //   navigate("/products", {
+  //     state: {
+  //       parentCategoryName: parentCategoryName,
+  //       childCategoryName: childCategoryName,
+  //       products: products
+  //     }
+  //   })
+  // }
 
   return (
     <>
       <div style={{ width: "60%", margin: "50px auto" }}>
-        {categories.slice(0, 3).map(parentCategory => (
-          <div key={parentCategory.id}>
-            <div>
-              <Row
-                justify="space-between" // Đẩy sang 2 bên
-                align="bottom"          // Căn đáy
-                style={rowStyle}        // Áp dụng style cho Row (có border-bottom)
-                wrap={false}            // Không xuống dòng
-              >
-                {/* Cột trái */}
-                <Col flex="none">       {/* flex="none" để cột co lại theo nội dung */}
-                  <div style={titleLabelStyle}> {/* Áp dụng style cho nhãn */}
-                    <Text strong style={{ color: 'white', display: 'block' }}> {/* Đảm bảo Text có màu trắng */}
-                      {parentCategory.name}
-                    </Text>
-                  </div>
-                </Col>
+        <div>
+          <h1 style={{ textAlign: "center" }}>SẢN PHẨM MỚI NHẤT</h1>
+        </div>
 
-                {/* Cột phải */}
-                <Col flex="none">
-                  <span
-                    style={linkStyle}
-                    onClick={() => handleGetProductByParentCategory(parentCategory.name, parentCategory.childCategories)}
+        <div>
+          <Row gutter={24}>
+            {/* Banner bên trái */}
+            <Col xs={24} lg={9}>
+              <img
+                src={`/img/image.png`}
+                alt=""
+                style={{ width: '100%', height: 600, objectFit: 'fill', borderRadius: 8 }} />
+            </Col>
+
+            {/* Danh sách sản phẩm bên phải */}
+            <Col xs={24} lg={15}>
+              <Row gutter={[16, 24]}>
+                {products?.map(product => (
+                  <Col sm={24} md={12} lg={8} key={product.id}
+                    onClick={() => { }}
                   >
-                    Xem thêm <RightOutlined />
-                  </span>
-                </Col>
+                    <Card
+                      hoverable
+                      cover={
+                        <img
+                          alt={product.slug}
+                          src={`${import.meta.env.VITE_BACKEND_URL}/images/${product?.images[0].imageUrl}`}
+                          style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }}
+                        />
+                      }
+                    >
+                      <Meta
+                        title={product.name}
+                        description={
+                          <div style={{
+                            overflow: 'hidden',
+                            whiteSpace: 'nowrap',
+                            textOverflow: 'ellipsis'
+                          }}>
+                            {product.description}
+                          </div>
+                        }
+                      />
+                    </Card>
+                  </Col>
+                ))}
               </Row>
-            </div >
-
-            <div>
-              <Row gutter={24}>
-                {/* Banner bên trái */}
-                <Col xs={24} lg={9}>
-                  <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}${parentCategory.imageURL}`}
-                    alt={parentCategory.slug}
-                    style={{ width: '100%', height: 600, objectFit: 'fill', borderRadius: 8 }} />
-                </Col>
-
-                {/* Danh sách sản phẩm bên phải */}
-                <Col xs={24} lg={15}>
-                  <Row gutter={[16, 24]}>
-                    {parentCategory.childCategories.map(childCategory => (
-                      <Col sm={24} md={12} lg={8} key={childCategory.id}
-                        onClick={() => handleGetProductByChildCategory(parentCategory.name, childCategory.name, childCategory.products)}
-                      >
-                        <Card
-                          hoverable
-                          cover={
-                            <img
-                              alt={childCategory.slug}
-                              src={`${import.meta.env.VITE_BACKEND_URL}${childCategory.imageURL}`}
-                              style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }}
-                            />
-                          }
-                        >
-                          <Meta
-                            title={childCategory.name}
-                            description={
-                              <div style={{
-                                overflow: 'hidden',
-                                whiteSpace: 'nowrap',
-                                textOverflow: 'ellipsis'
-                              }}>
-                                {childCategory.description}
-                              </div>
-                            }
-                          />
-                        </Card>
-                      </Col>
-                    ))}
-                  </Row>
-                </Col>
-              </Row >
-            </div>
-          </div>
-        ))
-        }
+            </Col>
+          </Row >
+        </div>
       </div >
     </>
   )

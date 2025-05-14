@@ -1,17 +1,18 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons"
-import { notification, Popconfirm, Space, Table, Tag } from "antd"
-import { useEffect, useState } from "react"
-import RoleUpdate from "./role.update"
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { notification, Popconfirm, Space, Table } from "antd";
+import { useEffect, useState } from "react";
+import CategoryUpdate from "./category.update";
+import { deleteCategoryAPI } from "../../../services/api.service";
 
-const RoleTable = (props) => {
-    const { dataRoles, loadRoles, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props
+const CategoryTable = (props) => {
+    const { dataCategories, current, setCurrent, pageSize, setPageSize, total, loadingTable, loadCategories, dataParentCategories } = props
 
     const [isDetailOpen, setIsDetailOpen] = useState(false)
     const [isUpdateOpen, setIsUpdateOpen] = useState(false)
     const [dataUpdate, setDataUpdate] = useState(null)
 
     useEffect(() => {
-        loadRoles()
+        loadCategories()
     }, [current, pageSize])
 
     const onChange = (pagination) => {
@@ -23,32 +24,31 @@ const RoleTable = (props) => {
         }
     }
 
-    const handleGetDetailRole = record => {
+    const handleGetDetailCategory = record => {
         setDataUpdate(record)
         setIsDetailOpen(true)
     }
 
-    const handleEditRole = (record) => {
+    const handleEditCategory = (record) => {
         setDataUpdate(record)
         setIsUpdateOpen(true)
     }
 
-    const handleDeleteRole = async (idDelete) => {
-        // const res = await deleteRoleAPI(idDelete)
+    const handleDeleteCategory = async (idDelete) => {
+        const res = await deleteCategoryAPI(idDelete)
 
-        // if (res) {
-        //     notification.success({
-        //         message: "Xóa Vai trò",
-        //         description: "Xóa Vai trò thành công!"
-        //     })
-        //     await loadRoles()
-        // } else {
-        //     notification.error({
-        //         message: "Lỗi khi xóa Vai trò",
-        //         description: JSON.stringify(res)
-        //     })
-        // }
-        alert("Delete")
+        if (res.data) {
+            notification.success({
+                message: "Xóa Danh mục",
+                description: "Xóa Danh mục thành công!"
+            })
+            await loadCategories()
+        } else {
+            notification.error({
+                message: "Lỗi khi xóa Danh mục",
+                description: res
+            })
+        }
     }
 
     const columns = [
@@ -64,23 +64,16 @@ const RoleTable = (props) => {
             title: 'Id',
             dataIndex: 'id',
             render: (text, record) => (
-                <a onClick={() => handleGetDetailRole(record)}>{text}</a>
+                <a onClick={() => handleGetDetailCategory(record)}>{text}</a>
             ),
         },
         {
-            title: 'Tên',
+            title: 'Tên Danh mục',
             dataIndex: 'name',
         },
         {
             title: 'Mô tả',
             dataIndex: 'description',
-        },
-        {
-            title: 'Trạng thái',
-            dataIndex: 'active',
-            render: (value) => <Tag color={value ? "lime" : "red"}>
-                {value ? "ACTIVE" : "INACTIVE"}
-            </Tag>
         },
         {
             title: 'Ngày tạo',
@@ -96,13 +89,13 @@ const RoleTable = (props) => {
                 <Space size="middle" style={{ gap: "20px" }}>
                     <EditOutlined
                         style={{ color: "orange", cursor: "pointer" }}
-                        onClick={() => handleEditRole(record)}
+                        onClick={() => handleEditCategory(record)}
                     />
 
                     <Popconfirm
-                        title="Xóa Vai trò"
-                        description="Bạn có chắc muốn xóa Vai trò này?"
-                        onConfirm={() => handleDeleteRole(record.id)}
+                        title="Xóa Danh mục"
+                        description="Bạn có chắc muốn xóa Danh mục này?"
+                        onConfirm={() => handleDeleteCategory(record.id)}
                         onCancel={() => { }}
                         okText="Xác nhận"
                         cancelText="Hủy"
@@ -117,7 +110,7 @@ const RoleTable = (props) => {
 
     return (
         <>
-            <Table dataSource={dataRoles} columns={columns}
+            <Table dataSource={dataCategories} columns={columns}
                 pagination={
                     {
                         current: current,
@@ -131,21 +124,21 @@ const RoleTable = (props) => {
                 loading={loadingTable}
             />
 
-            {/* <RoleDetail
+            {/* <CategoryDetail
                 isDetailOpen={isDetailOpen}
                 setIsDetailOpen={setIsDetailOpen}
                 dataUpdate={dataUpdate}
-            />*/}
+            /> */}
 
-            <RoleUpdate
+            <CategoryUpdate
                 isUpdateOpen={isUpdateOpen}
                 setIsUpdateOpen={setIsUpdateOpen}
                 dataUpdate={dataUpdate}
-                // setDataUpdate={setDataUpdate}
-                loadRoles={loadRoles}
+                dataCategories={dataCategories}
+                loadCategories={loadCategories}
             />
         </>
     )
 }
 
-export default RoleTable
+export default CategoryTable

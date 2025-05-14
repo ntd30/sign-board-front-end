@@ -1,7 +1,7 @@
 import { Button, Card, Col, Form, Input, InputNumber, Modal, notification, Row, Select, Switch } from "antd"
 import ModuleApi from "./module.api"
 import { useState } from "react"
-import { createRoleAPI } from "../../../services/api.service"
+import { createRoleAPI, ganNhieuQuyenChoVaiTro } from "../../../services/api.service"
 
 const { TextArea } = Input
 
@@ -18,27 +18,27 @@ const RoleCreate = (props) => {
 
     const { name, active, description } = values
 
-    console.log("name", name)
-    console.log("active", active)
-    console.log("description", description)
-    console.log("permissionIds", permissionIds)
-
     const resCreateRole = await createRoleAPI(
       name, active, description
     )
 
     if (resCreateRole.data) {
+      const id = resCreateRole.data.id
+      const resAssignPermissions = await ganNhieuQuyenChoVaiTro(id, permissionIds)
+
+      if (resAssignPermissions) {
         resetAndCloseModal()
         await loadRoles()
         notification.success({
-            message: "Thêm Vai trò",
-            description: "Thêm Vai trò mới thành công"
+          message: "Thêm Vai trò",
+          description: "Thêm Vai trò mới thành công"
         })
-    } else {
+      } else {
         notification.error({
-            message: "Lỗi thêm mới Vai trò",
-            description: JSON.stringify(resCreateRole)
+          message: "Lỗi thêm mới Vai trò",
+          description: JSON.stringify(resCreateRole)
         })
+      }
     }
 
     setLoadingBtn(false)

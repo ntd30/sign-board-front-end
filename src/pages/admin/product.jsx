@@ -1,5 +1,5 @@
 import { Children, useState } from "react"
-import { fetchAllCategoriesAPI, fetchAllProductsAPI } from "../../services/api.service"
+import { fetchAllCategoriesAPI, fetchAllParentCategoriesAPI, fetchAllProductsAPI } from "../../services/api.service"
 import ProductCreate from "../../components/admin/product/product.create"
 import ProductTable from "../../components/admin/product/product.table"
 
@@ -23,7 +23,7 @@ const ProductPage = () => {
     }
 
     const getCategoriesSelect = async () => {
-        const res = await fetchAllCategoriesAPI()
+        const res = await fetchAllParentCategoriesAPI()
         setDataCategories(res.data.map((item) => ({
             value: item.id,
             label: item.name,

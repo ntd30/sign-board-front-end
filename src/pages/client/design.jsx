@@ -1,6 +1,8 @@
 import { HomeOutlined, RobotOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Divider, Row, Typography, Upload } from 'antd';
-import { useState } from 'react';
+import { Button, Card, Col, Divider, notification, Row, Typography, Upload } from 'antd';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../components/context/auth.context';
+import { uploadDesign } from '../../services/api.service';
 
 const { Title, Paragraph } = Typography;
 
@@ -24,6 +26,7 @@ const coverImageStyle = {
 const DesignPage = () => {
     const [selectedFile, setSelectedFile] = useState(null)
     const [preview, setPreview] = useState(null)
+    const { user } = useContext(AuthContext)
 
     const handleOnChangeFile = event => {
         if (!event.target.files || event.target.files.length === 0) {
@@ -46,12 +49,25 @@ const DesignPage = () => {
                 message: "Error create book",
                 description: "Vui lòng upload ảnh thumbnail"
             })
-            return
         }
 
         // const resUpload = await uploadFile(selectedFile, 'book')
-    }
+        const res = await uploadDesign(user.id, selectedFile, null)
 
+        if (res) {
+            setSelectedFile(null)
+            setPreview(null)
+            notification.success({
+                message: "Thêm Bản thiết kế",
+                description: "Thêm Bản thiết kế mới thành công"
+            })
+        } else {
+            notification.error({
+                message: "Lỗi thêm mới Bản thiết kế",
+                description: JSON.stringify(resCreateUser.message)
+            })
+        }
+    }
 
     return (
         <div style={{ width: '60%', margin: 'auto' }}>

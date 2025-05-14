@@ -17,6 +17,8 @@ const ListProduct = () => {
         })
     }
 
+    // console.log(products)
+
     return (
         <div style={{ maxWidth: '60%', margin: '80px auto' }}>
 
@@ -40,25 +42,25 @@ const ListProduct = () => {
             <div>
                 <Row gutter={[40, 50]}>
                     {products?.map(product => (
-                        <Col sm={24} md={12} lg={8} key={product.id}>
+                        <Col sm={24} md={12} lg={8} key={product?.id}>
                             <Card
                                 hoverable
                                 cover={<img
-                                    alt={product.slug}
+                                    alt=""
                                     src={`${import.meta.env.VITE_BACKEND_URL}/images/${product?.images[0]?.imageUrl}`}
                                     // src="/img/bien-hop-den.png"
                                     style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }}
                                 />}
                                 onClick={() => handleGetProductDetail(product)}
                             >
-                                <Meta title={product.name}
+                                <Meta title={product?.name}
                                     description={
                                         <div style={{
                                             overflow: 'hidden',
                                             whiteSpace: 'nowrap',
                                             textOverflow: 'ellipsis'
                                         }}>
-                                            {product.description}
+                                            {product?.description}
                                         </div>
                                     }
                                 />
