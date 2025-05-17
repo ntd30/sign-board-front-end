@@ -194,6 +194,11 @@ const ganNhieuQuyenChoVaiTro = (roleId, permissionIds) => {
     return axios.post(URL_BACKEND, data)
 }
 
+const deleteRoleAPI = (id) => {
+    const URL_BACKEND = `/api/admin/roles/${id}`
+    return axios.delete(URL_BACKEND)
+}
+
 const fetchAllPermissionsAPI = (current, pageSize) => {
     const URL_BACKEND = `/api/admin/permissions?page=${current}&size=${pageSize}`
     return axios.get(URL_BACKEND)
@@ -237,8 +242,39 @@ const fetchAllDesignsAPI = (current, pageSize) => {
     return axios.get(URL_BACKEND)
 }
 
+const deleteDesignAPI = (id) => {
+    const URL_BACKEND = `/api/admin/user-designs/${id}`
+    return axios.delete(URL_BACKEND)
+
+}
+const deleteArticleAPI = (id) => {
+    const URL_BACKEND = `/api/admin/article/delete/${id}`
+    return axios.delete(URL_BACKEND)
+}
+
 const loadProductsByCategoryAPI = (categoryId, current, pageSize) => {
     const URL_BACKEND = `/api/categories/${categoryId}/products?page=${current}&size=${pageSize}`
+    return axios.get(URL_BACKEND)
+}
+
+const createContactAPI = (name, phone, email, address) => {
+    const URL_BACKEND = `/api/inquiries/create`
+    const data = {
+        name: name, 
+        phone: phone, 
+        email: email, 
+        address: address
+    }
+    return axios.post(URL_BACKEND, data)
+}
+
+const fetchAllArticlesAPI = (current, pageSize) => {
+    const URL_BACKEND = `/api/cms/list?page=${current}&size=${pageSize}`
+    return axios.get(URL_BACKEND)
+}
+
+const fetchAllContactAPI = (current, pageSize) => {
+    const URL_BACKEND = `/api/admin/inquiry/list?page=${current}&size=${pageSize}`
     return axios.get(URL_BACKEND)
 }
 
@@ -248,5 +284,6 @@ export {
     resetPasswordAPI, fetchAllCategoriesAPI, fetchAllNewsAPI, fetchAllProjectsAPI, uploadDesign, fetchAllRolesAPI,
     createRoleAPI, fetchAllPermissionsAPI, createPermissionAPI, updatePermissionAPI, deletePermissionAPI, fetchAllParentCategoriesAPI,
     createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI, fetchAllDesignsAPI,
-    loadProductsByCategoryAPI
+    loadProductsByCategoryAPI, createContactAPI, deleteDesignAPI, deleteRoleAPI, fetchAllArticlesAPI, fetchAllContactAPI,
+    deleteArticleAPI
 }

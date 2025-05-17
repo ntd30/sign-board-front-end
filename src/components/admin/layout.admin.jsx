@@ -1,5 +1,5 @@
 import {
-    AliwangwangOutlined, ApiOutlined, AppstoreOutlined, BugOutlined, EditOutlined, ExceptionOutlined, GlobalOutlined, HomeOutlined,
+    AliwangwangOutlined, ApiOutlined, AppstoreOutlined, BugOutlined, ContactsOutlined, EditOutlined, ExceptionOutlined, GlobalOutlined, HomeOutlined,
     LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UnorderedListOutlined, UserOutlined
 } from "@ant-design/icons";
 import { Avatar, Button, Dropdown, Layout, Menu, message, Space } from "antd"
@@ -46,9 +46,14 @@ const menuItems = [
         icon: <ApiOutlined />
     },
     {
-        label: <Link to='/admin'>Tin tức</Link>,
-        key: '/admin/news',
+        label: <Link to='/admin/articles'>Tin tức / Dự án</Link>,
+        key: '/admin/articles',
         icon: <GlobalOutlined />
+    },
+    {
+        label: <Link to='/admin/contact'>Liên hệ</Link>,
+        key: '/admin/contact',
+        icon: <ContactsOutlined />
     },
 ]
 

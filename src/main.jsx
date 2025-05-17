@@ -28,6 +28,8 @@ import RolePage from './pages/admin/role.jsx';
 import ProductPage from './pages/admin/product.jsx';
 import CategoryPage from './pages/admin/category.jsx';
 import DesignAdminPage from './pages/admin/design.jsx';
+import ArticlesPage from './pages/admin/article.jsx';
+import ContactPage from './pages/admin/contact.jsx';
 
 const router = createBrowserRouter([
   {
@@ -117,6 +119,14 @@ const router = createBrowserRouter([
       {
         path: "designs",
         element: <DesignAdminPage />
+      },
+      {
+        path: "articles",
+        element: <ArticlesPage />
+      },
+      {
+        path: "contact",
+        element: <ContactPage />
       }
     ]
   },

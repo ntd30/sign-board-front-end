@@ -1,6 +1,7 @@
 import { DeleteOutlined } from "@ant-design/icons";
 import { notification, Popconfirm, Space, Table } from "antd";
 import { useEffect, useState } from "react";
+import { deleteDesignAPI } from "../../../services/api.service";
 
 const DesignTable = (props) => {
     const { dataDesigns, loadDesigns, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props
@@ -34,6 +35,7 @@ const DesignTable = (props) => {
 
     const handleDeleteDesign = async (idDelete) => {
         const res = await deleteDesignAPI(idDelete)
+        console.log("id", idDelete)
 
         if (res.data) {
             notification.success({
@@ -58,13 +60,13 @@ const DesignTable = (props) => {
                 </>
             )
         },
-        // {
-        //     title: 'Id',
-        //     dataIndex: 'designId',
-        //     render: (text, record) => (
-        //         <a onClick={() => handleGetDetailDesign(record)}>{text}</a>
-        //     ),
-        // },
+        {
+            title: 'Id',
+            dataIndex: 'designId',
+            render: (text, record) => (
+                <a onClick={() => handleGetDetailDesign(record)}>{text}</a>
+            ),
+        },
         {
             title: 'Ảnh bản thiết kế',
             dataIndex: 'designImage',
@@ -97,7 +99,7 @@ const DesignTable = (props) => {
                     <Popconfirm
                         title="Xóa Bản thiết kế"
                         description="Bạn có chắc muốn xóa Bản thiết kế này?"
-                        onConfirm={() => handleDeleteDesign(record.id)}
+                        onConfirm={() => handleDeleteDesign(record.designId)}
                         onCancel={() => { }}
                         okText="Xác nhận"
                         cancelText="Hủy"

@@ -2,6 +2,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons"
 import { notification, Popconfirm, Space, Table, Tag } from "antd"
 import { useEffect, useState } from "react"
 import RoleUpdate from "./role.update"
+import { deleteRoleAPI } from "../../../services/api.service"
 
 const RoleTable = (props) => {
     const { dataRoles, loadRoles, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props
@@ -34,21 +35,22 @@ const RoleTable = (props) => {
     }
 
     const handleDeleteRole = async (idDelete) => {
-        // const res = await deleteRoleAPI(idDelete)
+        const res = await deleteRoleAPI(idDelete)
 
-        // if (res) {
-        //     notification.success({
-        //         message: "Xóa Vai trò",
-        //         description: "Xóa Vai trò thành công!"
-        //     })
-        //     await loadRoles()
-        // } else {
-        //     notification.error({
-        //         message: "Lỗi khi xóa Vai trò",
-        //         description: JSON.stringify(res)
-        //     })
-        // }
-        alert("Delete")
+        console.log("res7", res)
+
+        if (res) {
+            notification.success({
+                message: "Xóa Vai trò",
+                description: "Xóa Vai trò thành công!"
+            })
+            await loadRoles()
+        } else {
+            notification.error({
+                message: "Lỗi khi xóa Vai trò",
+                description: JSON.stringify(res)
+            })
+        }
     }
 
     const columns = [

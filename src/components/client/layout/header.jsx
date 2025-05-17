@@ -192,11 +192,11 @@ const Header = () => {
     }
 
     const itemsDropdown = [
-        ...(!isMobile && user.id ? [{
-            label: <Link to={'/news'} >Thông tin cá nhân</Link >,
-            key: 'user-info',
-            icon: <UserOutlined />
-        },] : []),
+        // ...(!isMobile && user.id ? [{
+        //     label: <Link to={'/news'} >Thông tin cá nhân</Link >,
+        //     key: 'user-info',
+        //     icon: <UserOutlined />
+        // },] : []),
 
         ...(!isMobile && user.id ? [{
             label: <label

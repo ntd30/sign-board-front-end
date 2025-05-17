@@ -1,12 +1,33 @@
 import { MailTwoTone, PhoneTwoTone } from "@ant-design/icons"
-import { Button, Col, Form, Input, Modal, Row, Typography } from "antd"
+import { Button, Col, Form, Input, Modal, notification, Row, Typography } from "antd"
+import { createContactAPI } from "../../../services/api.service"
 
 const ProductContact = (props) => {
     const { isContactOpen, setIsContactOpen } = props
     const [form] = Form.useForm()
 
-    const handleContact = () => {
-        alert("Duy")
+    const handleContact = async (values) => {
+        const {name, phone, email, address} = values
+        const res = await createContactAPI(name, phone, email, address)
+
+        if (res.data) {
+            console.log("1234")
+            resetAndCloseModal()
+            notification.success({
+                message: "Thêm Liên hệ",
+                description: "Thêm Liên hệ mới thành công"
+            })
+        } else {
+            notification.error({
+                message: "Lỗi thêm mới Liên hệ",
+                description: JSON.stringify(res.message)
+            })
+        }
+    }
+
+    const resetAndCloseModal = () => {
+        setIsContactOpen(false)
+        form.resetFields()
     }
 
     return (
