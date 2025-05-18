@@ -4,8 +4,6 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
-import HomePage from './pages/client/home.jsx';
-import NewsPage from './pages/client/news.jsx';
 import ManufacturePage from './pages/client/manufacture.jsx';
 import DesignPage from './pages/client/design.jsx';
 import RegisterPage from './pages/client/auth/register.jsx';
@@ -30,6 +28,9 @@ import CategoryPage from './pages/admin/category.jsx';
 import DesignAdminPage from './pages/admin/design.jsx';
 import ArticlesPage from './pages/admin/article.jsx';
 import ContactPage from './pages/admin/contact.jsx';
+import { HomePage } from './pages/client/home.jsx';
+import NewsPage from './pages/client/news.jsx';
+import { NewsDetail } from './pages/client/news.detail.jsx';
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
       {
         path: "news",
         element: <NewsPage />,
+      },
+      {
+        path: "news/detail",
+        element: <NewsDetail />,
       },
       {
         path: "manufacture",

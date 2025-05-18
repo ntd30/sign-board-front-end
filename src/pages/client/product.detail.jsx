@@ -64,7 +64,7 @@ const ProductDetailPage = () => {
         </Row>
       </Content>
 
-      <ProductContact 
+      <ProductContact
         isContactOpen={isContactOpen}
         setIsContactOpen={setIsContactOpen}
       />

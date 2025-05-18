@@ -8,6 +8,8 @@ export const ALL_MODULES = [
     { value: 'CONTACT', label: 'CONTACT' },
     { value: 'PERMISSION', label: 'PERMISSION' },
     { value: 'ROLE', label: 'ROLE' },
+    { value: 'ARTICLES', label: 'ARTICLES' },
+    { value: 'CONTACT', label: 'CONTACT' },
 ]
 
 export function colorMethod(method) {

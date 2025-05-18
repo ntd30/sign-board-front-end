@@ -18,7 +18,7 @@ const LoginAdminPage = () => {
         const res = await loginAPI(values.username, values.password)
 
         if (res.data) {
-            if (res.data.user.roleName !== "Admin") {
+            if (res.data.user.roleName === "Customer") {
                 message.error("Đăng nhập thất bại")
                 navigate("/login-admin")
             } else {

@@ -38,11 +38,11 @@ const CategoryTable = (props) => {
         const res = await deleteCategoryAPI(idDelete)
 
         if (res.data) {
+            await loadCategories()
             notification.success({
                 message: "Xóa Danh mục",
                 description: "Xóa Danh mục thành công!"
             })
-            await loadCategories()
         } else {
             notification.error({
                 message: "Lỗi khi xóa Danh mục",

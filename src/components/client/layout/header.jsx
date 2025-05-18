@@ -1,5 +1,5 @@
 import {
-    AntDesignOutlined, AuditOutlined, DownOutlined, FireOutlined, LoginOutlined, LogoutOutlined, MenuOutlined, ProductOutlined, SearchOutlined,
+    AntDesignOutlined, AuditOutlined, DownOutlined, FireOutlined, HomeFilled, HomeOutlined, LoginOutlined, LogoutOutlined, MenuOutlined, ProductOutlined, SearchOutlined,
     SettingOutlined, UserOutlined
 } from "@ant-design/icons";
 import { Avatar, Button, Col, Drawer, Dropdown, Grid, Input, Menu, message, Row, Space } from "antd"
@@ -158,16 +158,16 @@ const Header = () => {
             icon: <ProductOutlined />,
             children: categories
         },
-        // {
-        //     label: <Link to={"/manufacture"}>SẢN XUẤT</Link>,
-        //     key: 'manufacture',
-        //     icon: <SettingOutlined />
-        // },
         {
             label: <Link to={"/news"}>TIN TỨC</Link>,
             key: 'news',
             icon: <AuditOutlined />,
         },
+        // {
+        //     label: <Link to={"/projects"}>DỰ ÁN</Link>,
+        //     key: 'projects',
+        //     icon: <SettingOutlined />
+        // },
         {
             label: <Link to={"/design"}>THIẾT KẾ</Link>,
             key: 'design',
@@ -214,13 +214,16 @@ const Header = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '10px 40px',
-                borderBottom: '1px solid #eee'
+                padding: '20px 40px',
+                borderBottom: '1px solid #eee',
+                width: "70%",
+                margin: "auto",
+                fontSize: 16
             }}>
 
                 {/* Logo */}
                 <Col xs={10} sm={10} md={4} lg={4} style={{ flex: 1 }}>
-                    <Link onClick={handleMenuClick} to={"/"}><img src="/img/logo.png" alt="Logo" style={{ height: 60 }} /></Link>
+                    <Link onClick={handleMenuClick} to={"/"}><img src="/img/logo_robot.jpg" alt="Logo" style={{ height: 80, borderRadius: "50%" }} /></Link>
                 </Col>
 
                 {/* Menu */}

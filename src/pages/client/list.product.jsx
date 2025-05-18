@@ -1,10 +1,23 @@
-import { Card, Col, Pagination, Row } from "antd";
+import { Button, Card, Col, Pagination, Row, Typography } from "antd";
 import Meta from "antd/es/card/Meta";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { loadProductsByCategoryAPI } from "../../services/api.service";
 
+const { Title, Text } = Typography;
+
 const ListProductCard = () => {
+    const productCardStyle = {
+        transition: 'transform 0.25s ease-in-out, box-shadow 0.25s ease-in-out',
+        borderRadius: '12px',
+        overflow: 'hidden',
+        background: '#FFFFFF'
+    };
+    const productCardHoverStyle = {
+        transform: 'translateY(-10px)',
+        boxShadow: '0 15px 30px rgba(0, 77, 64, 0.2)', // Bóng đổ màu teal đậm hơn
+    };
+
     const navigate = useNavigate();
     const location = useLocation();
     const parentCategoryId = location?.state?.parentCategoryId;
@@ -14,9 +27,10 @@ const ListProductCard = () => {
 
     const [products, setProducts] = useState([]);
     const [current, setCurrent] = useState(1);
-    const [pageSize, setPageSize] = useState(9); // Số lượng card trên mỗi trang
+    const [pageSize, setPageSize] = useState(12); // Số lượng card trên mỗi trang
     const [total, setTotal] = useState(0);
     const [loadingTable, setLoadingTable] = useState(false);
+    const [hoveredCard, setHoveredCard] = useState(null);
 
     useEffect(() => {
         loadProductsByCategory();
@@ -46,36 +60,38 @@ const ListProductCard = () => {
     };
 
     return (
-        <div style={{ maxWidth: '80%', margin: '80px auto' }}>
+        <div style={{ width: "70%", margin: "auto", padding: '60px 20px' }}>
             <h1>DANH SÁCH SẢN PHẨM</h1>
-            <ol className="breadcrumb" style={{ fontSize: "20px" }}>
+            <ol className="breadcrumb" style={{ fontSize: "20px", marginBottom: 50 }}>
                 <li className="breadcrumb-item active"><Link to="/">Trang chủ</Link></li>
                 <li className="breadcrumb-item active">{parentCategoryName}</li>
                 {childCategoryName && <li className="breadcrumb-item active">{childCategoryName}</li>}
             </ol>
             <div>
-                <Row gutter={[24, 32]}>
-                    {products?.map(product => (
-                        <Col sm={24} md={12} lg={8} key={product?.id}>
+                <Row gutter={[24, 24]}>
+                    {products.map((product) => (
+                        <Col key={product.id} xs={24} sm={12} md={8} lg={6}>
                             <Card
                                 hoverable
-                                cover={<img
-                                    alt={product?.name}
-                                    src={`${import.meta.env.VITE_BACKEND_URL}/images/${product?.images?.[0]?.imageUrl}`}
-                                    style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }}
-                                />}
-                                onClick={() => handleGetProductDetail(product)}
+                                style={hoveredCard === product.id ? { ...productCardStyle, ...productCardHoverStyle } : productCardStyle}
+                                onMouseEnter={() => setHoveredCard(product.id)}
+                                onMouseLeave={() => setHoveredCard(null)}
+                                cover={<img alt={product.name} src={`${import.meta.env.VITE_BACKEND_URL}/images/${product?.images[0].imageUrl}`} style={{ height: '220px', objectFit: 'cover' }} />}
+                                actions={[
+                                    <Button
+                                        onClick={() => handleGetProductDetail(product)}
+                                        type="primary"
+                                        style={{ backgroundColor: '#FF6F00', borderColor: '#FF6F00', fontWeight: 'bold', width: '80%' }}
+                                        onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FF8F00'; e.currentTarget.style.borderColor = '#FF8F00'; }}
+                                        onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#FF6F00'; e.currentTarget.style.borderColor = '#FF6F00'; }}
+                                    >
+                                        Liên Hệ Ngay
+                                    </Button>,
+                                ]}
                             >
-                                <Meta title={product?.name}
-                                    description={
-                                        <div style={{
-                                            overflow: 'hidden',
-                                            whiteSpace: 'nowrap',
-                                            textOverflow: 'ellipsis'
-                                        }}>
-                                            {product?.description}
-                                        </div>
-                                    }
+                                <Card.Meta
+                                    title={<Title level={5} style={{ color: '#004D40' }}>{product.name}</Title>}
+                                    description={<Text strong style={{ color: '#00796B', fontSize: '17px' }}>Giá: Liên hệ</Text>}
                                 />
                             </Card>
                         </Col>
@@ -90,7 +106,7 @@ const ListProductCard = () => {
                     onChange={handlePaginationChange}
                     style={{ marginTop: 32, textAlign: 'center' }}
                     showSizeChanger
-                    pageSizeOptions={[9, 15, 24]}
+                    pageSizeOptions={[12, 16, 24]}
                     showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} sản phẩm`}
                 />
             )}

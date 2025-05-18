@@ -28,8 +28,9 @@ const CategoryCreate = (props) => {
         )
 
         if (res) {
-            resetAndCloseModal()
+            await getParentCategoriesSelect()
             await loadCategories()
+            resetAndCloseModal()
             notification.success({
                 message: "Thêm Danh mục",
                 description: "Thêm Danh mục mới thành công"
@@ -85,7 +86,7 @@ const CategoryCreate = (props) => {
 
                         <Col lg={12} md={12} sm={24} xs={24}>
                             <Form.Item
-                                label="Thuộc Danh mục"
+                                label="Danh mục cha (không bắt buộc)"
                                 name="parentCategory"
                             >
                                 <Cascader options={dataParentCategories} placeholder="Nhập tên danh mục cha" />

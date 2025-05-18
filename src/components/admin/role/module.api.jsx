@@ -1,24 +1,30 @@
-import { useEffect, useState } from "react"
-import { fetchAllPermissionsAPI } from "../../../services/api.service"
-import { Card, Col, Collapse, Row, Space, Switch, Tooltip } from "antd"
-import { ALL_MODULES, colorMethod } from "../../../config/permission"
-import { grey } from '@ant-design/colors'
+import { useEffect, useState } from "react";
+import { fetchAllPermissionsAPI } from "../../../services/api.service";
+import { Card, Col, Collapse, Row, Space, Switch, Tooltip } from "antd";
+import { ALL_MODULES, colorMethod } from "../../../config/permission";
+import { grey } from '@ant-design/colors';
 
 const ModuleApi = (props) => {
-    const { permissionIds, setPermissionIds } = props
-
-    const [listPermissions, setListPermissions] = useState([])
+    const { permissionIds, setPermissionIds } = props;
+    const [listPermissions, setListPermissions] = useState([]);
 
     useEffect(() => {
-        init()
-    }, [])
+        const init = async () => {
+            const res = await fetchAllPermissionsAPI(1, 100);
+            if (res.data?.content) {
+                setListPermissions(res.data?.content);
+            }
+        };
+        init();
+    }, []);
 
-    const init = async () => {
-        const res = await fetchAllPermissionsAPI(1, 100)
-        if (res.data?.content) {
-            setListPermissions(res.data?.content)
+    const handleSingleCheck = (value, permissionId) => {
+        if (value) {
+            setPermissionIds([...permissionIds, permissionId]);
+        } else {
+            setPermissionIds(permissionIds.filter((id) => id !== permissionId));
         }
-    }
+    };
 
     const panels = ALL_MODULES?.map((item, index) => ({
         key: `${index}-parent`,
@@ -30,10 +36,13 @@ const ModuleApi = (props) => {
                     ?.filter((value) => value?.module === item.value)
                     ?.map((value, i) => (
                         <Col lg={12} md={12} sm={24} key={`${i}-child-${item.module}`}>
-                            <Card size="small" bodyStyle={{ display: "flex", flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                            <Card
+                                size="small"
+                                bodyStyle={{ display: "flex", flex: 1, flexDirection: 'row', alignItems: 'center' }}
+                            >
                                 <div style={{ marginRight: 10 }}>
                                     <Switch
-                                        defaultChecked={false}
+                                        checked={permissionIds.includes(value.id)}
                                         onChange={(v) => handleSingleCheck(v, value.id)}
                                     />
                                 </div>
@@ -51,20 +60,13 @@ const ModuleApi = (props) => {
                     ))}
             </Row>
         ),
-    }))
-
-    const handleSingleCheck = (value, permissionId) => {
-        if (value) {
-            setPermissionIds([...permissionIds, permissionId])
-        } else {
-            setPermissionIds(permissionIds.filter((id) => id !== permissionId))
-        }    }
+    }));
 
     return (
         <Card size="small" bordered={false}>
             <Collapse items={panels} />
         </Card>
-    )
-}
+    );
+};
 
-export default ModuleApi
+export default ModuleApi;
