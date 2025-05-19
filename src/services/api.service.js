@@ -260,9 +260,9 @@ const loadProductsByCategoryAPI = (categoryId, current, pageSize) => {
 const createContactAPI = (name, phone, email, address) => {
     const URL_BACKEND = `/api/inquiries/create`
     const data = {
-        name: name, 
-        phone: phone, 
-        email: email, 
+        name: name,
+        phone: phone,
+        email: email,
         address: address
     }
     return axios.post(URL_BACKEND, data)
@@ -278,6 +278,33 @@ const fetchAllContactAPI = (current, pageSize) => {
     return axios.get(URL_BACKEND)
 }
 
+const createArticleAPI = async (title, content, type, slug, imageFile) => {
+    const formData = new FormData();
+
+    const articleJson = JSON.stringify({
+        title, content, type, slug, excerpt: "", isFeatured: true,
+    });
+    formData.append('article', articleJson);
+
+    if (imageFile) {
+        formData.append('image', imageFile);
+    }
+
+    try {
+        const response = await axios.post('/api/admin/article/create', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+        return { data: response.data };
+    } catch (error) {
+        return {
+            data: null,
+            message: error.response?.data?.message || error.message || 'Lỗi không xác định',
+        };
+    }
+};
+
 export {
     fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI,
     fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI, loginWithGoogle, getAuthCode,
@@ -285,5 +312,5 @@ export {
     createRoleAPI, fetchAllPermissionsAPI, createPermissionAPI, updatePermissionAPI, deletePermissionAPI, fetchAllParentCategoriesAPI,
     createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI, fetchAllDesignsAPI,
     loadProductsByCategoryAPI, createContactAPI, deleteDesignAPI, deleteRoleAPI, fetchAllArticlesAPI, fetchAllContactAPI,
-    deleteArticleAPI
+    deleteArticleAPI, createArticleAPI
 }

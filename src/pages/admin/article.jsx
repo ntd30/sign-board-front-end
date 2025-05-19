@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { fetchAllArticlesAPI } from "../../services/api.service"
-import ArticleCreate from "../../components/admin/article/article.create"
 import ArticleTable from "../../components/admin/article/article.table"
+import ArticleCreate from "../../components/admin/article/article.create"
 
 const ArticlesPage = () => {
     const [dataArticles, setDataArticles] = useState([])
@@ -22,9 +22,9 @@ const ArticlesPage = () => {
 
     return (
         <>
-            {/* <ArticleCreate
+            <ArticleCreate
                 loadArticles={loadArticles}
-            /> */}
+            />
             <ArticleTable
                 current={current}
                 setCurrent={setCurrent}

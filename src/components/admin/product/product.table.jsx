@@ -77,10 +77,11 @@ const ProductTable = (props) => {
         },
         {
             title: 'Ảnh',
-            dataIndex: 'images',
+            dataIndex: 'image',
             render: (_, record) => {
-                const images = record.images || [];
-                return images.length > 0 ? `${images.length} ảnh` : "0 ảnh";
+                // const images = record.images || [];
+                // return images.length > 0 ? `${images.length} ảnh` : "0 ảnh";
+                <img src={`${import.meta.env.VITE_BACKEND_URL}/images/${record.images[0].imageUrl}`} alt={`${record.sku}`} />
             },
             hidden: true
         },

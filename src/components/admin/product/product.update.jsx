@@ -1,50 +1,49 @@
-import { Button, Cascader, Col, Form, Input, InputNumber, Modal, notification, Row, Upload, Select } from "antd"
-import { useEffect, useState } from "react"
-import { updateProductAPI } from "../../../services/api.service"
-import { UploadOutlined } from "@ant-design/icons"
+import { Button, Cascader, Col, Form, Input, InputNumber, Modal, notification, Row, Upload, message } from "antd";
+import { useEffect, useState } from "react";
+import { updateProductAPI } from "../../../services/api.service";
+import { UploadOutlined } from "@ant-design/icons";
 
-const { TextArea } = Input
-const { Option } = Select
+const { TextArea } = Input;
 
 const ProductUpdate = (props) => {
-    const { isUpdateOpen, setIsUpdateOpen, dataUpdate, loadProducts, dataCategories } = props
-    const [loadingBtn, setLoadingBtn] = useState(false)
-    const [fileList, setFileList] = useState([])
-    const [form] = Form.useForm()
+    const { isUpdateOpen, setIsUpdateOpen, dataUpdate, loadProducts, dataCategories } = props;
+
+    console.log("dataupdate", dataUpdate);
+
+    const [loadingBtn, setLoadingBtn] = useState(false);
+    const [fileList, setFileList] = useState([]);
+    const [form] = Form.useForm();
 
     useEffect(() => {
-        let numbersOnlyArray = []
+        let numbersOnlyArray = [];
         if (dataUpdate?.dimensions) {
             const numbersArray = dataUpdate.dimensions.split('x');
-            const lastNumber = numbersArray[numbersArray.length - 1].split(' ')[0]
-            numbersOnlyArray = [...numbersArray.slice(0, -1), lastNumber]
+            const lastNumber = numbersArray[numbersArray.length - 1].split(' ')[0];
+            numbersOnlyArray = [...numbersArray.slice(0, -1), lastNumber];
         }
 
         if (dataUpdate && dataUpdate.id) {
-
             form.setFieldsValue({
                 id: dataUpdate.id,
                 name: dataUpdate.name,
-                categoryId: dataUpdate.category.id,
-                categoryName: dataUpdate.category.name,
+                categoryId: dataUpdate.category?.id,
+                categoryName: dataUpdate.category?.name,
                 description: dataUpdate.description,
                 price: 0,
                 discount: 0,
                 discountPrice: 0,
-                slug: dataUpdate.name.toLowerCase().replace(/\s+/g, "-"),
+                slug: dataUpdate.name?.toLowerCase().replace(/\s+/g, "-"),
                 materialIds: [],
                 length: parseFloat(numbersOnlyArray[0]) || 0,
                 width: parseFloat(numbersOnlyArray[1]) || 0,
                 height: parseFloat(numbersOnlyArray[2]) || 0,
-            })
+            });
 
             // Xử lý ảnh hiện có từ dataUpdate.images
-
-            if (Array.isArray(dataUpdate?.images)) {
+            if (Array.isArray(dataUpdate?.images) && dataUpdate.images.length > 0) {
                 const existingImages = dataUpdate.images
                     .filter(item => item) // Loại bỏ null/undefined
                     .map((item, index) => {
-                        // Xử lý trường hợp item là chuỗi URL hoặc đối tượng có url
                         const url = typeof item === 'string' ? item : item?.url;
                         if (!url || typeof url !== 'string') {
                             console.warn(`Invalid image at index ${index}:`, item);
@@ -63,16 +62,16 @@ const ProductUpdate = (props) => {
                 setFileList([]);
             }
         }
-    }, [dataUpdate, form])
+    }, [dataUpdate, form]);
 
     const handleUpdateProduct = async (values) => {
-        setLoadingBtn(true)
+        setLoadingBtn(true);
 
-        const formData = new FormData()
+        const formData = new FormData();
 
         const productData = {
             name: values.name,
-            categoryId: typeof values.categoryName === "string" ? values.categoryId : values.categoryName[values.categoryId.length - 1],
+            categoryId: typeof values.categoryName === "string" ? values.categoryId : values.categoryName[values.categoryId?.length - 1],
             description: values.description,
             price: values.price,
             discount: values.discount,
@@ -80,59 +79,73 @@ const ProductUpdate = (props) => {
             slug: values.slug,
             materialIds: values.materialIds || [],
             dimensions: `${values.length}x${values.width}x${values.height}`,
-        }
+        };
 
-        formData.append('product', new Blob([JSON.stringify(productData)], { type: 'application/json' }))
+        formData.append('product', new Blob([JSON.stringify(productData)], { type: 'application/json' }));
 
         // Chỉ gửi ảnh mới (không gửi ảnh hiện có)
-        const newImages = fileList.filter(file => !file.url)
+        const newImages = fileList.filter(file => !file.url);
         if (newImages.length > 0) {
             newImages.forEach(file => {
                 if (file.originFileObj) {
-                    formData.append('images', file.originFileObj)
+                    formData.append('images', file.originFileObj);
                 }
-            })
+            });
         }
 
         try {
-            const res = await updateProductAPI(dataUpdate.id, formData)
+            const res = await updateProductAPI(dataUpdate.id, formData);
 
             if (res) {
-                resetAndCloseModal()
-                await loadProducts()
+                resetAndCloseModal();
+                await loadProducts();
                 notification.success({
                     message: "Cập nhật Sản phẩm",
-                    description: "Cập nhật Sản phẩm thành công"
-                })
+                    description: "Cập nhật Sản phẩm thành công",
+                });
             } else {
                 notification.error({
                     message: "Lỗi Cập nhật Sản phẩm",
-                    description: res.message || "Có lỗi xảy ra khi cập nhật sản phẩm"
-                })
+                    description: res.message || "Có lỗi xảy ra khi cập nhật sản phẩm",
+                });
             }
         } catch (error) {
             const errorMessage = error.response?.data?.message ||
                 error.response?.data?.error ||
                 error.message ||
-                "Có lỗi không xác định khi cập nhật sản phẩm"
+                "Có lỗi không xác định khi cập nhật sản phẩm";
             notification.error({
                 message: "Lỗi Cập nhật Sản phẩm",
-                description: errorMessage
-            })
-            console.error("API Error:", error.response?.data || error)
+                description: errorMessage,
+            });
+            console.error("API Error:", error.response?.data || error);
         }
-        setLoadingBtn(false)
-    }
+        setLoadingBtn(false);
+    };
 
     const resetAndCloseModal = () => {
-        setIsUpdateOpen(false)
-        form.resetFields()
-        setFileList([])
-    }
+        setIsUpdateOpen(false);
+        form.resetFields();
+        setFileList([]);
+    };
 
     const handleUploadChange = ({ fileList: newFileList }) => {
-        setFileList(newFileList)
-    }
+        setFileList(newFileList);
+    };
+
+    const beforeUpload = (file) => {
+        const isImage = file.type.startsWith('image/');
+        if (!isImage) {
+            message.error('Bạn chỉ có thể tải lên tệp ảnh!');
+            return Upload.LIST_IGNORE;
+        }
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('Ảnh phải nhỏ hơn 2MB!');
+            return Upload.LIST_IGNORE;
+        }
+        return false; // Ngăn Upload tự động, xử lý thủ công qua formData
+    };
 
     return (
         <Modal
@@ -204,14 +217,28 @@ const ProductUpdate = (props) => {
                             <Upload
                                 fileList={fileList}
                                 onChange={handleUploadChange}
-                                beforeUpload={() => false}
+                                beforeUpload={beforeUpload}
                                 multiple
                                 accept="image/*"
-                                listType="picture"
+                                listType="picture-card"
                                 maxCount={5}
+                                showUploadList={{
+                                    showPreviewIcon: true,
+                                    showRemoveIcon: true,
+                                }}
                             >
-                                <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
+                                {fileList.length < 5 && (
+                                    <div>
+                                        <UploadOutlined />
+                                        <div style={{ marginTop: 8 }}>Chọn ảnh</div>
+                                    </div>
+                                )}
                             </Upload>
+                            {fileList.length === 0 && (
+                                <div style={{ color: '#888', fontSize: '12px' }}>
+                                    Chưa có ảnh nào. Tải lên tối đa 5 ảnh (JPG/PNG, &lt;2MB).
+                                </div>
+                            )}
                         </Form.Item>
                     </Col>
 
@@ -251,7 +278,7 @@ const ProductUpdate = (props) => {
                 </Row>
             </Form>
         </Modal>
-    )
-}
+    );
+};
 
-export default ProductUpdate
+export default ProductUpdate;
