@@ -278,13 +278,10 @@ const fetchAllContactAPI = (current, pageSize) => {
     return axios.get(URL_BACKEND)
 }
 
-const createArticleAPI = async (title, content, type, slug, imageFile) => {
+const createArticleAPI = async (articleData, imageFile) => {
     const formData = new FormData();
 
-    const articleJson = JSON.stringify({
-        title, content, type, slug, excerpt: "", isFeatured: true,
-    });
-    formData.append('article', articleJson);
+    formData.append('article', JSON.stringify(articleData));
 
     if (imageFile) {
         formData.append('image', imageFile);
@@ -305,6 +302,26 @@ const createArticleAPI = async (title, content, type, slug, imageFile) => {
     }
 };
 
+const updateArticleAPI = async (id, articleData, imageFile) => {
+    const formData = new FormData();
+    formData.append('article', JSON.stringify(articleData));
+    if (imageFile) {
+        formData.append('image', imageFile);
+    }
+
+    try {
+        const response = await axios.put(`/api/admin/article/edit/${id}`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        return { data: response.data };
+    } catch (error) {
+        return {
+            data: null,
+            message: error.response?.data?.message || error.message || 'Lỗi không xác định',
+        };
+    }
+};
+
 export {
     fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI,
     fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI, loginWithGoogle, getAuthCode,
@@ -312,5 +329,5 @@ export {
     createRoleAPI, fetchAllPermissionsAPI, createPermissionAPI, updatePermissionAPI, deletePermissionAPI, fetchAllParentCategoriesAPI,
     createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI, fetchAllDesignsAPI,
     loadProductsByCategoryAPI, createContactAPI, deleteDesignAPI, deleteRoleAPI, fetchAllArticlesAPI, fetchAllContactAPI,
-    deleteArticleAPI, createArticleAPI
+    deleteArticleAPI, createArticleAPI, updateArticleAPI
 }

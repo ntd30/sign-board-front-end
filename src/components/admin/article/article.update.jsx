@@ -13,10 +13,11 @@ import {
     Modal,
     notification,
     Switch,
+    Tooltip,
 } from 'antd';
-import { UploadOutlined, FileAddOutlined } from '@ant-design/icons';
+import { UploadOutlined, FileAddOutlined, EyeOutlined } from '@ant-design/icons';
 import axios from 'axios';
-import { createArticleAPI } from "../../../services/api.service";
+import { updateArticleAPI } from "../../../services/api.service";
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
@@ -35,56 +36,103 @@ const customStyles = `
       border-bottom: 1px solid #f0f0f0;
       padding-bottom: 10px;
     }
+    .ant-upload-picture-card-wrapper .ant-upload-list-picture-card .ant-upload-list-item {
+      width: 150px;
+      height: 150px;
+      border: 2px solid #e8e8e8;
+      border-radius: 8px;
+    }
+    .ant-upload-list-item-info {
+      background: rgba(0, 0, 0, 0.05);
+    }
 `;
 
-// Các loại tin tức
 const newsTypes = [
     { id: 'news', name: 'Tin tức' },
     { id: 'project', name: 'Dự án' },
 ];
 
-const ArticleCreate = (props) => {
-    const { loadArticles } = props;
+const ArticleUpdate = (props) => {
+    const { isUpdateOpen, setIsUpdateOpen, dataUpdate, loadArticles } = props;
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [fileList, setFileList] = useState([]);
     const [form] = Form.useForm();
 
+    useEffect(() => {
+        if (dataUpdate && dataUpdate.id) {
+            form.setFieldsValue({
+                title: dataUpdate.title,
+                content: dataUpdate.content,
+                excerpt: dataUpdate.excerpt || '',
+                type: dataUpdate.type,
+                isFeatured: dataUpdate.isFeatured || false,
+            });
+
+            console.log(dataUpdate.featuredImageUrl)
+
+            // Xử lý ảnh hiện có
+            if (dataUpdate.featuredImageUrl && typeof dataUpdate.featuredImageUrl === 'string' && dataUpdate.featuredImageUrl.match(/\.(jpg|jpeg|png)$/i)) {
+                setFileList([{
+                    uid: '-1',
+                    name: 'image.jpg',
+                    status: 'done',
+                    url: `${import.meta.env.VITE_BACKEND_URL}${dataUpdate.featuredImageUrl}`,
+                    isExisting: true,
+                }]);
+            } else {
+                setFileList([{
+                    uid: '-1',
+                    name: 'no-image.jpg',
+                    status: 'done',
+                    url: 'https://via.placeholder.com/150?text=No+Image',
+                    isExisting: true,
+                }]);
+                message.info('Bài viết hiện tại chưa có ảnh.');
+            }
+        }
+    }, [dataUpdate, form]);
+
     const onFinish = async (values) => {
         setLoadingBtn(true);
 
-        const { title, content, excerpt, type, images } = values;
-        // Tạo slug từ title
+        const { title, content, excerpt, type, isFeatured, images } = values;
+
         const slug = title
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/(^-|-$)/g, '');
 
-        const imageFile = images?.fileList[0].originFileObj; // Lấy file gốc từ fileList
+        // if (content.length > 1000000) {
+        //     message.error('Nội dung quá dài, vui lòng rút ngắn dưới 1 triệu ký tự!');
+        //     setLoadingBtn(false);
+        //     return;
+        // }
 
         const articleData = {
             title,
             slug,
             content,
             excerpt: excerpt || content.slice(0, 200),
-            isFeatured: false,
+            isFeatured: isFeatured || false,
             type,
         };
 
-        const resCreateArticle = await createArticleAPI(articleData, imageFile);
+        const imageFile = images?.fileList[0]?.originFileObj;
 
-        if (resCreateArticle.data) {
+        const resUpdateArticle = await updateArticleAPI(dataUpdate.id, articleData, imageFile);
+
+        if (resUpdateArticle.data) {
             resetAndCloseModal();
             await loadArticles();
             notification.success({
-                message: "Thêm Tin tức / Dự án",
-                description: "Thêm Tin tức / Dự án mới thành công",
+                message: "Cập nhật bài viết",
+                description: "Cập nhật bài viết thành công",
             });
         } else {
             notification.error({
-                message: "Lỗi thêm mới Tin tức / Dự án",
-                description: resCreateArticle.message,
+                message: "Lỗi cập nhật bài viết",
+                description: resUpdateArticle.message,
             });
         }
 
@@ -92,7 +140,7 @@ const ArticleCreate = (props) => {
     };
 
     const resetAndCloseModal = () => {
-        setIsModalOpen(false);
+        setIsUpdateOpen(false);
         form.resetFields();
         setFileList([]);
     };
@@ -109,45 +157,47 @@ const ArticleCreate = (props) => {
     };
 
     const handleUploadChange = ({ fileList: newFileList }) => {
-        setFileList(newFileList);
+        setFileList(newFileList.map(file => ({
+            ...file,
+            isExisting: file.isExisting || false,
+        })));
     };
 
-    useEffect(() => {
-        const styleSheet = document.createElement("style");
-        styleSheet.id = "add-news-form-styles";
-        if (!document.getElementById(styleSheet.id)) {
-            styleSheet.innerText = customStyles;
-            document.head.appendChild(styleSheet);
+    const beforeUpload = (file) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            message.error('Bạn chỉ có thể tải lên file JPG/PNG!');
+            return Upload.LIST_IGNORE;
         }
-        const antdResetCss = document.createElement("link");
-        antdResetCss.id = "antd-reset-css-dynamic-admin";
-        if (!document.getElementById(antdResetCss.id)) {
-            antdResetCss.rel = "stylesheet";
-            antdResetCss.href = "https://unpkg.com/antd/dist/reset.css";
-            document.head.appendChild(antdResetCss);
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+            message.error('Ảnh phải nhỏ hơn 2MB!');
+            return Upload.LIST_IGNORE;
         }
-        return () => {
-            const existingStyleSheet = document.getElementById(styleSheet.id);
-            if (existingStyleSheet) {
-                document.head.removeChild(existingStyleSheet);
-            }
-        };
-    }, []);
+        if (fileList.length >= 1) {
+            message.warning('Chỉ được phép tải lên một ảnh đại diện.');
+            return Upload.LIST_IGNORE;
+        }
+        return true;
+    };
+
+    const handlePreview = (file) => {
+        if (file.url || file.preview) {
+            window.open(file.url || file.preview, '_blank');
+        } else {
+            message.error('Không thể xem trước ảnh này.');
+        }
+    };
 
     return (
-        <div style={{ margin: "10px 0" }}>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-                <h2>Quản lý Tin tức / Dự án</h2>
-                <Button type="primary" onClick={() => setIsModalOpen(true)}>
-                    Tạo mới
-                </Button>
-            </div>
+        <div>
+            <style>{customStyles}</style>
             <Modal
-                title="Tạo mới Tin tức / Dự án"
+                title="Cập nhật bài viết"
                 maskClosable={false}
-                okText="Thêm"
+                okText="Lưu"
                 cancelText="Hủy"
-                open={isModalOpen}
+                open={isUpdateOpen}
                 onOk={() => form.submit()}
                 okButtonProps={{ loading: loadingBtn }}
                 onCancel={resetAndCloseModal}
@@ -155,14 +205,14 @@ const ArticleCreate = (props) => {
             >
                 <Title level={3} className="form-section-title">
                     <FileAddOutlined style={{ marginRight: '8px' }} />
-                    Thêm Bài Viết Mới
+                    Chỉnh sửa bài viết
                 </Title>
                 <Form
                     form={form}
                     layout="vertical"
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
-                    initialValues={{}}
+                    initialValues={{ isFeatured: false }}
                 >
                     <Row gutter={24}>
                         <Col xs={24} md={16}>
@@ -206,13 +256,13 @@ const ArticleCreate = (props) => {
                                     ))}
                                 </Select>
                             </Form.Item>
-                            {/* <Form.Item
+                            <Form.Item
                                 name="isFeatured"
                                 label="Bài viết nổi bật"
                                 valuePropName="checked"
                             >
                                 <Switch checkedChildren="Có" unCheckedChildren="Không" />
-                            </Form.Item> */}
+                            </Form.Item>
                             <Form.Item
                                 name="images"
                                 label="Ảnh bài viết"
@@ -223,26 +273,20 @@ const ArticleCreate = (props) => {
                                     listType="picture-card"
                                     fileList={fileList}
                                     onChange={handleUploadChange}
-                                    beforeUpload={(file) => {
-                                        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-                                        if (!isJpgOrPng) {
-                                            message.error('Bạn chỉ có thể tải lên file JPG/PNG!');
-                                        }
-                                        const isLt2M = file.size / 1024 / 1024 < 2;
-                                        if (!isLt2M) {
-                                            message.error('Ảnh phải nhỏ hơn 2MB!');
-                                        }
-                                        if (isJpgOrPng && isLt2M && fileList.length < 1) {
-                                            // if (isJpgOrPng && isLt2M) {
-                                            return true;
-                                        }
-                                        if (fileList.length >= 1) {
-                                            message.warning('Chỉ được phép tải lên một ảnh đại diện.');
-                                        }
-                                        return Upload.LIST_IGNORE;
-                                    }}
+                                    beforeUpload={beforeUpload}
+                                    onPreview={handlePreview}
                                     onRemove={() => setFileList([])}
                                     maxCount={1}
+                                    showUploadList={{
+                                        showPreviewIcon: true,
+                                        showRemoveIcon: true,
+                                        previewIcon: <EyeOutlined />,
+                                    }}
+                                    itemRender={(originNode, file) => (
+                                        <Tooltip title={file.isExisting ? 'Ảnh hiện có từ hệ thống' : 'Ảnh mới tải lên'}>
+                                            {originNode}
+                                        </Tooltip>
+                                    )}
                                 >
                                     {fileList.length < 1 && (
                                         <div>
@@ -253,7 +297,7 @@ const ArticleCreate = (props) => {
                                 </Upload>
                             </Form.Item>
                             <Paragraph type="secondary" style={{ marginTop: '-10px', fontSize: '12px' }}>
-                                Hỗ trợ JPG, PNG. Kích thước tối đa 2MB.
+                                Hỗ trợ JPG, PNG. Kích thước tối đa 2MB. {fileList.length > 0 ? 'Ảnh hiện tại sẽ được thay thế nếu tải ảnh mới.' : 'Chưa có ảnh.'}
                             </Paragraph>
                         </Col>
                     </Row>
@@ -264,4 +308,4 @@ const ArticleCreate = (props) => {
     );
 };
 
-export default ArticleCreate;
+export default ArticleUpdate;

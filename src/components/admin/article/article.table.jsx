@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import moment from "moment";
 import ArticleDetail from "./article.detail";
 import { deleteArticleAPI } from "../../../services/api.service";
+import ArticleUpdate from "./article.update";
 
 const ArticleTable = (props) => {
     const { dataArticles, loadArticles, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props;
@@ -78,6 +79,13 @@ const ArticleTable = (props) => {
             ellipsis: true,
         },
         {
+            title: "Ảnh",
+            dataIndex: "featuredImageUrl",
+            width: 250,
+            ellipsis: true,
+            hidden: true
+        },
+        {
             title: "Ngày tạo",
             dataIndex: "createdAt",
             render: (date) => (date ? moment(date).format("DD/MM/YYYY HH:mm:ss") : "-"),
@@ -93,10 +101,10 @@ const ArticleTable = (props) => {
             title: "Action",
             render: (_, record) => (
                 <Space size="middle" style={{ gap: "20px" }}>
-                    {/* <EditOutlined
+                    <EditOutlined
                         style={{ color: "orange", cursor: "pointer" }}
                         onClick={() => handleEditArticle(record)}
-                    /> */}
+                    />
                     <Popconfirm
                         title="Xóa bài viết"
                         description="Bạn có chắc muốn xóa bài viết này?"
@@ -142,13 +150,12 @@ const ArticleTable = (props) => {
                 dataUpdate={dataUpdate}
             />
 
-            {/* 
             <ArticleUpdate
                 isUpdateOpen={isUpdateOpen}
                 setIsUpdateOpen={setIsUpdateOpen}
                 dataUpdate={dataUpdate}
                 loadArticles={loadArticles}
-            /> */}
+            />
         </>
     );
 };
