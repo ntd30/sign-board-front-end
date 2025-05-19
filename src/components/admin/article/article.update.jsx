@@ -16,7 +16,6 @@ import {
     Tooltip,
 } from 'antd';
 import { UploadOutlined, FileAddOutlined, EyeOutlined } from '@ant-design/icons';
-import axios from 'axios';
 import { updateArticleAPI } from "../../../services/api.service";
 
 const { Title, Paragraph } = Typography;
@@ -36,12 +35,23 @@ const customStyles = `
       border-bottom: 1px solid #f0f0f0;
       padding-bottom: 10px;
     }
-    .ant-upload-picture-card-wrapper .ant-upload-list-picture-card .ant-upload-list-item {
-      width: 150px;
-      height: 150px;
-      border: 2px solid #e8e8e8;
-      border-radius: 8px;
+
+    .ant-upload-picture-card-wrapper .ant-upload-list-picture-card .ant-upload-list-item,
+    .ant-upload.ant-upload-select-picture-card {
+      width: 450px !important;
+      height: 450px !important;
+      border-radius: 12px;
     }
+
+    .ant-upload.ant-upload-select-picture-card > div {
+      font-size: 18px;
+      padding: 16px 8px;
+    }
+
+    .ant-upload-list-picture-card .ant-upload-list-item-info {
+      border-radius: 12px;
+    }
+
     .ant-upload-list-item-info {
       background: rgba(0, 0, 0, 0.05);
     }
@@ -256,13 +266,13 @@ const ArticleUpdate = (props) => {
                                     ))}
                                 </Select>
                             </Form.Item>
-                            <Form.Item
+                            {/* <Form.Item
                                 name="isFeatured"
                                 label="Bài viết nổi bật"
                                 valuePropName="checked"
                             >
                                 <Switch checkedChildren="Có" unCheckedChildren="Không" />
-                            </Form.Item>
+                            </Form.Item> */}
                             <Form.Item
                                 name="images"
                                 label="Ảnh bài viết"
@@ -296,9 +306,9 @@ const ArticleUpdate = (props) => {
                                     )}
                                 </Upload>
                             </Form.Item>
-                            <Paragraph type="secondary" style={{ marginTop: '-10px', fontSize: '12px' }}>
+                            {/* <Paragraph type="secondary" style={{ marginTop: '-100px', fontSize: '12px' }}>
                                 Hỗ trợ JPG, PNG. Kích thước tối đa 2MB. {fileList.length > 0 ? 'Ảnh hiện tại sẽ được thay thế nếu tải ảnh mới.' : 'Chưa có ảnh.'}
-                            </Paragraph>
+                            </Paragraph> */}
                         </Col>
                     </Row>
                     <Divider />

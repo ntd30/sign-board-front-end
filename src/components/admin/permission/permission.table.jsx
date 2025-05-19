@@ -68,6 +68,7 @@ const PermissionTable = (props) => {
             render: (text, record) => (
                 <a onClick={() => handleGetDetailPermission(record)}>{text}</a>
             ),
+            hidden: true
         },
         {
             title: 'Tên',

@@ -66,6 +66,7 @@ const DesignTable = (props) => {
             render: (text, record) => (
                 <a onClick={() => handleGetDetailDesign(record)}>{text}</a>
             ),
+            hidden: true
         },
         {
             title: 'Ảnh bản thiết kế',
@@ -74,6 +75,7 @@ const DesignTable = (props) => {
                 <img src={`${import.meta.env.VITE_BACKEND_URL}/images/${text}`}
                     style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }} />
             ),
+            width: 200
         },
         {
             title: 'Tên người sở hữu',

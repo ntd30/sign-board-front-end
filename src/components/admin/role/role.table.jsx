@@ -68,6 +68,7 @@ const RoleTable = (props) => {
             render: (text, record) => (
                 <a onClick={() => handleGetDetailRole(record)}>{text}</a>
             ),
+            hidden: true
         },
         {
             title: 'Tên',

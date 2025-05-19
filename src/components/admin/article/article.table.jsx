@@ -65,12 +65,21 @@ const ArticleTable = (props) => {
             render: (text, record) => (
                 <a onClick={() => handleGetDetailArticle(record)}>{text}</a>
             ),
-            width: 100,
+            hidden: true
+        },
+        {
+            title: 'Ảnh',
+            dataIndex: 'featuredImageUrl',
+            render: (text, record) => (
+                <img src={`${import.meta.env.VITE_BACKEND_URL}${text}`}
+                    style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }} />
+            ),
+            width: 250
         },
         {
             title: "Loại bài viết",
             dataIndex: "type",
-            width: 150,
+            width: 100
         },
         {
             title: "Tiêu đề",

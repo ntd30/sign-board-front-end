@@ -6,6 +6,7 @@ import { deleteProductAPI } from "../../../services/api.service";
 
 const ProductTable = (props) => {
     const { dataProducts, loadProducts, current, setCurrent, pageSize, setPageSize, total, loadingTable, dataCategories } = props
+    console.log("dataProducts", dataProducts)
 
     const [isDetailOpen, setIsDetailOpen] = useState(false)
     const [isUpdateOpen, setIsUpdateOpen] = useState(false)
@@ -66,10 +67,22 @@ const ProductTable = (props) => {
             render: (text, record) => (
                 <a onClick={() => handleGetDetailProduct(record)}>{text}</a>
             ),
+            hidden: true
+        },
+        {
+            title: 'Ảnh sản phẩm',
+            dataIndex: 'images',
+            render: (text, record) => (
+                <img src={`${import.meta.env.VITE_BACKEND_URL}/images/${text[0].imageUrl}`}
+                    style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }} />
+            ),
         },
         {
             title: 'Tên sản phẩm',
             dataIndex: 'name',
+            render: (text, record) => (
+                <a onClick={() => handleGetDetailProduct(record)}>{text}</a>
+            ),
         },
         {
             title: 'Mô tả',

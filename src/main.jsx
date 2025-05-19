@@ -9,7 +9,6 @@ import DesignPage from './pages/client/design.jsx';
 import RegisterPage from './pages/client/auth/register.jsx';
 import { AuthWrapper } from './components/context/auth.context.jsx';
 import LayoutAdmin from './components/admin/layout.admin.jsx';
-import DashboardPage from './pages/admin/dashboard.jsx';
 import PrivateRoute from './pages/private.route.jsx';
 import UserPage from './pages/admin/user.jsx';
 import ListProduct from './pages/client/list.product.jsx';
@@ -31,6 +30,8 @@ import ContactPage from './pages/admin/contact.jsx';
 import { HomePage } from './pages/client/home.jsx';
 import NewsPage from './pages/client/news.jsx';
 import { NewsDetail } from './pages/client/news.detail.jsx';
+import ProductContact from './components/client/product/product.contact.jsx';
+import { DashboardPage } from './pages/admin/dashboard.jsx';
 
 const router = createBrowserRouter([
   {
@@ -65,7 +66,11 @@ const router = createBrowserRouter([
       {
         path: "products/detail",
         element: <ProductDetailPage />
-      }
+      },
+      {
+        path: "products/contact",
+        element: <ProductContact />
+      },
     ]
   },
 

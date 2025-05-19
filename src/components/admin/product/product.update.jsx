@@ -1,14 +1,25 @@
-import { Button, Cascader, Col, Form, Input, InputNumber, Modal, notification, Row, Upload, message } from "antd";
+import { Button, Cascader, Col, Form, Input, InputNumber, Modal, notification, Row, Upload, message, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { updateProductAPI } from "../../../services/api.service";
-import { UploadOutlined } from "@ant-design/icons";
+import { UploadOutlined, EyeOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
+// CSS tùy chỉnh
+const customStyles = `
+    // .ant-upload-picture-card-wrapper .ant-upload-list-picture-card .ant-upload-list-item {
+    //     width: 150px;
+    //     height: 150px;
+    //     border: 2px solid #e8e8e8;
+    //     border-radius: 8px;
+    // }
+    // .ant-upload-list-item-info {
+    //     background: rgba(0, 0, 0, 0.05);
+    // }
+`;
+
 const ProductUpdate = (props) => {
     const { isUpdateOpen, setIsUpdateOpen, dataUpdate, loadProducts, dataCategories } = props;
-
-    console.log("dataupdate", dataUpdate);
 
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [fileList, setFileList] = useState([]);
@@ -42,10 +53,10 @@ const ProductUpdate = (props) => {
             // Xử lý ảnh hiện có từ dataUpdate.images
             if (Array.isArray(dataUpdate?.images) && dataUpdate.images.length > 0) {
                 const existingImages = dataUpdate.images
-                    .filter(item => item) // Loại bỏ null/undefined
+                    .filter(item => item)
                     .map((item, index) => {
-                        const url = typeof item === 'string' ? item : item?.url;
-                        if (!url || typeof url !== 'string') {
+                        const url = typeof item === 'string' ? item : item?.imageUrl;
+                        if (!url || typeof url !== 'string' || !url.match(/\.(jpg|jpeg|png)$/i)) {
                             console.warn(`Invalid image at index ${index}:`, item);
                             return null;
                         }
@@ -53,13 +64,21 @@ const ProductUpdate = (props) => {
                             uid: `existing-${index}`,
                             name: `image-${index}.jpg`,
                             status: 'done',
-                            url: url,
+                            url: `${import.meta.env.VITE_BACKEND_URL}/images/${url}`,
+                            isExisting: true,
                         };
                     })
-                    .filter(item => item); // Loại bỏ các item null
+                    .filter(item => item);
                 setFileList(existingImages);
             } else {
-                setFileList([]);
+                setFileList([{
+                    uid: '-1',
+                    name: 'no-image.jpg',
+                    status: 'done',
+                    url: 'https://via.placeholder.com/150?text=No+Image',
+                    isExisting: true,
+                }]);
+                message.info('Sản phẩm hiện tại chưa có ảnh.');
             }
         }
     }, [dataUpdate, form]);
@@ -83,7 +102,6 @@ const ProductUpdate = (props) => {
 
         formData.append('product', new Blob([JSON.stringify(productData)], { type: 'application/json' }));
 
-        // Chỉ gửi ảnh mới (không gửi ảnh hiện có)
         const newImages = fileList.filter(file => !file.url);
         if (newImages.length > 0) {
             newImages.forEach(file => {
@@ -130,7 +148,10 @@ const ProductUpdate = (props) => {
     };
 
     const handleUploadChange = ({ fileList: newFileList }) => {
-        setFileList(newFileList);
+        setFileList(newFileList.map(file => ({
+            ...file,
+            isExisting: file.isExisting || false,
+        })));
     };
 
     const beforeUpload = (file) => {
@@ -144,140 +165,162 @@ const ProductUpdate = (props) => {
             message.error('Ảnh phải nhỏ hơn 2MB!');
             return Upload.LIST_IGNORE;
         }
-        return false; // Ngăn Upload tự động, xử lý thủ công qua formData
+        if (fileList.length >= 5) {
+            message.warning('Tối đa 5 ảnh!');
+            return Upload.LIST_IGNORE;
+        }
+        return false;
+    };
+
+    const handlePreview = (file) => {
+        if (file.url || file.preview) {
+            window.open(file.url || file.preview, '_blank');
+        } else {
+            message.error('Không thể xem trước ảnh này.');
+        }
     };
 
     return (
-        <Modal
-            title="Cập nhật Sản phẩm"
-            maskClosable={false}
-            okText="Lưu"
-            cancelText="Hủy"
-            open={isUpdateOpen}
-            onOk={() => form.submit()}
-            okButtonProps={{ loading: loadingBtn }}
-            onCancel={resetAndCloseModal}
-            width={900}
-        >
-            <Form
-                layout="vertical"
-                onFinish={handleUpdateProduct}
-                form={form}
+        <div>
+            <style>{customStyles}</style>
+            <Modal
+                title="Cập nhật Sản phẩm"
+                maskClosable={false}
+                okText="Lưu"
+                cancelText="Hủy"
+                open={isUpdateOpen}
+                onOk={() => form.submit()}
+                okButtonProps={{ loading: loadingBtn }}
+                onCancel={resetAndCloseModal}
+                width={900}
             >
-                <Row gutter={16}>
-                    <Col lg={12} md={12} sm={24} xs={24}>
-                        <Form.Item
-                            label="Tên Sản phẩm"
-                            name="name"
-                            rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
-                        >
-                            <Input placeholder="Nhập tên" />
-                        </Form.Item>
-                    </Col>
-
-                    <Col lg={12} md={12} sm={24} xs={24}>
-                        <Form.Item
-                            label="Thuộc Danh mục"
-                            name="categoryName"
-                            rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
-                        >
-                            <Cascader
-                                options={dataCategories}
-                                placeholder="Nhập tên danh mục"
-                            />
-                        </Form.Item>
-                    </Col>
-
-                    <Col lg={12} md={12} sm={24} xs={24}>
-                        <Form.Item
-                            label="Thuộc Danh mục"
-                            name="categoryId"
-                            rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
-                            hidden
-                        >
-                            <Input />
-                        </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                        <Form.Item
-                            label="Mô tả"
-                            name="description"
-                            rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
-                        >
-                            <TextArea placeholder="Nhập mô tả" />
-                        </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                        <Form.Item
-                            label="Hình ảnh"
-                            name="images"
-                        >
-                            <Upload
-                                fileList={fileList}
-                                onChange={handleUploadChange}
-                                beforeUpload={beforeUpload}
-                                multiple
-                                accept="image/*"
-                                listType="picture-card"
-                                maxCount={5}
-                                showUploadList={{
-                                    showPreviewIcon: true,
-                                    showRemoveIcon: true,
-                                }}
+                <Form
+                    layout="vertical"
+                    onFinish={handleUpdateProduct}
+                    form={form}
+                >
+                    <Row gutter={16}>
+                        <Col lg={12} md={12} sm={24} xs={24}>
+                            <Form.Item
+                                label="Tên Sản phẩm"
+                                name="name"
+                                rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
                             >
-                                {fileList.length < 5 && (
-                                    <div>
-                                        <UploadOutlined />
-                                        <div style={{ marginTop: 8 }}>Chọn ảnh</div>
-                                    </div>
-                                )}
-                            </Upload>
-                            {fileList.length === 0 && (
-                                <div style={{ color: '#888', fontSize: '12px' }}>
-                                    Chưa có ảnh nào. Tải lên tối đa 5 ảnh (JPG/PNG, &lt;2MB).
+                                <Input placeholder="Nhập tên" />
+                            </Form.Item>
+                        </Col>
+
+                        <Col lg={12} md={12} sm={24} xs={24}>
+                            <Form.Item
+                                label="Thuộc Danh mục"
+                                name="categoryName"
+                                rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
+                            >
+                                <Cascader
+                                    options={dataCategories}
+                                    placeholder="Nhập tên danh mục"
+                                />
+                            </Form.Item>
+                        </Col>
+
+                        <Col lg={12} md={12} sm={24} xs={24}>
+                            <Form.Item
+                                label="Thuộc Danh mục"
+                                name="categoryId"
+                                rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
+                                hidden
+                            >
+                                <Input />
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={24}>
+                            <Form.Item
+                                label="Mô tả"
+                                name="description"
+                                rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
+                            >
+                                <TextArea placeholder="Nhập mô tả" />
+                            </Form.Item>
+                        </Col>
+
+                        <Col span={24}>
+                            <Form.Item
+                                label="Hình ảnh"
+                                name="images"
+                            >
+                                <Upload
+                                    fileList={fileList}
+                                    onChange={handleUploadChange}
+                                    beforeUpload={beforeUpload}
+                                    multiple
+                                    accept="image/*"
+                                    listType="picture-card"
+                                    maxCount={5}
+                                    showUploadList={{
+                                        showPreviewIcon: true,
+                                        showRemoveIcon: true,
+                                        previewIcon: <EyeOutlined />,
+                                    }}
+                                    itemRender={(originNode, file) => (
+                                        <Tooltip title={file.isExisting ? 'Ảnh hiện có từ hệ thống' : 'Ảnh mới tải lên'}>
+                                            {originNode}
+                                        </Tooltip>
+                                    )}
+                                    onPreview={handlePreview}
+                                >
+                                    {fileList.length < 5 && (
+                                        <div>
+                                            <UploadOutlined />
+                                            <div style={{ marginTop: 8 }}>Chọn ảnh</div>
+                                        </div>
+                                    )}
+                                </Upload>
+                                <div style={{ color: '#888', fontSize: '12px', marginTop: '8px' }}>
+                                    {fileList.length > 0
+                                        ? 'Tải lên tối đa 5 ảnh (JPG/PNG, <2MB). Ảnh hiện tại sẽ được thay thế nếu tải ảnh mới.'
+                                        : 'Chưa có ảnh. Tải lên tối đa 5 ảnh (JPG/PNG, <2MB).'}
                                 </div>
-                            )}
-                        </Form.Item>
-                    </Col>
+                            </Form.Item>
+                        </Col>
 
-                    <Col span={24} style={{ marginBottom: 10 }}>
-                        <label>Kích thước</label>
-                    </Col>
+                        <Col span={24} style={{ marginBottom: 10 }}>
+                            <label>Kích thước</label>
+                        </Col>
 
-                    <Col lg={8} md={8} sm={24} xs={24}>
-                        <Form.Item
-                            label="Dài"
-                            name="length"
-                            rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
-                        >
-                            <InputNumber style={{ width: '100%' }} min={0} />
-                        </Form.Item>
-                    </Col>
+                        <Col lg={8} md={8} sm={24} xs={24}>
+                            <Form.Item
+                                label="Dài"
+                                name="length"
+                                rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                            >
+                                <InputNumber style={{ width: '100%' }} min={0} />
+                            </Form.Item>
+                        </Col>
 
-                    <Col lg={8} md={8} sm={24} xs={24}>
-                        <Form.Item
-                            label="Rộng"
-                            name="width"
-                            rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
-                        >
-                            <InputNumber style={{ width: '100%' }} min={0} />
-                        </Form.Item>
-                    </Col>
+                        <Col lg={8} md={8} sm={24} xs={24}>
+                            <Form.Item
+                                label="Rộng"
+                                name="width"
+                                rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                            >
+                                <InputNumber style={{ width: '100%' }} min={0} />
+                            </Form.Item>
+                        </Col>
 
-                    <Col lg={8} md={8} sm={24} xs={24}>
-                        <Form.Item
-                            label="Cao"
-                            name="height"
-                            rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
-                        >
-                            <InputNumber style={{ width: '100%' }} min={0} />
-                        </Form.Item>
-                    </Col>
-                </Row>
-            </Form>
-        </Modal>
+                        <Col lg={8} md={8} sm={24} xs={24}>
+                            <Form.Item
+                                label="Cao"
+                                name="height"
+                                rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
+                            >
+                                <InputNumber style={{ width: '100%' }} min={0} />
+                            </Form.Item>
+                        </Col>
+                    </Row>
+                </Form>
+            </Modal>
+        </div>
     );
 };
 

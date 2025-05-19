@@ -347,7 +347,7 @@ const ProductContact = (props) => {
                             </div>
                             <div className="contact-info-item">
                                 <PhoneTwoTone twoToneColor="#B22222" /> {/* Updated icon color */}
-                                <Typography.Text>0912 345 678</Typography.Text>
+                                <Typography.Text>0973 454 140</Typography.Text>
                             </div>
 
                             <Divider style={{ borderColor: '#B22222', margin: '25px 0' }}><span style={{ color: '#B22222' }}>Hoặc</span></Divider> {/* Updated divider color */}

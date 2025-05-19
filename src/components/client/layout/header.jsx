@@ -101,21 +101,7 @@ const Header = () => {
             href: "/",
             key: 'product',
             icon: <ProductOutlined />,
-            children: [
-                {
-                    key: '12',
-                    label: "Biển quảng cáo",
-                    href: "/",
-                    children: [
-                        { key: '121', label: 'Biển chữ nổi quảng cáo' },
-                        { key: '122', label: 'Biển gỗ quảng cáo' },
-                        { key: '123', label: 'Biển hộp đèn âm bản' },
-                        { key: '124', label: 'Biển hộp đèn' },
-                        { key: '125', label: 'Biển Pano tấm lớn' },
-                        { key: '126', label: 'Biến tấm ốp Alu' },
-                    ],
-                },
-            ],
+            children: categories,
         },
         // {
         //     label: <Link to={"/manufacture"}>SẢN XUẤT</Link>,
@@ -214,9 +200,9 @@ const Header = () => {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '20px 40px',
+                padding: '20px',
                 borderBottom: '1px solid #eee',
-                width: "70%",
+                width: isMobile ? "100%" : "70%",
                 margin: "auto",
                 fontSize: 16
             }}>

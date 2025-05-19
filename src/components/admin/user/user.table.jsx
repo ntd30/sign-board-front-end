@@ -67,6 +67,7 @@ const UserTable = (props) => {
             render: (text, record) => (
                 <a onClick={() => handleGetDetailUser(record)}>{text}</a>
             ),
+            hidden: true
         },
         {
             title: 'Username',

@@ -66,6 +66,7 @@ const CategoryTable = (props) => {
             render: (text, record) => (
                 <a onClick={() => handleGetDetailCategory(record)}>{text}</a>
             ),
+            hidden: true
         },
         {
             title: 'Tên Danh mục',
