@@ -1,5 +1,5 @@
 import { HomeOutlined, RobotOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Divider, notification, Row, Typography, Upload } from 'antd';
+import { Button, Card, Col, Divider, notification, Row, Typography, Upload, Input } from 'antd';
 import { useContext, useState } from 'react';
 import { AuthContext } from '../../components/context/auth.context';
 import { uploadDesign } from '../../services/api.service';
@@ -10,64 +10,67 @@ const { Title, Paragraph } = Typography;
 const cardStyle = {
     height: '100%',
     borderRadius: '16px',
-    overflow: 'hidden',     // Cắt nội dung theo góc bo
-    display: 'flex',        // Giúp body card co giãn tốt hơn
+    overflow: 'hidden',
+    display: 'flex',
     flexDirection: 'column',
     textAlign: 'center'
-}
+};
 
 const coverImageStyle = {
     display: 'block',
     width: '100%',
-    height: '100%', // Cho ảnh cố gắng fill card
-    objectFit: 'cover' // Cắt ảnh cho vừa card
-}
+    height: '100%',
+    objectFit: 'cover'
+};
 
 const DesignPage = () => {
-    const [selectedFile, setSelectedFile] = useState(null)
-    const [preview, setPreview] = useState(null)
-    const { user } = useContext(AuthContext)
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [preview, setPreview] = useState(null);
+    const [description, setDescription] = useState(''); // Thêm state cho mô tả
+    const { user } = useContext(AuthContext);
 
     const handleOnChangeFile = event => {
         if (!event.target.files || event.target.files.length === 0) {
-            setSelectedFile(null)
-            setPreview(null)
-            return
+            setSelectedFile(null);
+            setPreview(null);
+            setDescription(''); // Reset mô tả khi không có file
+            return;
         }
 
-        // I've kept this example simple by using the first image instead of multiple
-        const file = event.target.files[0]
+        const file = event.target.files[0];
         if (file) {
-            setSelectedFile(file)
-            setPreview(URL.createObjectURL(file))
+            setSelectedFile(file);
+            setPreview(URL.createObjectURL(file));
+            setDescription(''); // Reset mô tả khi chọn file mới
         }
-    }
+    };
 
     const handleUpload = async () => {
         if (!selectedFile) {
             notification.error({
-                message: "Error create book",
-                description: "Vui lòng upload ảnh thumbnail"
-            })
+                message: "Lỗi tải lên",
+                description: "Vui lòng chọn ảnh bản thiết kế trước khi gửi"
+            });
+            return;
         }
 
-        // const resUpload = await uploadFile(selectedFile, 'book')
-        const res = await uploadDesign(user.id, selectedFile, null)
+        const res = await uploadDesign(user.id, selectedFile, description); // Gửi cả mô tả
 
         if (res) {
-            setSelectedFile(null)
-            setPreview(null)
+            setSelectedFile(null);
+            setPreview(null);
+            setDescription(''); // Reset mô tả sau khi upload thành công
             notification.success({
                 message: "Thêm Bản thiết kế",
-                description: "Thêm Bản thiết kế mới thành công"
-            })
+                description: "Thêm bản thiết kế mới thành công"
+            });
         } else {
             notification.error({
-                message: "Lỗi thêm mới Bản thiết kế",
-                description: JSON.stringify(resCreateUser.message)
-            })
+                message: "Lỗi thêm mới bản thiết kế",
+                description: JSON.stringify(res.message)
+            });
         }
-    }
+    };
 
     return (
         <div style={{ width: '60%', margin: 'auto' }}>
@@ -75,7 +78,8 @@ const DesignPage = () => {
                 <Title level={2}>Thiết kế biển hiệu theo phong cách riêng của bạn</Title>
 
                 <div>
-                    <label htmlFor="btnUpload"
+                    <label
+                        htmlFor="btnUpload"
                         style={{
                             display: "block",
                             width: "fit-content",
@@ -88,45 +92,72 @@ const DesignPage = () => {
                             backgroundColor: 'rgba(216, 0, 0, 0.8)',
                             animation: 'ripple 2s infinite ease-in-out',
                         }}
-                    ><UploadOutlined /> Tải lên ngay</label>
-                    <input type="file" id="btnUpload" style={{ display: "none" }}
+                    >
+                        <UploadOutlined /> Tải lên ngay
+                    </label>
+                    <input
+                        type="file"
+                        id="btnUpload"
+                        style={{ display: "none" }}
                         onChange={event => handleOnChangeFile(event)}
                         onClick={event => event.target.value = null}
                     />
+                    <Paragraph
+                        type="secondary"
+                        style={{
+                            margin: '15px auto',
+                            maxWidth: '500px',
+                            fontSize: '16px',
+                            color: '#555',
+                        }}
+                    >
+                        Hãy tải lên bản thiết kế độc đáo của bạn để hệ thống ghi nhận và biến ý tưởng thành hiện thực!
+                    </Paragraph>
                 </div>
 
-                {preview ?
+                {preview ? (
                     <div style={{ width: 500, margin: "auto" }}>
                         <div style={{
                             marginTop: "50px",
                             marginBottom: "15px",
-                            // width: "500px",
                             height: "500px",
                         }}>
-                            <img style={{ width: "100%", height: "100%", objectFit: "contain" }}
-                                src={preview} alt="" />
+                            <img
+                                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                                src={preview}
+                                alt="Preview"
+                            />
                         </div>
-
+                        <Input
+                            placeholder="Nhập mô tả cho bản thiết kế của bạn"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            style={{
+                                marginBottom: '15px',
+                                borderRadius: '8px',
+                                padding: '10px',
+                            }}
+                        />
                         <Button onClick={handleUpload} type='primary' danger block size='large'>Gửi</Button>
                     </div>
-                    :
+                ) : (
                     <div></div>
-                }
+                )}
 
                 <style>
                     {`
-              @keyframes ripple {
-                0% {
-                  box-shadow: 0 0 0 3px rgba(216, 0, 0, 0.2), 0 0 0 6px rgba(216, 0, 0, 0.1);
-                }
-                50% {
-                  box-shadow: 0 0 0 12px rgba(216, 0, 0, 0.3), 0 0 0 24px rgba(216, 0, 0, 0.15);
-                }
-                100% {
-                  box-shadow: 0 0 0 3px rgba(216, 0, 0, 0.2), 0 0 0 6px rgba(216, 0, 0, 0.1);
-                }
-              }
-            `}
+                        @keyframes ripple {
+                            0% {
+                                box-shadow: 0 0 0 3px rgba(216, 0, 0, 0.2), 0 0 0 6px rgba(216, 0, 0, 0.1);
+                            }
+                            50% {
+                                box-shadow: 0 0 0 12px rgba(216, 0, 0, 0.3), 0 0 0 24px rgba(216, 0, 0, 0.15);
+                            }
+                            100% {
+                                box-shadow: 0 0 0 3px rgba(216, 0, 0, 0.2), 0 0 0 6px rgba(216, 0, 0, 0.1);
+                            }
+                        }
+                    `}
                 </style>
             </div>
 
@@ -145,18 +176,17 @@ const DesignPage = () => {
                         style={cardStyle}
                         cover={
                             <img
-                                src="/img/logo_robot.jpg" // *** THAY ĐƯỜNG DẪN ***
+                                src="/img/logo_robot.jpg"
                                 alt="AI Robot"
-                                // preview={false}
-                                style={coverImageStyle} // Style cho ảnh cover
-                            // fallback="/path/to/placeholder.png" // Nên có ảnh dự phòng
+                                style={coverImageStyle}
                             />
                         }
                     >
                     </Card>
                 </Col>
                 <Col sm={24} lg={8}>
-                    <Card style={cardStyle}
+                    <Card
+                        style={cardStyle}
                         bordered={false}
                         cover={
                             <div
@@ -196,8 +226,8 @@ const DesignPage = () => {
                     </Paragraph>
                 </Col>
             </Row>
-        </div >
-    )
-}
+        </div>
+    );
+};
 
 export default DesignPage;

@@ -65,6 +65,11 @@ const ContactTable = (props) => {
         //     width: 100,
         // },
         {
+            title: "Tên sản phẩm",
+            dataIndex: "productName",
+            width: 250,
+        },
+        {
             title: "Họ và tên",
             dataIndex: "name",
             width: 150,

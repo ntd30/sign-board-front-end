@@ -51,7 +51,7 @@ const registerAPI = (username, email, password, fullName) => {
     return axios.post(URL_BACKEND, data)
 }
 
-const createUserAPI = (username, email, password, fullName, phoneNumber, address, roleName) => {
+const createUserAPI = (username, email, password, fullName, phoneNumber, address, roleId) => {
     const URL_BACKEND = "api/admin/users/create"
     const data = {
         username: username,
@@ -60,19 +60,20 @@ const createUserAPI = (username, email, password, fullName, phoneNumber, address
         fullName: fullName,
         phoneNumber: phoneNumber,
         address: address,
-        roleName: roleName
+        isActive: true,
+        roleId: roleId
     }
     return axios.post(URL_BACKEND, data)
 }
 
-const updateUserAPI = (id, fullName, phoneNumber, address, active, roleName) => {
+const updateUserAPI = (id, fullName, phoneNumber, address, active, roleId) => {
     const URL_BACKEND = `/api/admin/users/${id}`
     const data = {
         fullName: fullName,
         phoneNumber: phoneNumber,
         address: address,
         isActive: active,
-        roleName: roleName
+        roleId: roleId
     }
     return axios.put(URL_BACKEND, data)
 }
@@ -150,12 +151,13 @@ const fetchAllProjectsAPI = () => {
     return axios.get(URL_BACKEND)
 }
 
-const uploadDesign = (userId, designImage, designLink) => {
+const uploadDesign = (userId, designImage, desc) => {
     const URL_BACKEND = `/api/user-designs/${userId}`
 
     const bodyFormData = new FormData()
     bodyFormData.append("designImage", designImage)
-    bodyFormData.append("designLink", designLink)
+    bodyFormData.append("designLink", null)
+    bodyFormData.append("desc", desc)
 
     let config = {
         headers: {
@@ -294,6 +296,11 @@ const createContactAPI = (name, phone, email, address) => {
     return axios.post(URL_BACKEND, data)
 }
 
+const updateDesignAPI = (id, desc, status) => {
+    const URL_BACKEND = `/api/admin/user-designs/${id}?desc=${desc}&status=${status}`
+    return axios.put(URL_BACKEND)
+}
+
 const fetchAllArticlesAPI = (current, pageSize) => {
     const URL_BACKEND = `/api/cms/list?page=${current}&size=${pageSize}`
     return axios.get(URL_BACKEND)
@@ -355,5 +362,5 @@ export {
     createRoleAPI, fetchAllPermissionsAPI, createPermissionAPI, updatePermissionAPI, deletePermissionAPI, fetchAllParentCategoriesAPI,
     createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI, fetchAllDesignsAPI,
     loadProductsByCategoryAPI, createContactAPI, deleteDesignAPI, deleteRoleAPI, fetchAllArticlesAPI, fetchAllContactAPI,
-    deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro
+    deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro, updateDesignAPI
 }

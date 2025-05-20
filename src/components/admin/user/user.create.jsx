@@ -13,10 +13,12 @@ const UserCreate = (props) => {
     const handleCreateUser = async (values) => {
         setLoadingBtn(true)
 
-        const { username, email, password, fullName, phoneNumber, address, roleName } = values
+        const { username, email, password, fullName, phoneNumber, address, roleId } = values
+
+        console.log("roleid", roleId)
 
         const resCreateUser = await createUserAPI(
-            username, email, password, fullName, phoneNumber, address, roleName
+            username, email, password, fullName, phoneNumber, address, roleId === "Customer" ? 2 : roleId
         )
 
         if (resCreateUser.data) {
@@ -29,7 +31,7 @@ const UserCreate = (props) => {
         } else {
             notification.error({
                 message: "Lỗi thêm mới người dùng",
-                description: JSON.stringify(resCreateUser.message)
+                description: JSON.stringify(resCreateUser)
             })
         }
 
@@ -104,7 +106,7 @@ const UserCreate = (props) => {
                         label="Mật khẩu"
                         name="password"
                         rules={[
-                            { required: true, message: 'Mật khẩu không được bỏ trống!' }
+                            { required: true, message: 'Vui lòng không được bỏ trống!' }
                         ]}
                     >
                         <Input.Password />
@@ -113,6 +115,9 @@ const UserCreate = (props) => {
                     <Form.Item
                         label="Tên đầy đủ"
                         name="fullName"
+                        rules={[
+                            { required: true, message: 'Vui lòng không được bỏ trống!' }
+                        ]}
                     >
                         <Input />
                     </Form.Item>
@@ -120,6 +125,9 @@ const UserCreate = (props) => {
                     <Form.Item
                         label="Số điện thoại"
                         name="phoneNumber"
+                        rules={[
+                            { required: true, message: 'Vui lòng không được bỏ trống!' }
+                        ]}
                     >
                         <Input />
                     </Form.Item>
@@ -133,12 +141,15 @@ const UserCreate = (props) => {
 
                     <Form.Item
                         label="Vai trò"
-                        name="roleName"
+                        name="roleId"
                         initialValue={"Customer"}
+                        rules={[
+                            { required: true, message: 'Vui lòng không được bỏ trống!' }
+                        ]}
                     >
                         <Select placeholder="Chọn vai trò">
                             {roles.map((role) => (
-                                <Select.Option key={role.name} value={role.name}>
+                                <Select.Option key={role.id} value={role.id} >
                                     {role.name}
                                 </Select.Option>
                             ))}

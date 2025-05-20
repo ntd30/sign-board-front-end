@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Layout, Row, Col, Image, Rate, Typography, Button, Divider, Modal } from 'antd'
+import { Layout, Row, Col, Image, Rate, Typography, Button, Divider, Modal, Breadcrumb } from 'antd'
 import { PhoneOutlined } from '@ant-design/icons'
 import { useLocation } from 'react-router-dom'
 import ProductContact from '../../components/client/product/product.contact'
@@ -16,10 +16,12 @@ const ProductDetailPage = () => {
     <>
       <Content style={{ maxWidth: '70%', margin: '80px auto' }}>
         <h1>Thông tin sản phẩm</h1>
-        <ol className="breadcrumb" style={{ fontSize: "20px" }}>
-          <li className="breadcrumb-item active"><a href="/">Trang chủ</a></li>
-          <li className="breadcrumb-item active">Chi tiết sản phẩm</li>
-        </ol>
+        <Breadcrumb style={{ fontSize: 20, marginBottom: 50 }}>
+          <Breadcrumb.Item>
+            <a href="/">Trang chủ</a>
+          </Breadcrumb.Item>
+          <Breadcrumb.Item>Tin tức</Breadcrumb.Item>
+        </Breadcrumb>
 
         <Row gutter={[50]} style={{ marginTop: '24px' }}>
           {/* Image */}
