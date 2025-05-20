@@ -63,7 +63,7 @@ const newsTypes = [
 ];
 
 const ArticleUpdate = (props) => {
-    const { isUpdateOpen, setIsUpdateOpen, dataUpdate, loadArticles } = props;
+    const { isUpdateOpen, setIsUpdateOpen, dataUpdate, setDataUpdate, loadArticles } = props;
 
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [fileList, setFileList] = useState([]);
@@ -153,6 +153,7 @@ const ArticleUpdate = (props) => {
         setIsUpdateOpen(false);
         form.resetFields();
         setFileList([]);
+        setDataUpdate(null);
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -276,7 +277,7 @@ const ArticleUpdate = (props) => {
                             <Form.Item
                                 name="images"
                                 label="Ảnh bài viết"
-                                rules={[{ required: true, message: 'Vui lòng tải lên ảnh của bài viết!' }]}
+                                // rules={[{ required: true, message: 'Vui lòng tải lên ảnh của bài viết!' }]}
                             >
                                 <Upload
                                     customRequest={dummyRequest}

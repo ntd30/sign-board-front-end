@@ -1,4 +1,4 @@
-import { Button, Card, Col, Pagination, Row, Typography } from "antd";
+import { Breadcrumb, Button, Card, Col, Pagination, Row, Typography } from "antd";
 import Meta from "antd/es/card/Meta";
 import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -62,11 +62,14 @@ const ListProductCard = () => {
     return (
         <div style={{ width: "70%", margin: "auto", padding: '60px 20px' }}>
             <h1>DANH SÁCH SẢN PHẨM</h1>
-            <ol className="breadcrumb" style={{ fontSize: "20px", marginBottom: 50 }}>
-                <li className="breadcrumb-item active"><Link to="/">Trang chủ</Link></li>
-                <li className="breadcrumb-item active">{parentCategoryName}</li>
-                {childCategoryName && <li className="breadcrumb-item active">{childCategoryName}</li>}
-            </ol>
+            <Breadcrumb style={{ fontSize: 20, marginBottom: 50 }}>
+                <Breadcrumb.Item>
+                    <a href="/">Trang chủ</a>
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>{parentCategoryName}</Breadcrumb.Item>
+                {childCategoryName && <Breadcrumb.Item>{childCategoryName}</Breadcrumb.Item>}
+            </Breadcrumb>
+
             <div>
                 <Row gutter={[24, 24]}>
                     {products.map((product) => (
@@ -77,9 +80,9 @@ const ListProductCard = () => {
                                 onMouseEnter={() => setHoveredCard(product.id)}
                                 onMouseLeave={() => setHoveredCard(null)}
                                 cover={<img alt={product.name} src={`${import.meta.env.VITE_BACKEND_URL}/images/${product?.images[0].imageUrl}`} style={{ height: '220px', objectFit: 'cover' }} />}
+                                onClick={() => handleGetProductDetail(product)}
                                 actions={[
                                     <Button
-                                        onClick={() => handleGetProductDetail(product)}
                                         type="primary"
                                         style={{ backgroundColor: '#FF6F00', borderColor: '#FF6F00', fontWeight: 'bold', width: '80%' }}
                                         onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FF8F00'; e.currentTarget.style.borderColor = '#FF8F00'; }}

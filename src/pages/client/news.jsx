@@ -73,7 +73,7 @@ const NewsPage = () => {
   return (
     <div style={{ maxWidth: '70%', margin: '80px auto' }}>
       <h1>TIN TỨC</h1>
-      <Breadcrumb style={{fontSize: 20, marginBottom: 50}}>
+      <Breadcrumb style={{ fontSize: 20, marginBottom: 50 }}>
         <Breadcrumb.Item>
           <a href="/">Trang chủ</a>
         </Breadcrumb.Item>
@@ -90,9 +90,9 @@ const NewsPage = () => {
               onMouseLeave={() => setHoveredCard(null)}
               cover={<img alt={product.name} src={`${import.meta.env.VITE_BACKEND_URL}${product?.featuredImageUrl}`} style={{ height: '220px', objectFit: 'cover' }} />}
               bodyStyle={cardBodyStyle}
+              onClick={() => handleGetNewsDetail(product)}
               actions={[
                 <Button
-                  onClick={() => handleGetNewsDetail(product)}
                   type="primary"
                   style={{ backgroundColor: '#FF6F00', borderColor: '#FF6F00', fontWeight: 'bold', width: '80%' }}
                   onMouseEnter={(e) => {

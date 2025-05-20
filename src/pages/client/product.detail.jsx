@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Layout, Row, Col, Image, Rate, Typography, Button, Divider, Modal, Breadcrumb } from 'antd'
 import { PhoneOutlined } from '@ant-design/icons'
 import { useLocation } from 'react-router-dom'
@@ -9,8 +9,13 @@ const { Title, Text } = Typography
 
 const ProductDetailPage = () => {
   const [isContactOpen, setIsContactOpen] = useState(false)
+  const [productId, setProductId] = useState(false)
   const location = useLocation()
   const product = location?.state?.product
+
+  useEffect(() => {
+    setProductId(product?.id)
+  }, [])
 
   return (
     <>
@@ -69,6 +74,7 @@ const ProductDetailPage = () => {
       <ProductContact
         isContactOpen={isContactOpen}
         setIsContactOpen={setIsContactOpen}
+        productId={productId}
       />
     </>
   )

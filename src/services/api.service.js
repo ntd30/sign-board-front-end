@@ -285,13 +285,15 @@ const loadProductsByCategoryAPI = (categoryId, current, pageSize) => {
     return axios.get(URL_BACKEND)
 }
 
-const createContactAPI = (name, phone, email, address) => {
+const createContactAPI = (name, phone, email, address, message, productId) => {
     const URL_BACKEND = `/api/inquiries/create`
     const data = {
         name: name,
         phone: phone,
         email: email,
-        address: address
+        address: address,
+        message: message || '',
+        productId: productId || null,
     }
     return axios.post(URL_BACKEND, data)
 }

@@ -200,8 +200,8 @@ export const NewsDetail = () => {
                             <Divider style={{ marginTop: '30px' }} />
                             <Space size={[0, 8]} wrap style={{ marginTop: '16px' }}>
                                 <Text strong style={{ marginRight: '8px', color: '#595959' }}>Tags:</Text>
-                                <Tag key={slug} color="geekblue" style={{ cursor: 'pointer' }} onClick={() => console.log(`Clicked slug: ${slug}`)}>
-                                    {slug}
+                                <Tag key={type} color="geekblue" style={{ cursor: 'pointer' }} onClick={() => console.log(`Clicked slug: ${slug}`)}>
+                                    {type}
                                 </Tag>
                             </Space>
                         </>

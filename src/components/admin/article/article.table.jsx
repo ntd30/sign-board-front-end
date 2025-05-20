@@ -113,7 +113,7 @@ const ArticleTable = (props) => {
                     {permissionsOfCurrentUser.includes("MANAGE_ARTICLES_UPDATE") && (
                         <EditOutlined
                             style={{ color: "orange", cursor: "pointer" }}
-                            onClick={() => handleEditProduct(record)}
+                            onClick={() => handleEditArticle(record)}
                         />
                     )}
 
@@ -168,6 +168,7 @@ const ArticleTable = (props) => {
                 isUpdateOpen={isUpdateOpen}
                 setIsUpdateOpen={setIsUpdateOpen}
                 dataUpdate={dataUpdate}
+                setDataUpdate={setDataUpdate}
                 loadArticles={loadArticles}
             />
         </>

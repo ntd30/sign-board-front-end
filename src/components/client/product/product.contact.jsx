@@ -1,190 +1,153 @@
 import React, { useEffect } from 'react';
 import { MailTwoTone, PhoneTwoTone, FacebookFilled } from "@ant-design/icons";
 import { Button, Col, Form, Input, Modal, notification, Row, Typography, Space, Divider } from "antd";
-
-// Mock API call for demonstration
-const createContactAPI = async (name, phone, email, address) => {
-    console.log("Sending contact data:", { name, phone, email, address });
-    return new Promise(resolve => {
-        setTimeout(() => {
-            if (name && phone && email && address) {
-                resolve({ data: { success: true, message: "Contact created successfully!" } });
-            } else {
-                resolve({ message: "Mock API Error: Missing required fields." });
-            }
-        }, 1000);
-    });
-};
-
+import { createContactAPI } from '../../../services/api.service';
 
 const ProductContact = (props) => {
-    const { isContactOpen, setIsContactOpen } = props;
+    const { isContactOpen, setIsContactOpen, productId } = props; // Add productId prop
     const [form] = Form.useForm();
     const [loadingBtn, setLoadingBtn] = React.useState(false);
 
-    // Custom styles for the modal and its elements, including responsive adjustments
+    // Custom styles (unchanged)
     const customStyles = `
         .gradient-modal .ant-modal-content {
-            /* Gradient đậm hơn và mãnh liệt hơn */
-            background: linear-gradient(135deg, #FFB6C1 0%, #FF82AB 100%); /* LightPink to a deeper Pink */
+            background: linear-gradient(135deg, #FFB6C1 0%, #FF82AB 100%);
             border-radius: 15px;
-            padding: 0; 
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3); /* Bóng đổ nhiều hơn */
+            padding: 0;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
         }
-
         .gradient-modal .ant-modal-header {
-            /* Gradient đậm hơn cho header */
-            background: linear-gradient(135deg, #FF4500 0%, #DC143C 100%); /* OrangeRed to Crimson */
+            background: linear-gradient(135deg, #FF4500 0%, #DC143C 100%);
             border-top-left-radius: 15px;
             border-top-right-radius: 15px;
             border-bottom: none;
             padding: 20px 24px;
         }
-        
         .gradient-modal .ant-modal-title {
-            color: #FFFFFF !important; 
+            color: #FFFFFF !important;
             font-weight: bold;
-            font-size: 24px !important; 
+            font-size: 24px !important;
         }
-
         .gradient-modal .ant-modal-body {
             padding: 24px;
-            padding-top: 20px; 
+            padding-top: 20px;
         }
-        
         .gradient-modal .ant-modal-close-x {
-            color: #FFFFFF; 
+            color: #FFFFFF;
             font-size: 18px;
         }
         .gradient-modal .ant-modal-close-x:hover {
-            color: #FFDDE1; /* Lighter pink on hover */
+            color: #FFDDE1;
         }
-
         .contact-info-column {
-            /* Gradient đậm hơn cho cột thông tin */
-            background: linear-gradient(to bottom right, #FFC0CB 0%, #FFB6C1 100%); /* Pink to LightPink */
+            background: linear-gradient(to bottom right, #FFC0CB 0%, #FFB6C1 100%);
             padding: 24px;
             border-radius: 10px;
-            box-shadow: 0 6px 18px rgba(0,0,0,0.2); /* Bóng đổ nhiều hơn */
-            height: 90%; 
+            box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+            height: 90%;
             display: flex;
             flex-direction: column;
-            justify-content: center; 
+            justify-content: center;
         }
-
         .contact-info-title {
             font-weight: bold;
             text-align: center;
-            color: #C71585; /* MediumVioletRed - màu đậm hơn */
+            color: #C71585;
             margin-bottom: 20px;
-            font-size: 19px; /* Tăng nhẹ kích thước */
+            font-size: 19px;
         }
-        
         .contact-info-item {
             display: flex;
             align-items: center;
-            /* justify-content: center; /* Căn giữa nội dung item nếu cần */
             margin-bottom: 15px;
             font-size: 16px;
-            color: #4A4A4A; /* Màu chữ đậm hơn một chút */
+            color: #4A4A4A;
         }
-
         .contact-info-item .anticon {
-            font-size: 22px; 
+            font-size: 22px;
             margin-right: 12px;
-            color: #B22222; /* Firebrick - màu icon đậm hơn */
+            color: #B22222;
         }
-        
         .social-contact-title {
             font-weight: bold;
             text-align: center;
-            color: #C71585; /* MediumVioletRed - màu đậm hơn */
+            color: #C71585;
             margin-top: 25px;
             margin-bottom: 15px;
-            font-size: 18px; /* Tăng nhẹ kích thước */
+            font-size: 18px;
         }
-
         .social-icons-container {
             display: flex;
             justify-content: center;
-            gap: 25px; 
+            gap: 25px;
         }
-
         .social-icon-link {
-            font-size: 32px; 
+            font-size: 32px;
             transition: transform 0.2s ease-in-out, color 0.2s ease-in-out;
         }
-        
         .social-icon-link.facebook:hover {
-            color: #1877F2; 
-            transform: scale(1.15); /* Tăng nhẹ hiệu ứng hover */
+            color: #1877F2;
+            transform: scale(1.15);
         }
-
         .social-icon-link.zalo:hover {
-            color: #0068FF; 
-            transform: scale(1.15); /* Tăng nhẹ hiệu ứng hover */
+            color: #0068FF;
+            transform: scale(1.15);
         }
-
         .submit-button-gradient {
-            /* Gradient mãnh liệt hơn cho nút */
-            background: linear-gradient(to right, #D2042D, #FF4500) !important; /* Scarlet to OrangeRed */
+            background: linear-gradient(to right, #D2042D, #FF4500) !important;
             border: none !important;
             color: white !important;
             font-weight: bold;
             transition: all 0.3s ease;
         }
         .submit-button-gradient:hover {
-            box-shadow: 0 6px 15px rgba(220, 20, 60, 0.6); /* Bóng đổ đậm hơn cho nút */
-            transform: translateY(-3px); /* Nhô lên nhiều hơn */
+            box-shadow: 0 6px 15px rgba(220, 20, 60, 0.6);
+            transform: translateY(-3px);
         }
-
         .gradient-modal .ant-form-item-label > label {
-            color: #A52A2A; /* Brown - màu label đậm hơn */
+            color: #A52A2A;
             font-weight: 500;
         }
-
-        /* Responsive Adjustments */
         @media (max-width: 767px) {
             .gradient-modal .ant-modal-body {
-                padding: 16px; 
+                padding: 16px;
             }
             .gradient-modal .ant-modal-header {
-                padding: 15px 16px; 
+                padding: 15px 16px;
             }
             .gradient-modal .ant-modal-title {
-                font-size: 20px !important; 
+                font-size: 20px !important;
             }
             .contact-info-column {
-                padding: 16px; 
+                padding: 16px;
             }
             .contact-info-title, .social-contact-title {
-                font-size: 17px; 
+                font-size: 17px;
                 margin-bottom: 15px;
             }
             .contact-info-item {
-                font-size: 15px; 
+                font-size: 15px;
                 margin-bottom: 12px;
             }
             .contact-info-item .anticon {
-                font-size: 20px; 
+                font-size: 20px;
                 margin-right: 10px;
             }
             .social-icons-container {
-                gap: 20px; 
+                gap: 20px;
             }
             .social-icon-link {
-                font-size: 28px; 
+                font-size: 28px;
             }
             .gradient-modal .ant-form-item-label > label {
-                font-size: 14px; 
+                font-size: 14px;
             }
             .submit-button-gradient {
-                font-size: 15px; 
-                height: 38px !important; 
+                font-size: 15px;
+                height: 38px !important;
             }
         }
-
-        @media (max-width: 480px) { 
+        @media (max-width: 480px) {
             .gradient-modal .ant-modal-body {
                 padding: 12px;
             }
@@ -203,7 +166,7 @@ const ProductContact = (props) => {
             .social-icon-link {
                 font-size: 26px;
             }
-             .submit-button-gradient {
+            .submit-button-gradient {
                 height: 36px !important;
             }
         }
@@ -229,29 +192,37 @@ const ProductContact = (props) => {
                 document.head.removeChild(existingStyleSheet);
             }
         };
-    }, [isContactOpen, customStyles]);
-
+    }, [isContactOpen]);
 
     const handleContact = async (values) => {
         setLoadingBtn(true);
-        const { name, phone, email, address } = values;
-        const res = await createContactAPI(name, phone, email, address);
-        setLoadingBtn(false);
+        const { name, phone, email, address, message } = values;
+        try {
+            const res = await createContactAPI(name, phone, email, address, message, productId);
 
-        if (res.data && res.data.success) {
-            resetAndCloseModal();
-            notification.success({
-                message: "Gửi Liên Hệ Thành Công",
-                description: "Chúng tôi đã nhận được thông tin của bạn và sẽ phản hồi sớm nhất!",
-                placement: 'topRight'
-            });
-        } else {
+            console.log("resprocont", res)
+
+            if (res.data) {
+                resetAndCloseModal();
+                notification.success({
+                    message: "Gửi Liên Hệ Thành Công",
+                    description: "Chúng tôi đã nhận được thông tin của bạn và sẽ phản hồi sớm nhất!",
+                });
+            } else {
+                notification.error({
+                    message: "Lỗi Gửi Liên Hệ",
+                    description: res.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.",
+                });
+            }
+        } catch (error) {
+            console.error("Contact API Error:", error.response?.data || error.message);
             notification.error({
                 message: "Lỗi Gửi Liên Hệ",
-                description: res.message || "Đã có lỗi xảy ra. Vui lòng thử lại.",
+                description: error.response?.data?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.",
                 placement: 'topRight'
             });
         }
+        setLoadingBtn(false);
     };
 
     const resetAndCloseModal = () => {
@@ -264,7 +235,6 @@ const ProductContact = (props) => {
             <path d="M790.8 409.5c-13.2-10.7-63.4-43.8-100.2-65.2 45.1-65.5 71.3-149.2 71.3-239.5C761.9 46.5 715.4 0 657.1 0H366.9C308.6 0 262.1 46.5 262.1 104.8c0 90.2 26.2 174 71.3 239.5 -36.8 21.4-87 54.5-100.2 65.2C130.9 485.2 40.9 600.5 40.9 728.9c0 162.5 211.6 295.1 471.1 295.1s471.1-132.5 471.1-295.1c0-128.4-90-243.7-192.3-319.4zM430.4 113.9h163.3c11.4 0 20.6 9.2 20.6 20.6s-9.2 20.6-20.6 20.6H430.4c-11.4 0-20.6-9.2-20.6-20.6s9.2-20.6 20.6-20.6z m142.7 633.2c-16.6 0-30-13.4-30-30s13.4-30 30-30 30 13.4 30 30 -13.4 30-30 30z m88.8-107.8c-16.6 0-30-13.4-30-30s13.4-30 30-30 30 13.4 30 30 -13.4 30-30 30z m0-121.2c-16.6 0-30-13.4-30-30s13.4-30 30-30 30 13.4 30 30 -13.4 30-30 30z m0-121.1c-16.6 0-30-13.4-30-30s13.4-30 30-30 30 13.4 30 30 -13.4 30-30 30z m-250.7-7.2c-11.4 0-20.6-9.2-20.6-20.6V430.4c0-11.4 9.2-20.6 20.6-20.6s20.6 9.2 20.6 20.6v159.4c0 11.4-9.2 20.6-20.6 20.6z" />
         </svg>
     );
-
 
     return (
         <>
@@ -317,7 +287,14 @@ const ProductContact = (props) => {
                                 name="address"
                                 rules={[{ required: true, message: 'Vui lòng nhập Địa chỉ!' }]}
                             >
-                                <Input.TextArea rows={3} placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố" />
+                                <Input rows={3} placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố" />
+                            </Form.Item>
+
+                            <Form.Item
+                                label="Lời nhắn"
+                                name="message"
+                            >
+                                <Input.TextArea rows={3} placeholder="Nội dung tin nhắn hoặc yêu cầu của bạn" />
                             </Form.Item>
 
                             <Form.Item>
@@ -342,15 +319,15 @@ const ProductContact = (props) => {
                             </Typography.Title>
 
                             <div className="contact-info-item">
-                                <MailTwoTone twoToneColor="#B22222" /> {/* Updated icon color */}
+                                <MailTwoTone twoToneColor="#B22222" />
                                 <Typography.Text>techbyte@gmail.com</Typography.Text>
                             </div>
                             <div className="contact-info-item">
-                                <PhoneTwoTone twoToneColor="#B22222" /> {/* Updated icon color */}
+                                <PhoneTwoTone twoToneColor="#B22222" />
                                 <Typography.Text>0973 454 140</Typography.Text>
                             </div>
 
-                            <Divider style={{ borderColor: '#B22222', margin: '25px 0' }}><span style={{ color: '#B22222' }}>Hoặc</span></Divider> {/* Updated divider color */}
+                            <Divider style={{ borderColor: '#B22222', margin: '25px 0' }}><span style={{ color: '#B22222' }}>Hoặc</span></Divider>
 
                             <Typography.Title level={5} className="social-contact-title">
                                 KẾT NỐI QUA MẠNG XÃ HỘI
@@ -360,7 +337,7 @@ const ProductContact = (props) => {
                                     <FacebookFilled />
                                 </a>
                                 <a href="https://zalo.me/yourzalo" target="_blank" rel="noopener noreferrer" className="social-icon-link zalo">
-                                    <img alt='zalo' src='/img/contact/zalo.png' style={{width: "28px"}}/>
+                                    <img alt='zalo' src='/img/contact/zalo.png' style={{ width: "28px" }} />
                                 </a>
                             </Space>
                         </div>
