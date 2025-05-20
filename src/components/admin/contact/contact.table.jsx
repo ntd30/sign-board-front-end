@@ -1,7 +1,8 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { notification, Popconfirm, Space, Table } from "antd";
+import { Form, Input, Modal, notification, Popconfirm, Select, Space, Table } from "antd";
 import moment from "moment";
 import { useEffect, useState } from "react";
+import { updateContactAPI } from "../../../services/api.service";
 
 const ContactTable = (props) => {
     const { dataContacts, loadContacts, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props;
@@ -9,6 +10,7 @@ const ContactTable = (props) => {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
+    const [form] = Form.useForm();
 
     useEffect(() => {
         loadContacts();
@@ -23,28 +25,31 @@ const ContactTable = (props) => {
         }
     };
 
-    const handleGetDetailContact = (record) => {
-        setDataUpdate(record);
-        setIsDetailOpen(true);
-    };
+    // const handleGetDetailContact = (record) => {
+    //     setDataUpdate(record);
+    //     setIsDetailOpen(true);
+    // };
 
     const handleEditContact = (record) => {
         setDataUpdate(record);
         setIsUpdateOpen(true);
     };
 
-    const handleDeleteContact = async (idDelete) => {
-        const res = await deleteContactAPI(idDelete);
+    const handleUpdateContact = async (values) => {
+        const { id, status } = values
+        const res = await updateContactAPI(id, status);
 
         if (res.data) {
             notification.success({
-                message: "Xóa liên hệ",
-                description: "Xóa liên hệ thành công!",
+                message: "Cập nhật liên hệ",
+                description: "Cập nhật liên hệ thành công!",
             });
+            setIsUpdateOpen(false);
+            form.resetFields();
             await loadContacts();
         } else {
             notification.error({
-                message: "Lỗi khi xóa liên hệ",
+                message: "Lỗi khi Cập nhật liên hệ",
                 description: JSON.stringify(res.message),
             });
         }
@@ -103,34 +108,84 @@ const ContactTable = (props) => {
             render: (date) => (date ? moment(date).format("DD/MM/YYYY HH:mm:ss") : "-"),
             width: 180,
         },
-        // {
-        //     title: "Action",
-        //     render: (_, record) => (
-        //         <Space size="middle" style={{ gap: "20px" }}>
-        //             <EditOutlined
-        //                 style={{ color: "orange", cursor: "pointer" }}
-        //                 onClick={() => handleEditContact(record)}
-        //             />
-        //             <Popconfirm
-        //                 title="Xóa liên hệ"
-        //                 description="Bạn có chắc muốn xóa liên hệ này?"
-        //                 onConfirm={() => handleDeleteContact(record.id)}
-        //                 onCancel={() => {}}
-        //                 okText="Xác nhận"
-        //                 cancelText="Hủy"
-        //                 placement="left"
-        //             >
-        //                 <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
-        //             </Popconfirm>
-        //         </Space>
-        //     ),
-        //     width: 120,
-        //     align: "center",
-        // },
+        {
+            title: "Trạng thái",
+            dataIndex: "status",
+            render: (stt) => (stt === "NOCONTACT" ? "Chưa liên hệ" : (stt === "CONTACTED" ? "Đã liên hệ" : "")),
+        },
+        {
+            title: "Action",
+            render: (_, record) => (
+                <Space size="middle" style={{ gap: "20px" }}>
+                    <EditOutlined
+                        style={{ color: "orange", cursor: "pointer" }}
+                        onClick={() => handleEditContact(record)}
+                    />
+                    {/* <Popconfirm
+                        title="Xóa liên hệ"
+                        description="Bạn có chắc muốn xóa liên hệ này?"
+                        onConfirm={() => handleDeleteContact(record.id)}
+                        onCancel={() => {}}
+                        okText="Xác nhận"
+                        cancelText="Hủy"
+                        placement="left"
+                    >
+                        <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
+                    </Popconfirm> */}
+                </Space>
+            ),
+            width: 120,
+            align: "center",
+        },
     ];
 
     return (
         <>
+            <Modal
+                title="Cập nhật Bản thiết kế"
+                open={isUpdateOpen}
+                onOk={() => form.submit()}
+                onCancel={() => {
+                    setIsUpdateOpen(false);
+                    form.resetFields();
+                }}
+                okText="Lưu"
+                cancelText="Hủy"
+                width={600}
+            >
+                <Form
+                    form={form}
+                    layout="vertical"
+                    onFinish={handleUpdateContact}
+                >
+                    <Form.Item
+                        label="ID contact"
+                        name="id"
+                        initialValue={dataUpdate?.id}
+                        hidden
+                    >
+                        <Input disabled />
+                    </Form.Item>
+                    <Form.Item
+                        label="Tên người sở hữu"
+                        name="name"
+                        initialValue={dataUpdate?.name}
+                    >
+                        <Input disabled />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Trạng thái"
+                        name="status"
+                        rules={[{ required: true, message: "Vui lòng chọn trạng thái" }]}
+                    >
+                        <Select placeholder="Chọn trạng thái">
+                            <Option value="NOCONTACT">Chưa liên hệ</Option>
+                            <Option value="CONTACTED">Đã liên hệ</Option>
+                        </Select>
+                    </Form.Item>
+                </Form>
+            </Modal>
             <Table
                 dataSource={dataContacts}
                 columns={columns}

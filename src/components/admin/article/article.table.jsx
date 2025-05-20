@@ -7,7 +7,7 @@ import { deleteArticleAPI } from "../../../services/api.service";
 import ArticleUpdate from "./article.update";
 
 const ArticleTable = (props) => {
-    const { dataArticles, loadArticles, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props;
+    const { dataArticles, loadArticles, current, setCurrent, pageSize, setPageSize, total, loadingTable, permissionsOfCurrentUser } = props;
 
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
@@ -110,21 +110,26 @@ const ArticleTable = (props) => {
             title: "Action",
             render: (_, record) => (
                 <Space size="middle" style={{ gap: "20px" }}>
-                    <EditOutlined
-                        style={{ color: "orange", cursor: "pointer" }}
-                        onClick={() => handleEditArticle(record)}
-                    />
-                    <Popconfirm
-                        title="Xóa bài viết"
-                        description="Bạn có chắc muốn xóa bài viết này?"
-                        onConfirm={() => handleDeleteArticle(record.id)}
-                        onCancel={() => { }}
-                        okText="Xác nhận"
-                        cancelText="Hủy"
-                        placement="left"
-                    >
-                        <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
-                    </Popconfirm>
+                    {permissionsOfCurrentUser.includes("MANAGE_ARTICLES_UPDATE") && (
+                        <EditOutlined
+                            style={{ color: "orange", cursor: "pointer" }}
+                            onClick={() => handleEditProduct(record)}
+                        />
+                    )}
+
+                    {permissionsOfCurrentUser.includes("MANAGE_ARTICLES_DELETE") && (
+                        <Popconfirm
+                            title="Xóa bài viết"
+                            description="Bạn có chắc muốn xóa bài viết này?"
+                            onConfirm={() => handleDeleteArticle(record.id)}
+                            onCancel={() => { }}
+                            okText="Xác nhận"
+                            cancelText="Hủy"
+                            placement="left"
+                        >
+                            <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
+                        </Popconfirm>
+                    )}
                 </Space>
             ),
             width: 120,

@@ -1,6 +1,7 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
 import DesignTable from "../../components/admin/design/design.table"
 import { fetchAllDesignsAPI } from "../../services/api.service"
+import { AuthContext } from "../../components/context/auth.context"
 
 const DesignAdminPage = () => {
     const [dataDesigns, setDataDesigns] = useState([])
@@ -9,9 +10,14 @@ const DesignAdminPage = () => {
     const [total, setTotal] = useState(0)
     const [loadingTable, setLoadingTable] = useState(false)
 
+    const { user } = useContext(AuthContext);
+    const permissionsOfCurrentUser = (user?.permissions || []).map(perm => perm.name)
+
     const loadDesigns = async () => {
         setLoadingTable(true)
         const res = await fetchAllDesignsAPI(current, pageSize)
+
+        console.log(res)
 
         if (res.data) {
             setTotal(res?.data?.totalElements)
@@ -32,6 +38,7 @@ const DesignAdminPage = () => {
                 loadDesigns={loadDesigns}
                 dataDesigns={dataDesigns}
                 loadingTable={loadingTable}
+                permissionsOfCurrentUser={permissionsOfCurrentUser}
             />
         </>
     )

@@ -6,7 +6,7 @@ import { deleteDesignAPI, updateDesignAPI } from "../../../services/api.service"
 const { Option } = Select;
 
 const DesignTable = (props) => {
-    const { dataDesigns, loadDesigns, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props;
+    const { dataDesigns, loadDesigns, current, setCurrent, pageSize, setPageSize, total, loadingTable, permissionsOfCurrentUser } = props;
 
     const [isUpdateOpen, setIsUpdateOpen] = useState(false); // State for update modal
     const [dataUpdate, setDataUpdate] = useState(null); // State for selected record
@@ -59,6 +59,8 @@ const DesignTable = (props) => {
     const handleUpdateDesign = async (values) => {
         try {
             const res = await updateDesignAPI(dataUpdate.designId, values.description, values.status);
+
+            console.log("res123", res)
 
             if (res.data) {
                 notification.success({
@@ -120,33 +122,52 @@ const DesignTable = (props) => {
             title: 'Số điện thoại',
             dataIndex: 'designerPhoneNumber',
         },
-        {
-            title: 'Mô tả',
-            dataIndex: 'description',
-        },
+        // {
+        //     title: 'Mô tả',
+        //     dataIndex: 'description',
+        // },
         {
             title: 'Trạng thái',
             dataIndex: 'status',
+            render: (value) => {
+                switch (value) {
+                    case 'NEW':
+                        return 'Mới';
+                    case 'INCONTACT':
+                        return 'Đang liên hệ';
+                    case 'INPERFORM':
+                        return 'Đang thực hiện';
+                    case 'DONE':
+                        return 'Đã hoàn thành';
+                    default:
+                        return value; // Fallback to original value if not matched
+                }
+            },
         },
         {
             title: 'Action',
             render: (_, record) => (
                 <Space size="middle" style={{ gap: "20px" }}>
-                    <EditOutlined
-                        style={{ color: "orange", cursor: "pointer" }}
-                        onClick={() => handleEditDesign(record)}
-                    />
-                    <Popconfirm
-                        title="Xóa Bản thiết kế"
-                        description="Bạn có chắc muốn xóa Bản thiết kế này?"
-                        onConfirm={() => handleDeleteDesign(record.designId)}
-                        onCancel={() => { }}
-                        okText="Xác nhận"
-                        cancelText="Hủy"
-                        placement='left'
-                    >
-                        <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
-                    </Popconfirm>
+                    {permissionsOfCurrentUser.includes("MANAGE_DESIGNS_UPDATE") && (
+                        <EditOutlined
+                            style={{ color: "orange", cursor: "pointer" }}
+                            onClick={() => handleEditDesign(record)}
+                        />
+                    )}
+
+                    {permissionsOfCurrentUser.includes("MANAGE_DESIGNS_DELETE") && (
+                        <Popconfirm
+                            title="Xóa Bản thiết kế"
+                            description="Bạn có chắc muốn xóa Bản thiết kế này?"
+                            onConfirm={() => handleDeleteDesign(record.designId)}
+                            onCancel={() => { }}
+                            okText="Xác nhận"
+                            cancelText="Hủy"
+                            placement='left'
+                        >
+                            <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
+                        </Popconfirm>
+                    )}
                 </Space>
             ),
         },
@@ -218,13 +239,13 @@ const DesignTable = (props) => {
                     >
                         <Input disabled />
                     </Form.Item>
-                    <Form.Item
+                    {/* <Form.Item
                         label="Mô tả"
                         name="description"
                         rules={[{ required: true, message: "Vui lòng nhập mô tả" }]}
                     >
                         <Input.TextArea rows={4} />
-                    </Form.Item>
+                    </Form.Item> */}
                     <Form.Item
                         label="Trạng thái"
                         name="status"

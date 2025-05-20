@@ -115,7 +115,6 @@ const UserUpdate = (props) => {
                 <Form.Item
                     label="Địa chỉ"
                     name="address"
-                    rules={[{ required: true, message: 'Địa chỉ không được bỏ trống!' }]}
                 >
                     <Input />
                 </Form.Item>
@@ -138,7 +137,7 @@ const UserUpdate = (props) => {
                 >
                     <Select placeholder="Chọn vai trò">
                         {roles.map((role) => (
-                            <Select.Option key={role.id} value={role.name}>
+                            <Select.Option key={role.id} value={role.id}>
                                 {role.name}
                             </Select.Option>
                         ))}

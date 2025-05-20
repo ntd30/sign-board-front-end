@@ -12,7 +12,6 @@ const ContactPage = () => {
     const loadContacts = async () => {
         setLoadingTable(true)
         const res = await fetchAllContactAPI(current, pageSize)
-        console.log("xres", res)
         if (res?.data) {
             setTotal(res?.data?.totalElements)
         }

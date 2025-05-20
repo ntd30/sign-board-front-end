@@ -1,7 +1,8 @@
-import { Children, useState } from "react"
+import { Children, useContext, useState } from "react"
 import { fetchAllCategoriesAPI, fetchAllParentCategoriesAPI, fetchAllProductsAPI } from "../../services/api.service"
 import ProductCreate from "../../components/admin/product/product.create"
 import ProductTable from "../../components/admin/product/product.table"
+import { AuthContext } from "../../components/context/auth.context"
 
 const ProductPage = () => {
     const [dataProducts, setDataProducts] = useState([])
@@ -11,6 +12,9 @@ const ProductPage = () => {
     const [pageSize, setPageSize] = useState(5)
     const [total, setTotal] = useState(0)
     const [loadingTable, setLoadingTable] = useState(false)
+
+    const { user } = useContext(AuthContext);
+    const permissionsOfCurrentUser = (user?.permissions || []).map(perm => perm.name)
 
     const loadProducts = async () => {
         setLoadingTable(true)
@@ -36,11 +40,14 @@ const ProductPage = () => {
 
     return (
         <>
-            <ProductCreate
-                loadProducts={loadProducts}
-                dataCategories={dataCategories}
-                getCategoriesSelect={getCategoriesSelect}
-            />
+            {permissionsOfCurrentUser.includes("CREATE_PRODUCTS") && (
+                <ProductCreate
+                    loadProducts={loadProducts}
+                    dataCategories={dataCategories}
+                    getCategoriesSelect={getCategoriesSelect}
+                />
+            )}
+
             <ProductTable
                 current={current}
                 setCurrent={setCurrent}
@@ -51,6 +58,7 @@ const ProductPage = () => {
                 dataProducts={dataProducts}
                 loadingTable={loadingTable}
                 dataCategories={dataCategories}
+                permissionsOfCurrentUser={permissionsOfCurrentUser}
             />
         </>
     )

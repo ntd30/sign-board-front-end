@@ -4,6 +4,8 @@ import { Card, Col, Collapse, Row, Space, Switch, Tooltip } from "antd";
 import { ALL_MODULES, colorMethod } from "../../../config/permission";
 import { grey } from '@ant-design/colors';
 
+const excludeIds = [4, 6];
+
 const ModuleApi = (props) => {
     const { permissionIds, setPermissionIds, listPermissionDeletes, setListPermissionDeletes } = props;
     const [listPermissions, setListPermissions] = useState([]);
@@ -53,6 +55,7 @@ const ModuleApi = (props) => {
         children: (
             <Row gutter={[16, 16]}>
                 {listPermissions
+                    ?.filter((value) => !excludeIds.includes(value.id))
                     ?.filter((value) => value?.module === item.value)
                     ?.map((value, i) => (
                         <Col lg={12} md={12} sm={24} key={`${i}-child-${item.module}`}>

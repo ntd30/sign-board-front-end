@@ -297,7 +297,7 @@ const createContactAPI = (name, phone, email, address) => {
 }
 
 const updateDesignAPI = (id, desc, status) => {
-    const URL_BACKEND = `/api/admin/user-designs/${id}?desc=${desc}&status=${status}`
+    const URL_BACKEND = `/api/admin/user-designs/${id}?status=${status}`
     return axios.put(URL_BACKEND)
 }
 
@@ -355,6 +355,11 @@ const updateArticleAPI = async (id, articleData, imageFile) => {
     }
 };
 
+const updateContactAPI = (id, status) => {
+    const URL_BACKEND = `/api/admin/inquiry/${id}/status?status=${status}`
+    return axios.put(URL_BACKEND)
+}
+
 export {
     fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI,
     fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI, loginWithGoogle, getAuthCode,
@@ -362,5 +367,5 @@ export {
     createRoleAPI, fetchAllPermissionsAPI, createPermissionAPI, updatePermissionAPI, deletePermissionAPI, fetchAllParentCategoriesAPI,
     createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI, fetchAllDesignsAPI,
     loadProductsByCategoryAPI, createContactAPI, deleteDesignAPI, deleteRoleAPI, fetchAllArticlesAPI, fetchAllContactAPI,
-    deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro, updateDesignAPI
+    deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro, updateDesignAPI, updateContactAPI
 }

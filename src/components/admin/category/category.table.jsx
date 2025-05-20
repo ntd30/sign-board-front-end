@@ -5,7 +5,7 @@ import CategoryUpdate from "./category.update";
 import { deleteCategoryAPI } from "../../../services/api.service";
 
 const CategoryTable = (props) => {
-    const { dataCategories, current, setCurrent, pageSize, setPageSize, total, loadingTable, loadCategories, dataParentCategories } = props
+    const { dataCategories, current, setCurrent, pageSize, setPageSize, total, loadingTable, loadCategories, permissionsOfCurrentUser } = props
 
     const [isDetailOpen, setIsDetailOpen] = useState(false)
     const [isUpdateOpen, setIsUpdateOpen] = useState(false)
@@ -88,22 +88,26 @@ const CategoryTable = (props) => {
             title: 'Action',
             render: (_, record) => (
                 <Space size="middle" style={{ gap: "20px" }}>
-                    <EditOutlined
-                        style={{ color: "orange", cursor: "pointer" }}
-                        onClick={() => handleEditCategory(record)}
-                    />
+                    {permissionsOfCurrentUser.includes("MANAGE_CATEGORIES_UPDATE") && (
+                        <EditOutlined
+                            style={{ color: "orange", cursor: "pointer" }}
+                            onClick={() => handleEditCategory(record)}
+                        />
+                    )}
 
-                    <Popconfirm
-                        title="Xóa Danh mục"
-                        description="Bạn có chắc muốn xóa Danh mục này?"
-                        onConfirm={() => handleDeleteCategory(record.id)}
-                        onCancel={() => { }}
-                        okText="Xác nhận"
-                        cancelText="Hủy"
-                        placement='left'
-                    >
-                        <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
-                    </Popconfirm>
+                    {permissionsOfCurrentUser.includes("MANAGE_CATEGORIES_DELETE") && (
+                        <Popconfirm
+                            title="Xóa Danh mục"
+                            description="Bạn có chắc muốn xóa Danh mục này?"
+                            onConfirm={() => handleDeleteCategory(record.id)}
+                            onCancel={() => { }}
+                            okText="Xác nhận"
+                            cancelText="Hủy"
+                            placement='left'
+                        >
+                            <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
+                        </Popconfirm>
+                    )}
                 </Space>
             ),
         },

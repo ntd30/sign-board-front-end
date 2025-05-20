@@ -1,11 +1,12 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { notification, Popconfirm, Space, Table } from "antd";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ProductUpdate from "./product.update";
 import { deleteProductAPI } from "../../../services/api.service";
 
 const ProductTable = (props) => {
-    const { dataProducts, loadProducts, current, setCurrent, pageSize, setPageSize, total, loadingTable, dataCategories } = props
+    const { dataProducts, loadProducts, current, setCurrent, pageSize, setPageSize, total, loadingTable,
+        dataCategories, permissionsOfCurrentUser } = props
     console.log("dataProducts", dataProducts)
 
     const [isDetailOpen, setIsDetailOpen] = useState(false)
@@ -119,22 +120,26 @@ const ProductTable = (props) => {
             title: 'Action',
             render: (_, record) => (
                 <Space size="middle" style={{ gap: "20px" }}>
-                    <EditOutlined
-                        style={{ color: "orange", cursor: "pointer" }}
-                        onClick={() => handleEditProduct(record)}
-                    />
+                    {permissionsOfCurrentUser.includes("UPDATE_PRODUCTS") && (
+                        <EditOutlined
+                            style={{ color: "orange", cursor: "pointer" }}
+                            onClick={() => handleEditProduct(record)}
+                        />
+                    )}
 
-                    <Popconfirm
-                        title="Xóa Sản phẩm"
-                        description="Bạn có chắc muốn xóa Sản phẩm này?"
-                        onConfirm={() => handleDeleteProduct(record.id)}
-                        onCancel={() => { }}
-                        okText="Xác nhận"
-                        cancelText="Hủy"
-                        placement='left'
-                    >
-                        <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
-                    </Popconfirm>
+                    {permissionsOfCurrentUser.includes("DELETE_PRODUCTS") && (
+                        <Popconfirm
+                            title="Xóa Sản phẩm"
+                            description="Bạn có chắc muốn xóa Sản phẩm này?"
+                            onConfirm={() => handleDeleteProduct(record.id)}
+                            onCancel={() => { }}
+                            okText="Xác nhận"
+                            cancelText="Hủy"
+                            placement='left'
+                        >
+                            <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
+                        </Popconfirm>
+                    )}
                 </Space>
             ),
         },

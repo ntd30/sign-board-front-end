@@ -17,6 +17,8 @@ const LoginAdminPage = () => {
         setLoading(true)
         const res = await loginAPI(values.username, values.password)
 
+        console.log("res", res)
+
         if (res.data) {
             if (res.data.user.roleName === "Customer") {
                 message.error("Đăng nhập thất bại")

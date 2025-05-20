@@ -8,7 +8,8 @@ export const AuthContext = createContext({
     phoneNumber: "",
     address: "",
     roleName: "",
-    active: ""
+    active: "",
+    permissions: [],
 })
 
 export const AuthWrapper = (props) => {
@@ -20,7 +21,8 @@ export const AuthWrapper = (props) => {
         phoneNumber: "",
         address: "",
         roleName: "",
-        active: ""
+        active: "",
+        permissions: [],
     })
 
     const [isAppLoading, setIsAppLoading] = useState(true)
