@@ -1,82 +1,99 @@
 import { Button, Card, Col, Form, Input, Modal, notification, Row, Switch } from "antd";
 import { useEffect, useState } from "react";
 import ModuleApi from "./module.api";
-import { fetchRoleByIdAPI } from "../../../services/api.service";
+import { ganNhieuQuyenChoVaiTro, goNhieuQuyenChoVaiTro, updateRoleAPI } from "../../../services/api.service";
 
 const { TextArea } = Input;
 
-const RoleUpdate = (props) => {
-    const { isUpdateOpen, setIsUpdateOpen, dataUpdate, loadRoles } = props;
+const RoleUpdate = ({ isUpdateOpen, setIsUpdateOpen, dataUpdate, setDataUpdate, loadRoles }) => {
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [form] = Form.useForm();
     const [permissionIds, setPermissionIds] = useState([]);
+    const [listPermissionDeletes, setListPermissionDeletes] = useState([]);
 
     useEffect(() => {
         if (dataUpdate && dataUpdate.id) {
-            // Fetch role details including permissions
-            const fetchRoleDetails = async () => {
-                try {
-                    const res = await fetchRoleByIdAPI(dataUpdate.id);
-                    console.log("resrole", res)
-                    if (res.data) {
-                        form.setFieldsValue({
-                            id: res.data.id,
-                            name: res.data.name,
-                            description: res.data.description,
-                            active: res.data.active,
-                        });
-                        // Set permissionIds from the role's permissions
-                        const permissions = res.data.permissions || [];
-                        setPermissionIds(permissions.map((perm) => perm.id));
-                    }
-                } catch (error) {
-                    notification.error({
-                        message: "Lỗi khi lấy chi tiết Vai trò",
-                        description: error.message,
-                    });
-                }
-            };
-            fetchRoleDetails();
+            form.setFieldsValue({
+                id: dataUpdate.id,
+                name: dataUpdate.name,
+                description: dataUpdate.description,
+                active: dataUpdate.active,
+            });
+            const permissions = dataUpdate.permissions || [];
+            setPermissionIds(permissions.map((perm) => perm.id));
+            setListPermissionDeletes([]); // Reset deletes on load
         }
     }, [dataUpdate, form]);
 
     const handleUpdateRole = async (values) => {
         setLoadingBtn(true);
-        // try {
-        //     const { name, description, active } = values;
-        //     const res = await updateRoleAPI(dataUpdate.id, {
-        //         name,
-        //         description,
-        //         active,
-        //         permissionIds,
-        //     });
+        try {
+            const { name, description, active } = values;
+            const roleId = Number(dataUpdate.id); // Ensure roleId is a number
+            const res = await updateRoleAPI(roleId, name, active, description);
 
-        //     if (res.data) {
-        //         resetAndCloseModal();
-        //         await loadRoles();
-        //         notification.success({
-        //             message: "Cập nhật Vai trò",
-        //             description: "Cập nhật Vai trò thành công",
-        //         });
-        //     } else {
-        //         notification.error({
-        //             message: "Lỗi Cập nhật Vai trò",
-        //             description: JSON.stringify(res.message),
-        //         });
-        //     }
-        // } catch (error) {
-        //     notification.error({
-        //         message: "Lỗi Cập nhật Vai trò",
-        //         description: error.message,
-        //     });
-        // }
-        setLoadingBtn(false);
+            if (res.data) {
+                let assignSuccess = true;
+                let revokeSuccess = true;
+
+                // Assign permissions
+                if (permissionIds.length > 0) {
+                    const validPermissionIds = permissionIds.map(Number); // Ensure IDs are numbers
+                    const resAssignPermissions = await ganNhieuQuyenChoVaiTro(roleId, validPermissionIds);
+                    if (!resAssignPermissions) {
+                        assignSuccess = false;
+                        notification.error({
+                            message: "Lỗi gán quyền",
+                            description: "Không thể gán các quyền cho vai trò",
+                        });
+                    }
+                }
+
+                // Revoke permissions
+                if (listPermissionDeletes.length > 0) {
+                    const validDeleteIds = listPermissionDeletes.map(Number); // Ensure IDs are numbers
+                    // console.log("listdele", listPermissionDeletes)
+                    // console.log("validde", validDeleteIds)
+                    const resRevokePermissions = await goNhieuQuyenChoVaiTro(roleId, validDeleteIds);
+                    if (!resRevokePermissions) {
+                        revokeSuccess = false;
+                        notification.error({
+                            message: "Lỗi gỡ quyền",
+                            description: "Không thể gỡ các quyền khỏi vai trò",
+                        });
+                    }
+                }
+
+                if (assignSuccess && revokeSuccess) {
+                    resetAndCloseModal();
+                    await loadRoles();
+                    notification.success({
+                        message: "Cập nhật Vai trò",
+                        description: "Cập nhật vai trò và quyền thành công",
+                    });
+                } else {
+                    notification.warning({
+                        message: "Cập nhật Vai trò",
+                        description: "Cập nhật vai trò thành công, nhưng có lỗi khi gán hoặc gỡ quyền",
+                    });
+                }
+            }
+        } catch (error) {
+            notification.error({
+                message: "Lỗi Cập nhật Vai trò",
+                description: error.response?.data?.message || error.message || "Đã xảy ra lỗi không xác định",
+            });
+        } finally {
+            setLoadingBtn(false);
+        }
     };
 
     const resetAndCloseModal = () => {
         form.resetFields();
         setPermissionIds([]);
+        setListPermissionDeletes([]);
         setIsUpdateOpen(false);
+        setDataUpdate(null);
     };
 
     return (
@@ -137,6 +154,8 @@ const RoleUpdate = (props) => {
                                 <ModuleApi
                                     permissionIds={permissionIds}
                                     setPermissionIds={setPermissionIds}
+                                    listPermissionDeletes={listPermissionDeletes}
+                                    setListPermissionDeletes={setListPermissionDeletes}
                                 />
                             </Card>
                         </Form.Item>

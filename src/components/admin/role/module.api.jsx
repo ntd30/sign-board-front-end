@@ -5,7 +5,7 @@ import { ALL_MODULES, colorMethod } from "../../../config/permission";
 import { grey } from '@ant-design/colors';
 
 const ModuleApi = (props) => {
-    const { permissionIds, setPermissionIds } = props;
+    const { permissionIds, setPermissionIds, listPermissionDeletes, setListPermissionDeletes } = props;
     const [listPermissions, setListPermissions] = useState([]);
 
     useEffect(() => {
@@ -18,11 +18,31 @@ const ModuleApi = (props) => {
         init();
     }, []);
 
-    const handleSingleCheck = (value, permissionId) => {
-        if (value) {
-            setPermissionIds([...permissionIds, permissionId]);
+    const handleSingleCheck = (checked, permissionId) => {
+        if (checked) {
+            // Add to permissionIds
+            setPermissionIds((prevIds) => {
+                if (!prevIds.includes(permissionId)) {
+                    return [...prevIds, permissionId];
+                }
+                return prevIds;
+            });
+            // Remove from listPermissionDeletes if present
+            setListPermissionDeletes((prevDeletes) =>
+                prevDeletes.filter((id) => id !== permissionId)
+            );
         } else {
-            setPermissionIds(permissionIds.filter((id) => id !== permissionId));
+            // Remove from permissionIds
+            setPermissionIds((prevIds) =>
+                prevIds.filter((id) => id !== permissionId)
+            );
+            // Add to listPermissionDeletes
+            setListPermissionDeletes((prevDeletes) => {
+                if (!prevDeletes.includes(permissionId)) {
+                    return [...prevDeletes, permissionId];
+                }
+                return prevDeletes;
+            });
         }
     };
 
@@ -43,7 +63,10 @@ const ModuleApi = (props) => {
                                 <div style={{ marginRight: 10 }}>
                                     <Switch
                                         checked={permissionIds.includes(value.id)}
-                                        onChange={(v) => handleSingleCheck(v, value.id)}
+                                        onChange={(v) => {
+                                            handleSingleCheck(v, value.id)
+                                        }
+                                        }
                                     />
                                 </div>
                                 <div>

@@ -78,7 +78,7 @@ const updateUserAPI = (id, fullName, phoneNumber, address, active, roleName) => 
 }
 
 const deleteUserAPI = (id) => {
-    const URL_BACKEND = `/api/v1/user/${id}`
+    const URL_BACKEND = `/api/admin/users/${id}`
     return axios.delete(URL_BACKEND)
 }
 
@@ -166,7 +166,7 @@ const uploadDesign = (userId, designImage, designLink) => {
 }
 
 const fetchAllRolesAPI = (current, pageSize) => {
-    const URL_BACKEND = `/api/admin/roles?page=${current}&size=${pageSize}`
+    const URL_BACKEND = `/api/admin/roles?page=${current - 1}&size=${pageSize}`
     return axios.get(URL_BACKEND)
 }
 
@@ -183,6 +183,16 @@ const createRoleAPI = (name, active, description) => {
         description: description
     }
     return axios.post(URL_BACKEND, data)
+
+}
+const updateRoleAPI = (id, name, active, description) => {
+    const URL_BACKEND = `/api/admin/roles/${id}`
+    const data = {
+        name: name,
+        active: active,
+        description: description
+    }
+    return axios.put(URL_BACKEND, data)
 }
 
 const ganNhieuQuyenChoVaiTro = (roleId, permissionIds) => {
@@ -192,6 +202,22 @@ const ganNhieuQuyenChoVaiTro = (roleId, permissionIds) => {
         permissionIds: permissionIds
     }
     return axios.post(URL_BACKEND, data)
+}
+
+const goNhieuQuyenChoVaiTro = (roleId, permissionIds) => {
+    console.log("relid", roleId)
+    console.log("permissionIds", permissionIds)
+    const URL_BACKEND = `/api/admin/permissions/revoke`
+    const data = {
+        roleId: roleId,
+        permissionIds: permissionIds
+    }
+    return axios.delete(URL_BACKEND, {
+        data: data,
+        headers: {
+            "Content-Type": "application/json"
+        }
+    })
 }
 
 const deleteRoleAPI = (id) => {
@@ -329,5 +355,5 @@ export {
     createRoleAPI, fetchAllPermissionsAPI, createPermissionAPI, updatePermissionAPI, deletePermissionAPI, fetchAllParentCategoriesAPI,
     createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI, fetchAllDesignsAPI,
     loadProductsByCategoryAPI, createContactAPI, deleteDesignAPI, deleteRoleAPI, fetchAllArticlesAPI, fetchAllContactAPI,
-    deleteArticleAPI, createArticleAPI, updateArticleAPI
+    deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro
 }

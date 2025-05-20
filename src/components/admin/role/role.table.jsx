@@ -37,8 +37,6 @@ const RoleTable = (props) => {
     const handleDeleteRole = async (idDelete) => {
         const res = await deleteRoleAPI(idDelete)
 
-        console.log("res7", res)
-
         if (res) {
             notification.success({
                 message: "Xóa Vai trò",
@@ -85,14 +83,14 @@ const RoleTable = (props) => {
                 {value ? "ACTIVE" : "INACTIVE"}
             </Tag>
         },
-        {
-            title: 'Ngày tạo',
-            dataIndex: 'createdAt',
-        },
-        {
-            title: 'Ngày cập nhật',
-            dataIndex: 'updatedAt',
-        },
+        // {
+        //     title: 'Ngày tạo',
+        //     dataIndex: 'createdAt',
+        // },
+        // {
+        //     title: 'Ngày cập nhật',
+        //     dataIndex: 'updatedAt',
+        // },
         {
             title: 'Action',
             render: (_, record) => (
@@ -144,7 +142,7 @@ const RoleTable = (props) => {
                 isUpdateOpen={isUpdateOpen}
                 setIsUpdateOpen={setIsUpdateOpen}
                 dataUpdate={dataUpdate}
-                // setDataUpdate={setDataUpdate}
+                setDataUpdate={setDataUpdate}
                 loadRoles={loadRoles}
             />
         </>

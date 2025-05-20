@@ -110,7 +110,7 @@ const UserTable = (props) => {
                     <Popconfirm
                         title="Xóa người dùng"
                         description="Bạn có chắc muốn xóa người dùng này?"
-                        onConfirm={() => handleDeleteUser(record._id)}
+                        onConfirm={() => handleDeleteUser(record.id)}
                         onCancel={() => { }}
                         okText="Xác nhận"
                         cancelText="Hủy"

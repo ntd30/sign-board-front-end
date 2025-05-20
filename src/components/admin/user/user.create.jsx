@@ -1,12 +1,12 @@
 import { Button, Form, Input, InputNumber, Modal, notification, Select } from "antd"
-import { useState } from "react";
-import { createUserAPI } from "../../../services/api.service";
+import { useEffect, useState } from "react";
+import { createUserAPI, fetchAllRolesAPI } from "../../../services/api.service";
 
 const UserCreate = (props) => {
     const { loadUsers } = props
     const [isModalOpen, setIsModalOpen] = useState(false)
-
     const [loadingBtn, setLoadingBtn] = useState(false)
+    const [roles, setRoles] = useState([])
 
     const [form] = Form.useForm()
 
@@ -41,6 +41,23 @@ const UserCreate = (props) => {
         setIsModalOpen(false)
         form.resetFields()
     }
+
+    // Lấy danh sách vai trò
+    useEffect(() => {
+        const fetchRoles = async () => {
+            try {
+                const res = await fetchAllRolesAPI(1, 100);
+                console.log("res", res)
+                setRoles(res.data.content);
+            } catch (error) {
+                notification.error({
+                    message: "Lỗi lấy danh sách vai trò",
+                    description: error.message || "Không thể lấy danh sách vai trò từ server",
+                });
+            }
+        };
+        fetchRoles();
+    }, []);
 
     return (
         <div style={{ margin: "10px 0" }}>
@@ -115,13 +132,16 @@ const UserCreate = (props) => {
                     </Form.Item>
 
                     <Form.Item
-                        label="Quyền hạn"
+                        label="Vai trò"
                         name="roleName"
                         initialValue={"Customer"}
                     >
-                        <Select>
-                            <Select.Option value="Admin">Admin</Select.Option>
-                            <Select.Option value="Customer">Customer</Select.Option>
+                        <Select placeholder="Chọn vai trò">
+                            {roles.map((role) => (
+                                <Select.Option key={role.name} value={role.name}>
+                                    {role.name}
+                                </Select.Option>
+                            ))}
                         </Select>
                     </Form.Item>
 
