@@ -79,8 +79,6 @@ const ArticleUpdate = (props) => {
                 isFeatured: dataUpdate.isFeatured || false,
             });
 
-            console.log(dataUpdate.featuredImageUrl)
-
             // Xử lý ảnh hiện có
             if (dataUpdate.featuredImageUrl && typeof dataUpdate.featuredImageUrl === 'string' && dataUpdate.featuredImageUrl.match(/\.(jpg|jpeg|png)$/i)) {
                 setFileList([{
