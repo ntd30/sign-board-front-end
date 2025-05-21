@@ -3,14 +3,13 @@ import { Form, Input, Modal, notification, Popconfirm, Select, Space, Table } fr
 import moment from "moment";
 import { useState } from "react";
 import { updateContactAPI } from "../../../services/api.service";
+import ContactDetail from "./contact.detail";
 
 const { Search } = Input;
 const { Option } = Select;
 
 const ContactTable = (props) => {
     const { dataContacts, loadContacts, current, setCurrent, pageSize, setPageSize, total, loadingTable, searchTerm, setSearchTerm } = props;
-
-    console.log("datacon", dataContacts)
 
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
@@ -66,6 +65,11 @@ const ContactTable = (props) => {
         }
     };
 
+    const handleGetDetailContact = (record) => {
+        setDataUpdate(record);
+        setIsDetailOpen(true);
+    };
+
     const columns = [
         {
             title: "STT",
@@ -75,6 +79,9 @@ const ContactTable = (props) => {
         {
             title: "Tên sản phẩm",
             dataIndex: "productName",
+            render: (text, record) => (
+                <a onClick={() => handleGetDetailContact(record)}>{text}</a>
+            ),
             width: 250,
         },
         {
@@ -97,19 +104,20 @@ const ContactTable = (props) => {
             title: "Địa chỉ",
             dataIndex: "address",
             width: 200,
-            ellipsis: true,
+            hidden: true,
         },
         {
             title: "Tin nhắn",
             dataIndex: "message",
             width: 250,
-            ellipsis: true,
+            hidden: true,
         },
         {
             title: "Ngày tạo",
             dataIndex: "createdAt",
             render: (date) => (date ? moment(date).format("DD/MM/YYYY HH:mm:ss") : "-"),
             width: 180,
+            hidden: true
         },
         {
             title: "Trạng thái",
@@ -217,6 +225,12 @@ const ContactTable = (props) => {
                 onChange={onChange}
                 loading={loadingTable}
                 rowKey="id"
+            />
+
+            <ContactDetail
+                isDetailOpen={isDetailOpen}
+                setIsDetailOpen={setIsDetailOpen}
+                dataUpdate={dataUpdate}
             />
         </>
     );

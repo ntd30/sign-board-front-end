@@ -80,9 +80,6 @@ const ArticleUpdate = (props) => {
                 type: dataUpdate.type,
                 isFeatured: dataUpdate.isFeatured || false,
             });
-            setContent(dataUpdate.content || '');
-
-            console.log(dataUpdate.featuredImageUrl);
 
             if (dataUpdate.featuredImageUrl && typeof dataUpdate.featuredImageUrl === 'string' && dataUpdate.featuredImageUrl.match(/\.(jpg|jpeg|png)$/i)) {
                 setFileList([{
