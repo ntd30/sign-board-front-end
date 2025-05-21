@@ -17,11 +17,12 @@ import {
 import { UploadOutlined, FileAddOutlined } from '@ant-design/icons';
 import axios from 'axios';
 import { createArticleAPI } from "../../../services/api.service";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
 
-// CSS tùy chỉnh
 const customStyles = `
     .add-news-form-container {
       background-color: #ffffff;
@@ -37,7 +38,6 @@ const customStyles = `
     }
 `;
 
-// Các loại tin tức
 const newsTypes = [
     { id: 'news', name: 'Tin tức' },
     { id: 'project', name: 'Dự án' },
@@ -49,19 +49,19 @@ const ArticleCreate = (props) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [fileList, setFileList] = useState([]);
+    const [content, setContent] = useState('');
     const [form] = Form.useForm();
 
     const onFinish = async (values) => {
         setLoadingBtn(true);
 
-        const { title, content, excerpt, type, images } = values;
-        // Tạo slug từ title
+        const { title, excerpt, type, images } = values;
         const slug = title
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/(^-|-$)/g, '');
 
-        const imageFile = images?.fileList[0].originFileObj; // Lấy file gốc từ fileList
+        const imageFile = images?.fileList[0].originFileObj;
 
         const articleData = {
             title,
@@ -95,6 +95,7 @@ const ArticleCreate = (props) => {
         setIsModalOpen(false);
         form.resetFields();
         setFileList([]);
+        setContent('');
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -187,10 +188,34 @@ const ArticleCreate = (props) => {
                                 name="content"
                                 label="Nội dung bài viết"
                                 rules={[{ required: true, message: 'Vui lòng nhập nội dung!' }]}
+                                initialValue={content}
                             >
-                                <Input.TextArea
-                                    rows={15}
+                                <ReactQuill
+                                    theme="snow"
+                                    value={content}
+                                    onChange={setContent}
                                     placeholder="Nhập nội dung chi tiết của bài viết..."
+                                    modules={{
+                                        toolbar: [
+                                            [{ header: [1, 2, false] }],
+                                            ['bold', 'italic', 'underline', 'strike'],
+                                            [{ list: 'ordered' }, { list: 'bullet' }],
+                                            ['link', 'image'],
+                                            ['clean'],
+                                        ],
+                                    }}
+                                    formats={[
+                                        'header',
+                                        'bold',
+                                        'italic',
+                                        'underline',
+                                        'strike',
+                                        'list',
+                                        'bullet',
+                                        'link',
+                                        'image',
+                                    ]}
+                                    style={{ height: '400px', marginBottom: '50px' }}
                                 />
                             </Form.Item>
                         </Col>
@@ -206,13 +231,6 @@ const ArticleCreate = (props) => {
                                     ))}
                                 </Select>
                             </Form.Item>
-                            {/* <Form.Item
-                                name="isFeatured"
-                                label="Bài viết nổi bật"
-                                valuePropName="checked"
-                            >
-                                <Switch checkedChildren="Có" unCheckedChildren="Không" />
-                            </Form.Item> */}
                             <Form.Item
                                 name="images"
                                 label="Ảnh bài viết"
@@ -233,7 +251,6 @@ const ArticleCreate = (props) => {
                                             message.error('Ảnh phải nhỏ hơn 2MB!');
                                         }
                                         if (isJpgOrPng && isLt2M && fileList.length < 1) {
-                                            // if (isJpgOrPng && isLt2M) {
                                             return true;
                                         }
                                         if (fileList.length >= 1) {

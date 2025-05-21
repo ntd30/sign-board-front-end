@@ -13,7 +13,7 @@ const NewsPage = () => {
     background: '#FFFFFF',
     display: 'flex',
     flexDirection: 'column',
-    height: '100%', // Đảm bảo card chiếm toàn bộ chiều cao
+    height: '100%',
   };
 
   const productCardHoverStyle = {
@@ -24,11 +24,11 @@ const NewsPage = () => {
   const rowStyle = {
     display: 'flex',
     flexWrap: 'wrap',
-    alignItems: 'stretch', // Đảm bảo các Col có chiều cao bằng nhau
+    alignItems: 'stretch',
   };
 
   const cardBodyStyle = {
-    flexGrow: 1, // Phần body mở rộng để lấp đầy không gian
+    flexGrow: 1,
   };
 
   const descriptionStyle = {
@@ -38,6 +38,12 @@ const NewsPage = () => {
     overflow: 'hidden',
     textOverflow: 'ellipsis',
     maxHeight: '4.5em',
+  };
+
+  const stripHtml = (html) => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
   };
 
   const [dataNews, setDataNews] = useState([]);
@@ -112,7 +118,7 @@ const NewsPage = () => {
                 title={<Title level={5} style={{ color: '#004D40' }}>{product.title}</Title>}
                 description={
                   <Text strong style={{ ...descriptionStyle, color: '#00796B', fontSize: '17px' }}>
-                    {product.content}
+                    {stripHtml(product.content)}
                   </Text>
                 }
               />

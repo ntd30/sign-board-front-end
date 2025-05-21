@@ -17,11 +17,12 @@ import {
 } from 'antd';
 import { UploadOutlined, FileAddOutlined, EyeOutlined } from '@ant-design/icons';
 import { updateArticleAPI } from "../../../services/api.service";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const { Title, Paragraph } = Typography;
 const { Option } = Select;
 
-// CSS tùy chỉnh
 const customStyles = `
     .add-news-form-container {
       background-color: #ffffff;
@@ -67,6 +68,7 @@ const ArticleUpdate = (props) => {
 
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [fileList, setFileList] = useState([]);
+    const [content, setContent] = useState('');
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -78,10 +80,10 @@ const ArticleUpdate = (props) => {
                 type: dataUpdate.type,
                 isFeatured: dataUpdate.isFeatured || false,
             });
+            setContent(dataUpdate.content || '');
 
-            console.log(dataUpdate.featuredImageUrl)
+            console.log(dataUpdate.featuredImageUrl);
 
-            // Xử lý ảnh hiện có
             if (dataUpdate.featuredImageUrl && typeof dataUpdate.featuredImageUrl === 'string' && dataUpdate.featuredImageUrl.match(/\.(jpg|jpeg|png)$/i)) {
                 setFileList([{
                     uid: '-1',
@@ -106,18 +108,12 @@ const ArticleUpdate = (props) => {
     const onFinish = async (values) => {
         setLoadingBtn(true);
 
-        const { title, content, excerpt, type, isFeatured, images } = values;
+        const { title, excerpt, type, isFeatured, images } = values;
 
         const slug = title
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/(^-|-$)/g, '');
-
-        // if (content.length > 1000000) {
-        //     message.error('Nội dung quá dài, vui lòng rút ngắn dưới 1 triệu ký tự!');
-        //     setLoadingBtn(false);
-        //     return;
-        // }
 
         const articleData = {
             title,
@@ -153,6 +149,7 @@ const ArticleUpdate = (props) => {
         setIsUpdateOpen(false);
         form.resetFields();
         setFileList([]);
+        setContent('');
         setDataUpdate(null);
     };
 
@@ -248,10 +245,34 @@ const ArticleUpdate = (props) => {
                                 name="content"
                                 label="Nội dung bài viết"
                                 rules={[{ required: true, message: 'Vui lòng nhập nội dung!' }]}
+                                initialValue={content}
                             >
-                                <Input.TextArea
-                                    rows={15}
+                                <ReactQuill
+                                    theme="snow"
+                                    value={content}
+                                    onChange={setContent}
                                     placeholder="Nhập nội dung chi tiết của bài viết..."
+                                    modules={{
+                                        toolbar: [
+                                            [{ header: [1, 2, false] }],
+                                            ['bold', 'italic', 'underline', 'strike'],
+                                            [{ list: 'ordered' }, { list: 'bullet' }],
+                                            ['link', 'image'],
+                                            ['clean'],
+                                        ],
+                                    }}
+                                    formats={[
+                                        'header',
+                                        'bold',
+                                        'italic',
+                                        'underline',
+                                        'strike',
+                                        'list',
+                                        'bullet',
+                                        'link',
+                                        'image',
+                                    ]}
+                                    style={{ height: '400px', marginBottom: '50px' }}
                                 />
                             </Form.Item>
                         </Col>
@@ -267,17 +288,9 @@ const ArticleUpdate = (props) => {
                                     ))}
                                 </Select>
                             </Form.Item>
-                            {/* <Form.Item
-                                name="isFeatured"
-                                label="Bài viết nổi bật"
-                                valuePropName="checked"
-                            >
-                                <Switch checkedChildren="Có" unCheckedChildren="Không" />
-                            </Form.Item> */}
                             <Form.Item
                                 name="images"
                                 label="Ảnh bài viết"
-                                // rules={[{ required: true, message: 'Vui lòng tải lên ảnh của bài viết!' }]}
                             >
                                 <Upload
                                     customRequest={dummyRequest}
@@ -307,9 +320,6 @@ const ArticleUpdate = (props) => {
                                     )}
                                 </Upload>
                             </Form.Item>
-                            {/* <Paragraph type="secondary" style={{ marginTop: '-100px', fontSize: '12px' }}>
-                                Hỗ trợ JPG, PNG. Kích thước tối đa 2MB. {fileList.length > 0 ? 'Ảnh hiện tại sẽ được thay thế nếu tải ảnh mới.' : 'Chưa có ảnh.'}
-                            </Paragraph> */}
                         </Col>
                     </Row>
                     <Divider />

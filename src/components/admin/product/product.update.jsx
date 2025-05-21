@@ -2,10 +2,9 @@ import { Button, Cascader, Col, Form, Input, InputNumber, Modal, notification, R
 import { useEffect, useState } from "react";
 import { updateProductAPI } from "../../../services/api.service";
 import { UploadOutlined, EyeOutlined } from "@ant-design/icons";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
-const { TextArea } = Input;
-
-// CSS tùy chỉnh
 const customStyles = `
     // .ant-upload-picture-card-wrapper .ant-upload-list-picture-card .ant-upload-list-item {
     //     width: 150px;
@@ -23,6 +22,7 @@ const ProductUpdate = (props) => {
 
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [fileList, setFileList] = useState([]);
+    const [description, setDescription] = useState('');
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -49,8 +49,8 @@ const ProductUpdate = (props) => {
                 width: parseFloat(numbersOnlyArray[1]) || 0,
                 height: parseFloat(numbersOnlyArray[2]) || 0,
             });
+            setDescription(dataUpdate.description || '');
 
-            // Xử lý ảnh hiện có từ dataUpdate.images
             if (Array.isArray(dataUpdate?.images) && dataUpdate.images.length > 0) {
                 const existingImages = dataUpdate.images
                     .filter(item => item)
@@ -91,7 +91,7 @@ const ProductUpdate = (props) => {
         const productData = {
             name: values.name,
             categoryId: typeof values.categoryName === "string" ? values.categoryId : values.categoryName[values.categoryId?.length - 1],
-            description: values.description,
+            description,
             price: values.price,
             discount: values.discount,
             discountPrice: values.discountPrice,
@@ -145,6 +145,7 @@ const ProductUpdate = (props) => {
         setIsUpdateOpen(false);
         form.resetFields();
         setFileList([]);
+        setDescription('');
     };
 
     const handleUploadChange = ({ fileList: newFileList }) => {
@@ -239,8 +240,34 @@ const ProductUpdate = (props) => {
                                 label="Mô tả"
                                 name="description"
                                 rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
+                                initialValue={description}
                             >
-                                <TextArea placeholder="Nhập mô tả" />
+                                <ReactQuill
+                                    theme="snow"
+                                    value={description}
+                                    onChange={setDescription}
+                                    placeholder="Nhập mô tả"
+                                    modules={{
+                                        toolbar: [
+                                            [{ header: [1, 2, false] }],
+                                            ['bold', 'italic', 'underline', 'strike'],
+                                            [{ list: 'ordered' }, { list: 'bullet' }],
+                                            ['link', 'image'],
+                                            ['clean'],
+                                        ],
+                                    }}
+                                    formats={[
+                                        'header',
+                                        'bold',
+                                        'italic',
+                                        'underline',
+                                        'strike',
+                                        'list',
+                                        'bullet',
+                                        'link',
+                                        'image',
+                                    ]}
+                                />
                             </Form.Item>
                         </Col>
 

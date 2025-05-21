@@ -2,8 +2,8 @@ import { Button, Cascader, Col, Form, Input, InputNumber, Modal, notification, R
 import { useEffect, useState } from "react";
 import { createProductAPI } from "../../../services/api.service";
 import { PlusOutlined } from '@ant-design/icons';
-
-const { TextArea } = Input;
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 const ProductCreate = (props) => {
     const { loadProducts, dataCategories, getCategoriesSelect } = props;
@@ -12,6 +12,7 @@ const ProductCreate = (props) => {
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [form] = Form.useForm();
     const [fileList, setFileList] = useState([]);
+    const [description, setDescription] = useState('');
 
     useEffect(() => {
         getCategoriesSelect();
@@ -20,10 +21,9 @@ const ProductCreate = (props) => {
     const handleCreateProduct = async (values) => {
         setLoadingBtn(true);
 
-        const { name, categoryId, description, length, width, height } = values;
+        const { name, categoryId, length, width, height } = values;
 
         const formData = new FormData();
-        // Append product as a Blob with Content-Type: application/json
         formData.append(
             "product",
             new Blob(
@@ -44,7 +44,6 @@ const ProductCreate = (props) => {
             )
         );
 
-        // Append images
         fileList.forEach((file) => {
             formData.append("images", file.originFileObj);
         });
@@ -79,6 +78,7 @@ const ProductCreate = (props) => {
         setIsModalOpen(false);
         form.resetFields();
         setFileList([]);
+        setDescription('');
     };
 
     const handleUploadChange = ({ fileList: newFileList }) => {
@@ -138,8 +138,34 @@ const ProductCreate = (props) => {
                                 label="Mô tả"
                                 name="description"
                                 rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
+                                initialValue={description}
                             >
-                                <TextArea placeholder="Nhập mô tả" />
+                                <ReactQuill
+                                    theme="snow"
+                                    value={description}
+                                    onChange={setDescription}
+                                    placeholder="Nhập mô tả"
+                                    modules={{
+                                        toolbar: [
+                                            [{ header: [1, 2, false] }],
+                                            ['bold', 'italic', 'underline', 'strike'],
+                                            [{ list: 'ordered' }, { list: 'bullet' }],
+                                            ['link', 'image'],
+                                            ['clean'],
+                                        ],
+                                    }}
+                                    formats={[
+                                        'header',
+                                        'bold',
+                                        'italic',
+                                        'underline',
+                                        'strike',
+                                        'list',
+                                        'bullet',
+                                        'link',
+                                        'image',
+                                    ]}
+                                />
                             </Form.Item>
                         </Col>
 

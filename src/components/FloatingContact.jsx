@@ -1,32 +1,28 @@
-// src/components/FloatingContact.js
-import React, { useState } from 'react';
-import { Button } from 'antd';
+import React from 'react';
 import { PhoneOutlined } from '@ant-design/icons';
-import ProductContact from './client/product/product.contact'; // Import component ProductContact
-import '../styles/FloatingContact.css'; // CSS riêng cho component này
+import '../styles/FloatingContact.css';
+import zaloIcon from '../../public/img/contact/zalo.png'; // Đảm bảo ảnh đúng đường dẫn
 
 const FloatingContact = () => {
-  const [isContactOpen, setIsContactOpen] = useState(false);
-  const hotline = 'Hotline: 0363.119.968';
+  const hotline = '0363119968';
 
   return (
-    <>
-      <div className="floating-contact">
-        <a
-          href="https://zalo.me/0363119968"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="zalo-btn"
-        >
-          <span role="img" aria-label="Zalo">📱</span> Zalo
-        </a>
-        <Button className="phone-btn" onClick={() => setIsContactOpen(true)}>
-          <PhoneOutlined /> {hotline}
-        </Button>
-      </div>
+    <div className="floating-contact">
+      {/* Nút Zalo */}
+      <a
+        href="https://zalo.me/0363119968"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="circle-btn zalo-btn"
+      >
+        <img src={zaloIcon} alt="Zalo" className="icon-img" />
+      </a>
 
-      <ProductContact isContactOpen={isContactOpen} setIsContactOpen={setIsContactOpen} />
-    </>
+      {/* Nút gọi điện */}
+      <a href={`tel:${hotline}`} className="circle-btn phone-btn">
+        <PhoneOutlined />
+      </a>
+    </div>
   );
 };
 
