@@ -1,21 +1,19 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { notification, Popconfirm, Space, Table } from "antd";
-import { useEffect, useState } from "react";
+import { notification, Popconfirm, Space, Table, Input } from "antd";
+import { useState } from "react";
 import moment from "moment";
 import ArticleDetail from "./article.detail";
 import { deleteArticleAPI } from "../../../services/api.service";
 import ArticleUpdate from "./article.update";
 
+const { Search } = Input;
+
 const ArticleTable = (props) => {
-    const { dataArticles, loadArticles, current, setCurrent, pageSize, setPageSize, total, loadingTable, permissionsOfCurrentUser } = props;
+    const { dataArticles, loadArticles, current, setCurrent, pageSize, setPageSize, total, loadingTable, permissionsOfCurrentUser, searchTerm, setSearchTerm } = props;
 
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
-
-    useEffect(() => {
-        loadArticles();
-    }, [current, pageSize]);
 
     const onChange = (pagination) => {
         if (+pagination.current !== +current) {
@@ -24,6 +22,10 @@ const ArticleTable = (props) => {
         if (+pagination.pageSize !== +pageSize) {
             setPageSize(+pagination.pageSize);
         }
+    };
+
+    const handleSearch = (value) => {
+        setSearchTerm(value);
     };
 
     const handleGetDetailArticle = (record) => {
@@ -37,18 +39,24 @@ const ArticleTable = (props) => {
     };
 
     const handleDeleteArticle = async (idDelete) => {
-        const res = await deleteArticleAPI(idDelete);
-
-        if (res.data) {
-            notification.success({
-                message: "Xóa bài viết",
-                description: "Xóa bài viết thành công!",
-            });
-            await loadArticles();
-        } else {
+        try {
+            const res = await deleteArticleAPI(idDelete);
+            if (res.data) {
+                notification.success({
+                    message: "Xóa bài viết",
+                    description: "Xóa bài viết thành công!",
+                });
+                await loadArticles();
+            } else {
+                notification.error({
+                    message: "Lỗi khi xóa bài viết",
+                    description: JSON.stringify(res.message),
+                });
+            }
+        } catch (error) {
             notification.error({
                 message: "Lỗi khi xóa bài viết",
-                description: JSON.stringify(res.message),
+                description: error.message,
             });
         }
     };
@@ -72,7 +80,6 @@ const ArticleTable = (props) => {
             dataIndex: 'featuredImageUrl',
             render: (text, record) => {
                 const imageUrl = text ? `${import.meta.env.VITE_BACKEND_URL}${text}` : '';
-                console.log('Image URL for record:', record.id, 'URL:', imageUrl); // Log để kiểm tra
                 return (
                     <div>
                         {imageUrl ? (
@@ -81,8 +88,8 @@ const ArticleTable = (props) => {
                                 alt={`Article ${record.id}`}
                                 style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }}
                                 onError={(e) => {
-                                    console.error('Failed to load image for record:', record.id, 'URL:', imageUrl); // Log khi ảnh lỗi
-                                    e.target.src = '/placeholder-image.jpg'; // Hình placeholder nếu ảnh lỗi
+                                    console.error('Failed to load image for record:', record.id, 'URL:', imageUrl);
+                                    e.target.src = '/placeholder-image.jpg';
                                 }}
                             />
                         ) : (
@@ -133,7 +140,6 @@ const ArticleTable = (props) => {
                             onClick={() => handleEditArticle(record)}
                         />
                     )}
-
                     {permissionsOfCurrentUser.includes("MANAGE_ARTICLES_DELETE") && (
                         <Popconfirm
                             title="Xóa bài viết"
@@ -156,6 +162,17 @@ const ArticleTable = (props) => {
 
     return (
         <>
+            <div style={{ marginBottom: 16 }}>
+                <Search
+                    placeholder="Tìm kiếm theo tiêu đề, loại bài viết, ngày tạo hoặc ngày cập nhật"
+                    allowClear
+                    enterButton="Tìm kiếm"
+                    size="large"
+                    onSearch={handleSearch}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    value={searchTerm}
+                />
+            </div>
             <Table
                 dataSource={dataArticles}
                 columns={columns}
@@ -174,13 +191,11 @@ const ArticleTable = (props) => {
                 loading={loadingTable}
                 rowKey="id"
             />
-
             <ArticleDetail
                 isDetailOpen={isDetailOpen}
                 setIsDetailOpen={setIsDetailOpen}
                 dataUpdate={dataUpdate}
             />
-
             <ArticleUpdate
                 isUpdateOpen={isUpdateOpen}
                 setIsUpdateOpen={setIsUpdateOpen}

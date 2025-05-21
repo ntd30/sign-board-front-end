@@ -1,39 +1,29 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { notification, Popconfirm, Space, Table, Tag } from "antd";
-import { useEffect, useState } from "react";
+import { notification, Popconfirm, Space, Table, Tag, Input } from "antd";
+import { useState } from "react";
 import RoleUpdate from "./role.update";
 import { deleteRoleAPI } from "../../../services/api.service";
 
+const { Search } = Input;
+
 // Repository để quản lý các thao tác với vai trò
 const RoleRepository = {
-  deleteRole: async (id) => {
-    try {
-      const res = await deleteRoleAPI(id);
-      return res;
-    } catch (error) {
-      throw error;
-    }
-  },
-  getRole: async (id) => {
-    try {
-      const res = await fetch(`/api/roles/${id}`); // Giả định endpoint
-      return res.json();
-    } catch (error) {
-      throw error;
-    }
-  },
+    deleteRole: async (id) => {
+        try {
+            const res = await deleteRoleAPI(id);
+            return res;
+        } catch (error) {
+            throw error;
+        }
+    },
 };
 
 const RoleTable = (props) => {
-    const { dataRoles, loadRoles, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props;
+    const { dataRoles, loadRoles, current, setCurrent, pageSize, setPageSize, total, loadingTable, searchTerm, setSearchTerm } = props;
 
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
-
-    useEffect(() => {
-        loadRoles();
-    }, [current, pageSize]);
 
     const onChange = (pagination) => {
         if (+pagination.current !== +current) {
@@ -42,6 +32,10 @@ const RoleTable = (props) => {
         if (+pagination.pageSize !== +pageSize) {
             setPageSize(+pagination.pageSize);
         }
+    };
+
+    const handleSearch = (value) => {
+        setSearchTerm(value);
     };
 
     const handleGetDetailRole = (record) => {
@@ -57,7 +51,6 @@ const RoleTable = (props) => {
     const handleDeleteRole = async (idDelete) => {
         try {
             const res = await RoleRepository.deleteRole(idDelete);
-
             if (res) {
                 notification.success({
                     message: "Xóa Vai trò",
@@ -117,7 +110,6 @@ const RoleTable = (props) => {
                         style={{ color: "orange", cursor: "pointer" }}
                         onClick={() => handleEditRole(record)}
                     />
-
                     <Popconfirm
                         title="Xóa Vai trò"
                         description="Bạn có chắc muốn xóa Vai trò này?"
@@ -136,6 +128,17 @@ const RoleTable = (props) => {
 
     return (
         <>
+            <div style={{ marginBottom: 16 }}>
+                <Search
+                    placeholder="Tìm kiếm theo tên, mô tả hoặc trạng thái"
+                    allowClear
+                    enterButton="Tìm kiếm"
+                    size="large"
+                    onSearch={handleSearch}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    value={searchTerm}
+                />
+            </div>
             <Table
                 dataSource={dataRoles}
                 columns={columns}
@@ -144,15 +147,16 @@ const RoleTable = (props) => {
                     pageSize: pageSize,
                     showSizeChanger: true,
                     total: total,
-                    showTotal: (total, range) => {
-                        return (<div> {range[0]}-{range[1]} trên {total} rows</div>);
-                    },
+                    showTotal: (total, range) => (
+                        <div>
+                            {range[0]}-{range[1]} trên {total} rows
+                        </div>
+                    ),
                 }}
                 onChange={onChange}
                 loading={loadingTable}
-                scroll={{ x: 800 }} // Thêm scroll ngang với độ rộng tối thiểu 800px
+                scroll={{ x: 800 }}
             />
-
             <RoleUpdate
                 isUpdateOpen={isUpdateOpen}
                 setIsUpdateOpen={setIsUpdateOpen}
