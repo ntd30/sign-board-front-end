@@ -101,9 +101,12 @@ const ListProductCard = () => {
         return filtered.slice(startIndex, startIndex + pageSize);
     }, [allCategoryProducts, searchTerm, current, pageSize]);
 
-    const handleGetProductDetail = (product) => {
-        navigate(`/products/${product.slug}`, { // Giả sử bạn có route dạng /products/:slug
-            state: { product: product }
+    const handleGetProductDetail = (product, id) => {
+        navigate("/products/detail", {
+            state: {
+                product: product,
+                categoryId: id,
+            }
         });
     };
 
@@ -116,7 +119,7 @@ const ListProductCard = () => {
         setSearchTerm(value.trim());
         setCurrent(1); // Quay về trang đầu khi thực hiện tìm kiếm mới
     };
-    
+
     // const openContactModal = (productId) => {
     //     setSelectedProductIdForContact(productId);
     //     setIsContactModalOpen(true);
@@ -131,7 +134,8 @@ const ListProductCard = () => {
                 <Breadcrumb.Item>
                     <Link to="/">Trang chủ</Link>
                 </Breadcrumb.Item>
-                {parentCategoryName && <Breadcrumb.Item><Link to="/categories" state={{ parentCategoryId, parentCategoryName }}>{parentCategoryName}</Link></Breadcrumb.Item>}
+                {/* {parentCategoryName && <Breadcrumb.Item><Link to="/categories" state={{ parentCategoryId, parentCategoryName }}>{parentCategoryName}</Link></Breadcrumb.Item>} */}
+                {parentCategoryName && <Breadcrumb.Item>{parentCategoryName}</Breadcrumb.Item>}
                 {childCategoryName && <Breadcrumb.Item>{childCategoryName}</Breadcrumb.Item>}
             </Breadcrumb>
 
@@ -168,12 +172,12 @@ const ListProductCard = () => {
                                     style={hoveredCard === product.id ? { ...productCardStyle, ...productCardHoverStyle } : productCardStyle}
                                     onMouseEnter={() => setHoveredCard(product.id)}
                                     onMouseLeave={() => setHoveredCard(null)}
+                                    onClick={() => handleGetProductDetail(product, parentCategoryId ? parentCategoryId : childCategoryId)}
                                     cover={
                                         <img
                                             alt={product.name}
                                             src={product?.images?.[0]?.imageUrl ? `${import.meta.env.VITE_BACKEND_URL}/images/${product.images[0].imageUrl}` : 'https://placehold.co/400x220/E0F2F1/00796B?text=Ảnh+SP'}
                                             style={cardImageStyle}
-                                            onClick={() => handleGetProductDetail(product)} // Click vào ảnh cũng ra chi tiết
                                         />
                                     }
                                     bodyStyle={cardBodyStyle}
@@ -183,9 +187,8 @@ const ListProductCard = () => {
                                             style={{ backgroundColor: '#FF6F00', borderColor: '#FF6F00', fontWeight: 'bold', width: 'calc(100% - 32px)', margin: '0 16px' }}
                                             onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FF8F00'; e.currentTarget.style.borderColor = '#FF8F00'; }}
                                             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#FF6F00'; e.currentTarget.style.borderColor = '#FF6F00'; }}
-                                            onClick={() => handleGetProductDetail(product)}
-                                            // Nếu muốn nút này mở modal liên hệ:
-                                            // onClick={() => openContactModal(product.id)}
+                                        // Nếu muốn nút này mở modal liên hệ:
+                                        // onClick={() => openContactModal(product.id)}
                                         >
                                             Xem Chi Tiết
                                             {/* Liên Hệ Ngay */}

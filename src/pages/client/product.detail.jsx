@@ -59,6 +59,8 @@ const ProductDetailPage = () => {
 
   const location = useLocation();
   const [product, setProduct] = useState(location?.state?.product);
+  console.log("prod1", location?.state?.product)
+  console.log("prod2", product)
   const categoryId = location?.state?.categoryId;
 
   console.log("product", product)
@@ -128,7 +130,7 @@ const ProductDetailPage = () => {
 
   const loadRelatedProducts = async () => {
     const res = await loadProductsByCategoryAPI(product?.category?.id || categoryId, 1, 5);
-    console.log("id")
+    console.log("rescatepro", res)
     setRelatedProducts(res?.data?.content);
   }
 

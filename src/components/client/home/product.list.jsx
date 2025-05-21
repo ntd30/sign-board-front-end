@@ -68,10 +68,10 @@ export const ProductList = () => {
     };
 
     const handleGetProductDetail = (product) => {
-        console.log("producthome", product)
         navigate("/products/detail", {
             state: {
                 product: product,
+                categoryId: product?.category?.id,
             },
         });
     };
