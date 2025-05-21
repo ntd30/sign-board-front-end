@@ -1,20 +1,19 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Form, Input, Modal, notification, Popconfirm, Select, Space, Table } from "antd";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { updateContactAPI } from "../../../services/api.service";
 
+const { Search } = Input;
+const { Option } = Select;
+
 const ContactTable = (props) => {
-    const { dataContacts, loadContacts, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props;
+    const { dataContacts, loadContacts, current, setCurrent, pageSize, setPageSize, total, loadingTable, searchTerm, setSearchTerm } = props;
 
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
     const [form] = Form.useForm();
-
-    useEffect(() => {
-        loadContacts();
-    }, [current, pageSize]);
 
     const onChange = (pagination) => {
         if (+pagination.current !== +current) {
@@ -25,32 +24,42 @@ const ContactTable = (props) => {
         }
     };
 
-    // const handleGetDetailContact = (record) => {
-    //     setDataUpdate(record);
-    //     setIsDetailOpen(true);
-    // };
+    const handleSearch = (value) => {
+        setSearchTerm(value);
+    };
 
     const handleEditContact = (record) => {
         setDataUpdate(record);
         setIsUpdateOpen(true);
+        form.setFieldsValue({
+            id: record.id,
+            name: record.name,
+            status: record.status,
+        });
     };
 
     const handleUpdateContact = async (values) => {
-        const { id, status } = values
-        const res = await updateContactAPI(id, status);
-
-        if (res.data) {
-            notification.success({
-                message: "Cập nhật liên hệ",
-                description: "Cập nhật liên hệ thành công!",
-            });
-            setIsUpdateOpen(false);
-            form.resetFields();
-            await loadContacts();
-        } else {
+        const { id, status } = values;
+        try {
+            const res = await updateContactAPI(id, status);
+            if (res.data) {
+                notification.success({
+                    message: "Cập nhật liên hệ",
+                    description: "Cập nhật liên hệ thành công!",
+                });
+                setIsUpdateOpen(false);
+                form.resetFields();
+                await loadContacts();
+            } else {
+                notification.error({
+                    message: "Lỗi khi cập nhật liên hệ",
+                    description: JSON.stringify(res.message),
+                });
+            }
+        } catch (error) {
             notification.error({
-                message: "Lỗi khi Cập nhật liên hệ",
-                description: JSON.stringify(res.message),
+                message: "Lỗi khi cập nhật liên hệ",
+                description: error.message,
             });
         }
     };
@@ -61,14 +70,6 @@ const ContactTable = (props) => {
             render: (_, record, index) => index + 1 + pageSize * (current - 1),
             width: 60,
         },
-        // {
-        //     title: "Id",
-        //     dataIndex: "inquiry_id",
-        //     // render: (text, record) => (
-        //     //     <a onClick={() => handleGetDetailContact(record)}>{text}</a>
-        //     // ),
-        //     width: 100,
-        // },
         {
             title: "Tên sản phẩm",
             dataIndex: "productName",
@@ -112,6 +113,7 @@ const ContactTable = (props) => {
             title: "Trạng thái",
             dataIndex: "status",
             render: (stt) => (stt === "NOCONTACT" ? "Chưa liên hệ" : (stt === "CONTACTED" ? "Đã liên hệ" : "")),
+            width: 150,
         },
         {
             title: "Action",
@@ -141,8 +143,19 @@ const ContactTable = (props) => {
 
     return (
         <>
+            <div style={{ marginBottom: 16 }}>
+                <Search
+                    placeholder="Tìm kiếm theo tên sản phẩm, họ tên, số điện thoại, email, địa chỉ, tin nhắn hoặc trạng thái"
+                    allowClear
+                    enterButton="Tìm kiếm"
+                    size="large"
+                    onSearch={handleSearch}
+                    onChange={(e) => handleSearch(e.target.value)}
+                    value={searchTerm}
+                />
+            </div>
             <Modal
-                title="Cập nhật Bản thiết kế"
+                title="Cập nhật liên hệ"
                 open={isUpdateOpen}
                 onOk={() => form.submit()}
                 onCancel={() => {
@@ -159,7 +172,7 @@ const ContactTable = (props) => {
                     onFinish={handleUpdateContact}
                 >
                     <Form.Item
-                        label="ID contact"
+                        label="ID liên hệ"
                         name="id"
                         initialValue={dataUpdate?.id}
                         hidden
@@ -167,13 +180,12 @@ const ContactTable = (props) => {
                         <Input disabled />
                     </Form.Item>
                     <Form.Item
-                        label="Tên người sở hữu"
+                        label="Họ và tên"
                         name="name"
                         initialValue={dataUpdate?.name}
                     >
                         <Input disabled />
                     </Form.Item>
-
                     <Form.Item
                         label="Trạng thái"
                         name="status"
@@ -204,20 +216,6 @@ const ContactTable = (props) => {
                 loading={loadingTable}
                 rowKey="id"
             />
-
-            {/* <ContactDetail
-                isDetailOpen={isDetailOpen}
-                setIsDetailOpen={setIsDetailOpen}
-                dataUpdate={dataUpdate}
-            /> */}
-
-            {/* 
-            <ContactUpdate
-                isUpdateOpen={isUpdateOpen}
-                setIsUpdateOpen={setIsUpdateOpen}
-                dataUpdate={dataUpdate}
-                loadContacts={loadContacts}
-            /> */}
         </>
     );
 };

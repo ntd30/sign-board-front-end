@@ -1,9 +1,9 @@
 import axios from './axios.customize'
 
-const fetchAllUsersAPI = (current, pageSize) => {
-    const URL_BACKEND = `/api/admin/users?page=${current}&size=${pageSize}`
-    return axios.get(URL_BACKEND)
-}
+const fetchAllUsersAPI = (current, pageSize, search = "") => {
+    const URL_BACKEND = `/api/admin/users?page=${current}&size=${pageSize}&search=${encodeURIComponent(search)}`;
+    return axios.get(URL_BACKEND);
+};
 
 const loginAPI = (username, password) => {
     const URL_BACKEND = "/api/auth/login"
