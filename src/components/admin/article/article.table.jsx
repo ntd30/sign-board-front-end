@@ -70,10 +70,27 @@ const ArticleTable = (props) => {
         {
             title: 'Ảnh',
             dataIndex: 'featuredImageUrl',
-            render: (text, record) => (
-                <img src={`${import.meta.env.VITE_BACKEND_URL}${text}`}
-                    style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }} />
-            ),
+            render: (text, record) => {
+                const imageUrl = text ? `${import.meta.env.VITE_BACKEND_URL}${text}` : '';
+                console.log('Image URL for record:', record.id, 'URL:', imageUrl); // Log để kiểm tra
+                return (
+                    <div>
+                        {imageUrl ? (
+                            <img
+                                src={imageUrl}
+                                alt={`Article ${record.id}`}
+                                style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }}
+                                onError={(e) => {
+                                    console.error('Failed to load image for record:', record.id, 'URL:', imageUrl); // Log khi ảnh lỗi
+                                    e.target.src = '/placeholder-image.jpg'; // Hình placeholder nếu ảnh lỗi
+                                }}
+                            />
+                        ) : (
+                            <p>Không có ảnh</p>
+                        )}
+                    </div>
+                );
+            },
             width: 250
         },
         {
