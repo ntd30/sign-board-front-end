@@ -5,52 +5,76 @@ import UserDetail from "./user.detail";
 import UserUpdate from "./user.update";
 import { deleteUserAPI } from "../../../services/api.service";
 
-const UserTable = (props) => {
-    const { dataUsers, loadUsers, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props
+// Repository để quản lý các thao tác với người dùng
+const UserRepository = {
+  deleteUser: async (id) => {
+    try {
+      const res = await deleteUserAPI(id);
+      return res;
+    } catch (error) {
+      throw error;
+    }
+  },
+  getUser: async (id) => {
+    try {
+      const res = await fetch(`/api/users/${id}`); // Giả định endpoint
+      return res.json();
+    } catch (error) {
+      throw error;
+    }
+  },
+};
 
-    const [isDetailOpen, setIsDetailOpen] = useState(false)
-    const [isUpdateOpen, setIsUpdateOpen] = useState(false)
-    const [dataUpdate, setDataUpdate] = useState(null)
+const UserTable = (props) => {
+    const { dataUsers, loadUsers, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props;
+
+    const [isDetailOpen, setIsDetailOpen] = useState(false);
+    const [isUpdateOpen, setIsUpdateOpen] = useState(false);
+    const [dataUpdate, setDataUpdate] = useState(null);
 
     useEffect(() => {
-        loadUsers()
-    }, [current, pageSize])
+        loadUsers();
+    }, [current, pageSize]);
 
     const onChange = (pagination) => {
         if (+pagination.current !== +current) {
-            setCurrent(+pagination.current)
+            setCurrent(+pagination.current);
         }
         if (+pagination.pageSize !== +pageSize) {
-            setPageSize(+pagination.pageSize)
+            setPageSize(+pagination.pageSize);
         }
-    }
+    };
 
-    const handleGetDetailUser = record => {
-        setDataUpdate(record)
-        setIsDetailOpen(true)
-    }
+    const handleGetDetailUser = (record) => {
+        setDataUpdate(record);
+        setIsDetailOpen(true);
+    };
 
     const handleEditUser = (record) => {
-        setDataUpdate(record)
-        setIsUpdateOpen(true)
-    }
+        setDataUpdate(record);
+        setIsUpdateOpen(true);
+    };
 
     const handleDeleteUser = async (idDelete) => {
-        const res = await deleteUserAPI(idDelete)
+        try {
+            const res = await UserRepository.deleteUser(idDelete);
 
-        if (res.data) {
-            notification.success({
-                message: "Xóa người dùng",
-                description: "Xóa người dùng thành công!"
-            })
-            await loadUsers()
-        } else {
+            if (res.data) {
+                notification.success({
+                    message: "Xóa người dùng",
+                    description: "Xóa người dùng thành công!",
+                });
+                await loadUsers();
+            } else {
+                throw new Error("Xóa người dùng thất bại!");
+            }
+        } catch (error) {
             notification.error({
                 message: "Lỗi khi xóa người dùng",
-                description: JSON.stringify(res.message)
-            })
+                description: error.message || "Xóa người dùng thất bại!",
+            });
         }
-    }
+    };
 
     const columns = [
         {
@@ -59,7 +83,7 @@ const UserTable = (props) => {
                 <>
                     {index + 1 + pageSize * (current - 1)}
                 </>
-            )
+            ),
         },
         {
             title: 'Id',
@@ -67,7 +91,7 @@ const UserTable = (props) => {
             render: (text, record) => (
                 <a onClick={() => handleGetDetailUser(record)}>{text}</a>
             ),
-            hidden: true
+            hidden: true,
         },
         {
             title: 'Username',
@@ -111,7 +135,7 @@ const UserTable = (props) => {
                         title="Xóa người dùng"
                         description="Bạn có chắc muốn xóa người dùng này?"
                         onConfirm={() => handleDeleteUser(record.id)}
-                        onCancel={() => { }}
+                        onCancel={() => {}}
                         okText="Xác nhận"
                         cancelText="Hủy"
                         placement='left'
@@ -121,22 +145,25 @@ const UserTable = (props) => {
                 </Space>
             ),
         },
-    ]
+    ];
 
     return (
         <>
-            <Table dataSource={dataUsers} columns={columns}
-                pagination={
-                    {
-                        current: current,
-                        pageSize: pageSize,
-                        showSizeChanger: true,
-                        total: total,
-                        showTotal: (total, range) => { return (<div> {range[0]}-{range[1]} trên {total} rows</div>) },
-                    }
-                }
+            <Table
+                dataSource={dataUsers}
+                columns={columns}
+                pagination={{
+                    current: current,
+                    pageSize: pageSize,
+                    showSizeChanger: true,
+                    total: total,
+                    showTotal: (total, range) => {
+                        return (<div> {range[0]}-{range[1]} trên {total} rows</div>);
+                    },
+                }}
                 onChange={onChange}
                 loading={loadingTable}
+                scroll={{ x: 1200 }} // Thay đổi scroll để hỗ trợ cuộn ngang
             />
 
             <UserDetail
@@ -149,11 +176,10 @@ const UserTable = (props) => {
                 isUpdateOpen={isUpdateOpen}
                 setIsUpdateOpen={setIsUpdateOpen}
                 dataUpdate={dataUpdate}
-                // setDataUpdate={setDataUpdate}
                 loadUsers={loadUsers}
             />
         </>
-    )
-}
+    );
+};
 
-export default UserTable
+export default UserTable;
