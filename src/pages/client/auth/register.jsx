@@ -1,9 +1,9 @@
-import { Button, Input, Form, notification, Row, Col, Divider, Card, Typography } from "antd"
+import { Button, Input, Form, notification, Row, Col, Divider, Card, Typography, InputNumber } from "antd"
 import { registerAPI } from "../../../services/api.service";
 import { Link, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../../../components/context/auth.context";
-import { IdcardOutlined, LockOutlined, MailOutlined, UserOutlined } from "@ant-design/icons";
+import { HomeOutlined, IdcardOutlined, LockOutlined, MailOutlined, PhoneFilled, PhoneOutlined, UserOutlined } from "@ant-design/icons";
 
 const { Title } = Typography
 
@@ -13,7 +13,7 @@ const RegisterPage = () => {
     const { setUser } = useContext(AuthContext)
 
     const onFinish = async (values) => {
-        const res = await registerAPI(values.username, values.email, values.password, values.fullName)
+        const res = await registerAPI(values.username, values.email, values.password, values.fullName, values.phoneNumber, values.address)
 
         if (res.data) {
             localStorage.setItem('access_token', res.data.access_token)
@@ -80,6 +80,22 @@ const RegisterPage = () => {
                             rules={[{ required: true, message: 'Họ và tên không được để trống!' }]}
                         >
                             <Input prefix={<IdcardOutlined />} placeholder="Full name" />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Số điện thoại"
+                            name="phoneNumber"
+                            rules={[{ required: true, message: 'Số điện thoại không được để trống!' }]}
+                        >
+                            <InputNumber style={{width: "100%"}} prefix={<PhoneOutlined />} placeholder="Số điện thoại" />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Địa chỉ"
+                            name="address"
+                            rules={[{ required: true, message: 'Địa chỉ không được để trống!' }]}
+                        >
+                            <Input prefix={<HomeOutlined />} placeholder="Địa chỉ" />
                         </Form.Item>
 
                         {/* Nút Đăng ký */}

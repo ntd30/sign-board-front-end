@@ -64,9 +64,11 @@ export const ProductList = () => {
     const loadProducts = async () => {
         const res = await fetchAllProductsAPI(1, 8);
         setProducts(res?.data?.content || []);
+        console.log("res products home: ", res)
     };
 
     const handleGetProductDetail = (product) => {
+        console.log("producthome", product)
         navigate("/products/detail", {
             state: {
                 product: product,

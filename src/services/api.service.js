@@ -40,13 +40,15 @@ const resetPasswordAPI = (token, newPassword) => {
     return axios.post(URL_BACKEND, data)
 }
 
-const registerAPI = (username, email, password, fullName) => {
+const registerAPI = (username, email, password, fullName, phone, address) => {
     const URL_BACKEND = "/api/auth/register"
     const data = {
         username: username,
         email: email,
         password: password,
-        fullName: fullName
+        fullName: fullName,
+        phone: phone,
+        address: address,
     }
     return axios.post(URL_BACKEND, data)
 }
@@ -281,6 +283,7 @@ const deleteArticleAPI = (id) => {
 }
 
 const loadProductsByCategoryAPI = (categoryId, current, pageSize) => {
+    console.log("cateid", categoryId)
     const URL_BACKEND = `/api/categories/${categoryId}/products?page=${current}&size=${pageSize}`
     return axios.get(URL_BACKEND)
 }

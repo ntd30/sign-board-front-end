@@ -202,7 +202,7 @@ const Header = () => {
                 justifyContent: 'space-between',
                 padding: '20px',
                 borderBottom: '1px solid #eee',
-                width: isMobile ? "100%" : "70%",
+                width: isMobile ? "100%" : "80%",
                 margin: "auto",
                 fontSize: 16
             }}>

@@ -39,6 +39,9 @@ const ListProductCard = () => {
     const loadProductsByCategory = async () => {
         setLoadingTable(true);
         const res = await loadProductsByCategoryAPI(parentCategoryId ? parentCategoryId : childCategoryId, current, pageSize);
+
+        console.log("res products list from category", res)
+
         if (res?.data) {
             setTotal(res?.data?.totalElements);
         }
@@ -46,10 +49,11 @@ const ListProductCard = () => {
         setLoadingTable(false);
     };
 
-    const handleGetProductDetail = (product) => {
+    const handleGetProductDetail = (product, categoryId) => {
         navigate("/products/detail", {
             state: {
-                product: product
+                product: product,
+                categoryId: categoryId,
             }
         });
     };
@@ -80,7 +84,7 @@ const ListProductCard = () => {
                                 onMouseEnter={() => setHoveredCard(product.id)}
                                 onMouseLeave={() => setHoveredCard(null)}
                                 cover={<img alt={product.name} src={`${import.meta.env.VITE_BACKEND_URL}/images/${product?.images[0].imageUrl}`} style={{ height: '220px', objectFit: 'cover' }} />}
-                                onClick={() => handleGetProductDetail(product)}
+                                onClick={() => handleGetProductDetail(product, parentCategoryId ? parentCategoryId : childCategoryId)}
                                 actions={[
                                     <Button
                                         type="primary"

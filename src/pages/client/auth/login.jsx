@@ -17,6 +17,8 @@ const LoginPage = () => {
         setLoading(true)
         const res = await loginAPI(values.username, values.password)
 
+        console.log("reslogin", res)
+
         if (res.data) {
             message.success("Đăng nhập thành công")
             localStorage.setItem('access_token', res.data.token)
