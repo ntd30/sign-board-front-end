@@ -7,6 +7,8 @@ import { updateContactAPI } from "../../../services/api.service";
 const ContactTable = (props) => {
     const { dataContacts, loadContacts, current, setCurrent, pageSize, setPageSize, total, loadingTable } = props;
 
+    console.log("datacon", dataContacts)
+
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);

@@ -47,7 +47,7 @@ const registerAPI = (username, email, password, fullName, phone, address) => {
         email: email,
         password: password,
         fullName: fullName,
-        phone: phone,
+        phoneNumber: phone,
         address: address,
     }
     return axios.post(URL_BACKEND, data)
@@ -289,6 +289,7 @@ const loadProductsByCategoryAPI = (categoryId, current, pageSize) => {
 }
 
 const createContactAPI = (name, phone, email, address, message, productId) => {
+    console.log("phone", phone)
     const URL_BACKEND = `/api/inquiries/create`
     const data = {
         name: name,

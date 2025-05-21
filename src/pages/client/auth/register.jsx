@@ -22,7 +22,7 @@ const RegisterPage = () => {
                 message: "Đăng ký người dùng",
                 description: "Đăng ký người dùng thành công"
             })
-            navigate("/")
+            navigate("/login")
         } else {
             notification.error({
                 message: "Lỗi đăng ký người dùng",
@@ -87,7 +87,7 @@ const RegisterPage = () => {
                             name="phoneNumber"
                             rules={[{ required: true, message: 'Số điện thoại không được để trống!' }]}
                         >
-                            <InputNumber style={{width: "100%"}} prefix={<PhoneOutlined />} placeholder="Số điện thoại" />
+                            <Input style={{width: "100%"}} prefix={<PhoneOutlined />} placeholder="Số điện thoại" />
                         </Form.Item>
 
                         <Form.Item

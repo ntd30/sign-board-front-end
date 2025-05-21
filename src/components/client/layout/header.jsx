@@ -234,7 +234,7 @@ const Header = () => {
                 {/* Search + Cart + Login */}
                 <Col xs={14} sm={14} md={8} lg={6}
                     style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: 16, alignItems: 'center' }}>
-                    {!isMobile ? ( // Input trên Desktop
+                    {/* {!isMobile ? ( // Input trên Desktop
                         <Input
                             placeholder="Tìm kiếm"
                             prefix={<SearchOutlined />}
@@ -246,7 +246,7 @@ const Header = () => {
                         />
                     ) : ( // Nút Search Icon trên Mobile
                         <Button type="text" shape="circle" icon={<SearchOutlined style={{ fontSize: 18 }} />} />
-                    )}
+                    )} */}
 
                     {!isMobile && user?.id ?
                         <Dropdown menu={{ items: itemsDropdown }} trigger={['hover']}>
