@@ -34,6 +34,8 @@ import { DashboardPage } from './pages/admin/dashboard.jsx';
 import GoogleAuthCallback from './components/google.auth.callback.jsx';
 import AuthCallback from './components/google.auth.callback.jsx';
 import Privacy from './pages/client/policy/privacy.jsx';
+import UseService from './pages/client/policy/useService.jsx';
+import RefundPolicy from './pages/client/policy/refund.jsx';
 
 const router = createBrowserRouter([
   {
@@ -76,6 +78,14 @@ const router = createBrowserRouter([
       {
         path: "policy/privacy",
         element: <Privacy />
+      },
+      {
+        path: "policy/useService",
+        element: <UseService />
+      },
+      {
+        path: "policy/refund",
+        element: <RefundPolicy />
       },
     ]
   },
