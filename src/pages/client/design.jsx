@@ -1,25 +1,27 @@
 import { HomeOutlined, RobotOutlined, UploadOutlined } from '@ant-design/icons';
-import { Button, Card, Col, Divider, notification, Row, Typography, Upload, Input } from 'antd';
+import { Button, Card, Col, Divider, notification, Row, Typography, Upload } from 'antd';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../components/context/auth.context';
 import { uploadDesign } from '../../services/api.service';
 
 const { Title, Paragraph } = Typography;
 
+// --- Style dùng chung cho các Card ---
 const cardStyle = {
     height: '100%',
     borderRadius: '16px',
     overflow: 'hidden',
     display: 'flex',
     flexDirection: 'column',
-    textAlign: 'center'
+    textAlign: 'center',
+    padding: '16px',
 };
 
 const coverImageStyle = {
     display: 'block',
     width: '100%',
-    height: '100%',
-    objectFit: 'cover'
+    height: '200px',
+    objectFit: 'cover',
 };
 
 const DesignPage = () => {
@@ -45,10 +47,8 @@ const DesignPage = () => {
     useEffect(() => {
         const handleMessage = (event) => {
             if (event.data.type === 'DESIGN_IMAGE') {
-                const imageData = event.data.image; // Dữ liệu ảnh dạng base64
-                setPreview(imageData); // Hiển thị ảnh xem trước
-
-                // Chuyển base64 thành file để chuẩn bị gửi
+                const imageData = event.data.image;
+                setPreview(imageData);
                 const file = base64ToFile(imageData, 'design.png');
                 setSelectedFile(file);
             }
@@ -58,27 +58,24 @@ const DesignPage = () => {
         return () => window.removeEventListener('message', handleMessage);
     }, []);
 
-    const handleOnChangeFile = event => {
-        if (!event.target.files || event.target.files.length === 0) {
+    const handleOnChangeFile = ({ file }) => {
+        if (!file) {
             setSelectedFile(null);
             setPreview(null);
             setDescription('');
             return;
         }
 
-        const file = event.target.files[0];
-        if (file) {
-            setSelectedFile(file);
-            setPreview(URL.createObjectURL(file));
-            setDescription('');
-        }
+        setSelectedFile(file);
+        setPreview(URL.createObjectURL(file));
+        setDescription('');
     };
 
     const handleUpload = async () => {
         if (!selectedFile) {
             notification.error({
-                message: "Lỗi tải lên",
-                description: "Vui lòng chọn ảnh bản thiết kế trước khi gửi"
+                message: 'Lỗi tải lên',
+                description: 'Vui lòng chọn ảnh bản thiết kế trước khi gửi',
             });
             return;
         }
@@ -90,13 +87,13 @@ const DesignPage = () => {
             setPreview(null);
             setDescription('');
             notification.success({
-                message: "Thêm Bản thiết kế",
-                description: "Thêm bản thiết kế mới thành công"
+                message: 'Thêm Bản thiết kế',
+                description: 'Thêm bản thiết kế mới thành công',
             });
         } else {
             notification.error({
-                message: "Lỗi thêm mới bản thiết kế",
-                description: JSON.stringify(res.message)
+                message: 'Lỗi thêm mới bản thiết kế',
+                description: JSON.stringify(res.message),
             });
         }
     };
@@ -106,126 +103,173 @@ const DesignPage = () => {
     };
 
     return (
-        <div style={{ width: '60%', margin: 'auto' }}>
-            <div style={{ textAlign: 'center', padding: 50 }}>
-                <Title level={2}>Thiết kế biển hiệu theo phong cách riêng của bạn</Title>
-
+        <div style={{ padding: '16px', maxWidth: '1200px', margin: '0 auto' }}>
+            <div style={{ textAlign: 'center', padding: '20px 0' }}>
+                <Title
+                    level={3}
+                    style={{
+                        fontSize: '2rem',
+                        fontWeight: 'bold',
+                        background: 'linear-gradient(90deg, #ff4d4f, #1890ff)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        animation: 'fadeIn 1s ease-in',
+                        marginBottom: '24px',
+                    }}
+                >
+                    Thiết kế biển hiệu
+                </Title>
                 <div>
                     <Button
                         type="primary"
                         size="large"
                         icon={<UploadOutlined />}
-                        style={{ marginBottom: 24 }}
                         onClick={handleOpenEditor}
+                        style={{
+                            background: 'linear-gradient(45deg, #1890ff, #40c4ff)',
+                            border: 'none',
+                            borderRadius: '12px',
+                            padding: '0 24px',
+                            height: '48px',
+                            fontSize: '16px',
+                            fontWeight: '500',
+                            transition: 'transform 0.2s, box-shadow 0.2s',
+                            marginBottom: '24px',
+                        }}
+                        onMouseEnter={(e) => (e.target.style.transform = 'scale(1.05)')}
+                        onMouseLeave={(e) => (e.target.style.transform = 'scale(1)')}
                     >
                         Mở trình chỉnh sửa thiết kế
                     </Button>
 
-                    <label
-                        htmlFor="btnUpload"
-                        style={{
-                            display: "block",
-                            width: "fit-content",
-                            cursor: "pointer",
-                            margin: "25px auto",
-                            borderRadius: 30,
-                            padding: '15px 30px',
-                            border: 'none',
-                            color: 'white',
-                            backgroundColor: 'rgba(216, 0, 0, 0.8)',
-                            animation: 'ripple 2s infinite ease-in-out',
-                        }}
-                    >
-                        <UploadOutlined /> Tải ảnh thiết kế
-                    </label>
-                    <input
-                        type="file"
-                        id="btnUpload"
-                        style={{ display: "none" }}
-                        onChange={event => handleOnChangeFile(event)}
-                        onClick={event => event.target.value = null}
-                    />
                     <Paragraph
                         type="secondary"
                         style={{
                             margin: '15px auto',
-                            maxWidth: '500px',
-                            fontSize: '16px',
-                            color: '#555',
+                            maxWidth: '100%',
+                            fontSize: '1rem',
+                            color: '#666',
+                            lineHeight: '1.6',
+                            padding: '10px 0',
+                            animation: 'fadeIn 1s ease-in',
                         }}
                     >
-                        Tải lên bản thiết kế độc đáo của bạn hoặc mở trình chỉnh sửa để bắt đầu từ ý tưởng mới!
+                        Hoặc tải lên bản thiết kế độc đáo của bạn hoặc mở trình chỉnh sửa để bắt đầu từ ý tưởng mới!
                     </Paragraph>
+
+                    <Upload
+                        showUploadList={false}
+                        beforeUpload={() => false} // Prevent auto-upload
+                        onChange={handleOnChangeFile}
+                        accept="image/*"
+                    >
+                        <Button
+                            icon={<UploadOutlined />}
+                            style={{
+                                background: 'linear-gradient(45deg, #ff4d4f, #ff7875)',
+                                border: 'none',
+                                borderRadius: '30px',
+                                padding: '12px 24px',
+                                height: '48px',
+                                fontSize: '16px',
+                                fontWeight: '500',
+                                color: 'white',
+                                transition: 'transform 0.2s, box-shadow 0.2s',
+                                animation: 'ripple 2s infinite ease-in-out',
+                            }}
+                            onMouseEnter={(e) => (e.target.style.transform = 'scale(1.05)')}
+                            onMouseLeave={(e) => (e.target.style.transform = 'scale(1)')}
+                        >
+                            Tải lên ngay
+                        </Button>
+                    </Upload>
                 </div>
 
                 {preview && (
-                    <div style={{ width: 500, margin: "auto" }}>
-                        <div style={{
-                            marginTop: "50px",
-                            marginBottom: "15px",
-                            height: "500px",
-                        }}>
+                    <div style={{ margin: '20px 0', textAlign: 'center' }}>
+                        <div style={{ maxWidth: '100%', margin: '0 auto', height: '300px' }}>
                             <img
-                                style={{ width: "100%", height: "100%", objectFit: "contain" }}
+                                style={{ maxWidth: '100%', height: '100%', objectFit: 'contain' }}
                                 src={preview}
                                 alt="Preview"
                             />
                         </div>
-                        <Input
+                        <input
                             placeholder="Nhập mô tả cho bản thiết kế của bạn"
                             value={description}
                             onChange={(e) => setDescription(e.target.value)}
                             style={{
-                                marginBottom: '15px',
+                                margin: '15px 0',
                                 borderRadius: '8px',
                                 padding: '10px',
+                                fontSize: '1rem',
+                                border: '1px solid #d9d9d9',
+                                width: '100%',
+                                maxWidth: '500px',
                             }}
                         />
-                        <Button onClick={handleUpload} type='primary' danger block size='large'>Gửi</Button>
+                        <Button
+                            onClick={handleUpload}
+                            type="primary"
+                            danger
+                            block
+                            size="large"
+                            style={{
+                                background: 'linear-gradient(45deg, #ff4d4f, #ff7875)',
+                                border: 'none',
+                                borderRadius: '12px',
+                                height: '48px',
+                                fontSize: '16px',
+                                fontWeight: '500',
+                                transition: 'transform 0.2s, box-shadow 0.2s',
+                                maxWidth: '500px',
+                                marginBottom: '15px',
+                            }}
+                            onMouseEnter={(e) => (e.target.style.transform = 'scale(1.05)')}
+                            onMouseLeave={(e) => (e.target.style.transform = 'scale(1)')}
+                        >
+                            Gửi
+                        </Button>
                     </div>
                 )}
-
-                <style>
-                    {`
-                        @keyframes ripple {
-                            0% {
-                                box-shadow: 0 0 0 3px rgba(216, 0, 0, 0.2), 0 0 0 6px rgba(216, 0, 0, 0.1);
-                            }
-                            50% {
-                                box-shadow: 0 0 0 12px rgba(216, 0, 0, 0.3), 0 0 0 24px rgba(216, 0, 0, 0.15);
-                            }
-                            100% {
-                                box-shadow: 0 0 0 3px rgba(216, 0, 0, 0.2), 0 0 0 6px rgba(216, 0, 0, 0.1);
-                            }
-                        }
-                    `}
-                </style>
             </div>
 
-            <Row gutter={[24, 24]} style={{ padding: '40px', background: '#f0f2f5', borderRadius: '16px' }}>
-                <Col sm={24} lg={8}>
+            <style>
+                {`
+                    @keyframes ripple {
+                        0% {
+                            box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.2), 0 0 0 6px rgba(255, 77, 79, 0.1);
+                        }
+                        50% {
+                            box-shadow: 0 0 0 12px rgba(255, 77, 79, 0.3), 0 0 0 24px rgba(255, 77, 79, 0.15);
+                        }
+                        100% {
+                            box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.2), 0 0 0 6px rgba(255, 77, 79, 0.1);
+                        }
+                    }
+                    @keyframes fadeIn {
+                        from { opacity: 0; transform: translateY(10px); }
+                        to { opacity: 1; transform: translateY(0); }
+                    }
+                `}
+            </style>
+
+            <Row gutter={[16, 16]} style={{ padding: '20px', background: '#f0f2f5', borderRadius: '16px' }}>
+                <Col xs={24} lg={8}>
                     <Card style={cardStyle}>
-                        <HomeOutlined style={{ fontSize: 64, color: '#e64980', marginBottom: 24 }} />
-                        <Title level={4} style={{ marginBottom: 8 }}>Thiết kế biển hiệu</Title>
+                        <HomeOutlined style={{ fontSize: 48, color: '#e64980', marginBottom: 16 }} />
+                        <Title level={4} style={{ marginBottom: 8 }}>
+                            Thiết kế biển hiệu
+                        </Title>
                         <Paragraph type="secondary" style={{ marginBottom: 0 }}>
                             Bạn có thể tạo ra vô vàn cấu hình biển hiệu, đáp ứng mọi yêu cầu riêng biệt của bạn.
                         </Paragraph>
                     </Card>
                 </Col>
-                <Col sm={24} lg={8}>
-                    <Card
-                        style={cardStyle}
-                        cover={
-                            <img
-                                src="/img/logo_robot.jpg"
-                                alt="AI Robot"
-                                style={coverImageStyle}
-                            />
-                        }
-                    >
-                    </Card>
+                <Col xs={24} lg={8}>
+                    <Card style={cardStyle} cover={<img src="/img/logo_robot.jpg" alt="AI Robot" style={coverImageStyle} />} />
                 </Col>
-                <Col sm={24} lg={8}>
+                <Col xs={24} lg={8}>
                     <Card
                         style={cardStyle}
                         bordered={false}
@@ -239,7 +283,7 @@ const DesignPage = () => {
                                     background: '#fff',
                                 }}
                             >
-                                <RobotOutlined style={{ fontSize: 64, color: '#74c0fc' }} />
+                                <RobotOutlined style={{ fontSize: 48, color: '#74c0fc' }} />
                             </div>
                         }
                     >
@@ -251,17 +295,17 @@ const DesignPage = () => {
                 </Col>
             </Row>
 
-            <Divider variant="dotted" style={{ borderColor: '#7cb305', margin: '50px auto' }} />
+            <Divider variant="dotted" style={{ borderColor: '#7cb305', margin: '30px auto' }} />
 
-            <Row gutter={24} style={{ marginBottom: 50 }}>
-                <Col sm={24} lg={14}>
+            <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
+                <Col xs={24} lg={14}>
                     <img
-                        src='/img/design/image.png'
+                        src="/img/design/image.png"
                         style={{ width: '100%', height: 'auto', objectFit: 'cover', borderRadius: 16 }}
                         alt="Design Showcase"
                     />
                 </Col>
-                <Col sm={24} lg={10}>
+                <Col xs={24} lg={10}>
                     <Title level={4}>Chia sẻ ngay thiết kế biển hiệu của bạn với cộng đồng!</Title>
                     <Paragraph>
                         Bạn có một thiết kế biển hiệu độc đáo và đầy sáng tạo? Hãy tự tin chia sẻ tác phẩm nghệ thuật của bạn với cộng đồng những người yêu thích thiết kế trên khắp mọi nơi bằng cách tải lên hình ảnh một cách đơn giản, để không chỉ trưng bày tài năng cá nhân mà còn góp phần tạo nên một không gian trực tuyến phong phú, nơi mọi người có thể khám phá, học hỏi và tìm kiếm nguồn cảm hứng bất tận từ vô vàn những ý tưởng biển hiệu ấn tượng.

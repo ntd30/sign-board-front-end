@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Card, Col, Pagination, Row, Typography } from "antd";
+import { Breadcrumb, Button, Card, Col, Grid, Pagination, Row, Typography } from "antd";
 import { useEffect, useState } from "react";
 import { fetchAllArticlesAPI } from "../../services/api.service";
 import { useNavigate } from "react-router-dom";
@@ -58,6 +58,10 @@ const NewsPage = () => {
   const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
+  const { useBreakpoint } = Grid;
+  const screens = useBreakpoint();
+  const isMobile = !screens.md;
+
   // Load all articles (up to 1000) and sort them
   const loadNews = async () => {
     setLoading(true);
@@ -101,7 +105,7 @@ const NewsPage = () => {
   };
 
   return (
-    <div style={{ maxWidth: '70%', margin: '80px auto' }}>
+    <div style={{ maxWidth: isMobile ? '90%' : '70%', margin: '80px auto' }}>
       <h1>TIN TỨC</h1>
       <Breadcrumb style={{ fontSize: 20, marginBottom: 50 }}>
         <Breadcrumb.Item>
@@ -166,7 +170,7 @@ const NewsPage = () => {
           style={{ marginTop: 32, textAlign: 'center' }}
           showSizeChanger
           pageSizeOptions={[12, 16, 20]} // Adjusted options to include 5
-          showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} bài viết`}
+          // showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} bài viết`}
         />
       )}
     </div>

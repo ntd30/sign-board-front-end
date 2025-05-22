@@ -15,7 +15,6 @@ import {
     Switch,
 } from 'antd';
 import { UploadOutlined, FileAddOutlined } from '@ant-design/icons';
-import axios from 'axios';
 import { createArticleAPI } from "../../../services/api.service";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';

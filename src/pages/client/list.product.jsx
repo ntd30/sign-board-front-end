@@ -126,7 +126,7 @@ const ListProductCard = () => {
     // };
 
     return (
-        <div style={{ maxWidth: "85%", margin: "40px auto", padding: '0 20px' }}>
+        <div style={{ maxWidth: "95%", margin: "40px auto", padding: '0 20px' }}>
             <Title level={2} style={{ textAlign: 'center', marginBottom: '10px', color: '#004D40', fontWeight: 'bold' }}>
                 {childCategoryName ? childCategoryName : parentCategoryName || "Sản phẩm"}
             </Title>
@@ -220,7 +220,7 @@ const ListProductCard = () => {
                             style={{ marginTop: 40, textAlign: 'center' }}
                             showSizeChanger
                             pageSizeOptions={[12, 16, 24, 48]}
-                            showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} sản phẩm`}
+                            // showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} sản phẩm`}
                         />
                     )}
                 </>
