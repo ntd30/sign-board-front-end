@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { Typography, Divider, Layout, List, Space, Card } from 'antd';
 import {
-    DeliveredProcedureOutlined, // Icon cho bàn giao
-    CheckCircleOutlined,      // Icon cho cam kết
-    ProfileOutlined,          // Icon cho quy trình
-    ToolOutlined,             // Icon cho hỗ trợ kỹ thuật
-    LikeOutlined,             // Icon cho phản hồi, hài lòng
+    DeliveredProcedureOutlined,
+    CheckCircleOutlined,
+    ProfileOutlined,
+    ToolOutlined,
+    LikeOutlined,
     ContactsOutlined,
     PhoneOutlined,
     MailOutlined
@@ -14,7 +14,6 @@ import {
 const { Title, Paragraph, Text, Link: AntLink } = Typography;
 const { Content } = Layout;
 
-// Định nghĩa styles bằng object - tái sử dụng và tinh chỉnh từ các trang trước
 const styles = {
     layout: {
         minHeight: '100vh',
@@ -110,7 +109,7 @@ const styles = {
 const HandoverPolicy = () => {
     useEffect(() => {
         const antdResetCss = document.createElement("link");
-        antdResetCss.id = "antd-reset-css-handover-policy"; // ID riêng cho trang này
+        antdResetCss.id = "antd-reset-css-handover-policy";
         if (!document.getElementById(antdResetCss.id)) {
             antdResetCss.rel = "stylesheet";
             antdResetCss.href = "https://unpkg.com/antd/dist/reset.css";
@@ -118,17 +117,17 @@ const HandoverPolicy = () => {
         }
     }, []);
 
-    const companyName = "IDAI.VN";
+    const companyName = "SignMaster.vn";
 
     const handoverProcessData = [
-        `<strong>Xác nhận hoàn thành:</strong> Sau khi hoàn thành dự án, ${companyName} sẽ gửi thông báo và thực hiện kiểm tra để đảm bảo chất lượng sản phẩm trước khi bàn giao.`,
-        `<strong>Bàn giao trực tiếp hoặc trực tuyến:</strong> Khách hàng có thể lựa chọn nhận sản phẩm qua các phương thức trực tuyến hoặc tại văn phòng ${companyName} theo yêu cầu.`,
-        `<strong>Hướng dẫn sử dụng:</strong> Hỗ trợ khách hàng trong quá trình cài đặt và sử dụng, bao gồm tài liệu hướng dẫn và giải đáp thắc mắc kỹ thuật liên quan đến sản phẩm.`,
+        `<strong>Kiểm tra chất lượng:</strong> Sau khi hoàn thành sản xuất biển quảng cáo, ${companyName} sẽ tiến hành kiểm tra chất lượng kỹ lưỡng để đảm bảo sản phẩm đáp ứng yêu cầu thiết kế và tiêu chuẩn kỹ thuật.`,
+        `<strong>Bàn giao sản phẩm:</strong> Biển quảng cáo sẽ được bàn giao trực tiếp tại địa điểm lắp đặt hoặc tại kho của ${companyName} theo thỏa thuận. Các file thiết kế số (nếu có) sẽ được gửi qua email hoặc nền tảng trực tuyến.`,
+        `<strong>Hướng dẫn sử dụng và lắp đặt:</strong> ${companyName} cung cấp hướng dẫn chi tiết về cách sử dụng, bảo quản và lắp đặt biển quảng cáo, cùng với hỗ trợ kỹ thuật tại chỗ nếu cần.`,
     ];
 
     const postHandoverSupportData = [
-        `<strong>Hỗ trợ kỹ thuật sau bàn giao:</strong> ${companyName} cung cấp hỗ trợ kỹ thuật trong thời gian nhất định sau bàn giao để đảm bảo sản phẩm hoạt động đúng cách và đáp ứng yêu cầu của khách hàng.`,
-        `<strong>Sửa lỗi và bảo trì:</strong> Trong trường hợp phát hiện lỗi kỹ thuật sau khi bàn giao, chúng tôi cam kết khắc phục nhanh chóng mà không phát sinh thêm chi phí trong thời hạn hỗ trợ.`,
+        `<strong>Bảo hành sản phẩm:</strong> ${companyName} cung cấp bảo hành cho biển quảng cáo theo thời gian quy định trong hợp đồng, bao gồm sửa chữa hoặc thay thế miễn phí trong trường hợp lỗi do sản xuất.`,
+        `<strong>Hỗ trợ kỹ thuật:</strong> Sau bàn giao, chúng tôi cung cấp hỗ trợ kỹ thuật để đảm bảo biển quảng cáo hoạt động hiệu quả, bao gồm tư vấn bảo trì và xử lý sự cố trong thời gian bảo hành.`,
     ];
 
     return (
@@ -146,7 +145,7 @@ const HandoverPolicy = () => {
                         1. Cam kết Bàn giao Đầy đủ và Chính xác
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        <Text style={styles.codeText}>{companyName}</Text> đảm bảo bàn giao sản phẩm và dịch vụ đúng với mô tả, yêu cầu đã được thống nhất với khách hàng. Mọi tài liệu, mã nguồn, hướng dẫn, và tài sản kỹ thuật số khác sẽ được bàn giao đúng theo tiến độ thỏa thuận.
+                        <Text style={styles.codeText}>{companyName}</Text> cam kết bàn giao biển quảng cáo và các tài liệu thiết kế liên quan đúng với yêu cầu đã thống nhất trong hợp đồng. Sản phẩm sẽ được giao đúng tiến độ, đảm bảo chất lượng và tính thẩm mỹ.
                     </Paragraph>
 
                     <Title level={4} style={styles.sectionTitle}>
@@ -158,7 +157,6 @@ const HandoverPolicy = () => {
                         dataSource={handoverProcessData}
                         renderItem={(item, index) => (
                             <List.Item style={index === handoverProcessData.length - 1 ? styles.listItemLast : styles.listItem}>
-                                {/* Sử dụng span thay vì Typography.Text để render HTML */}
                                 <span dangerouslySetInnerHTML={{ __html: item }} />
                             </List.Item>
                         )}
@@ -173,7 +171,6 @@ const HandoverPolicy = () => {
                         dataSource={postHandoverSupportData}
                         renderItem={(item, index) => (
                             <List.Item style={index === postHandoverSupportData.length - 1 ? styles.listItemLast : styles.listItem}>
-                                {/* Sử dụng span thay vì Typography.Text để render HTML */}
                                 <span dangerouslySetInnerHTML={{ __html: item }} />
                             </List.Item>
                         )}
@@ -184,7 +181,7 @@ const HandoverPolicy = () => {
                         4. Xác nhận Bàn giao và Phản hồi
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        Sau khi bàn giao, khách hàng được khuyến khích phản hồi để đánh giá và giúp chúng tôi nâng cao chất lượng dịch vụ. Bàn giao sẽ được xác nhận hoàn tất khi khách hàng đồng ý và hài lòng với sản phẩm.
+                        Sau khi bàn giao biển quảng cáo, khách hàng được khuyến khích kiểm tra và xác nhận chất lượng sản phẩm. Phản hồi của khách hàng sẽ giúp <Text style={styles.codeText}>{companyName}</Text> cải thiện dịch vụ và đảm bảo sự hài lòng tối đa.
                     </Paragraph>
 
                     <Title level={4} style={styles.sectionTitle}>
@@ -207,7 +204,7 @@ const HandoverPolicy = () => {
 
                     <Divider style={styles.customDivider} />
                     <Paragraph style={styles.noteText}>
-                        Lưu ý: Chúng tôi cam kết bàn giao minh bạch và đồng hành cùng khách hàng trong quá trình sử dụng sản phẩm, bảo đảm mọi yêu cầu kỹ thuật và hỗ trợ sau bàn giao được đáp ứng đầy đủ và hiệu quả.
+                        Lưu ý: Chúng tôi cam kết bàn giao minh bạch và đồng hành cùng khách hàng để đảm bảo biển quảng cáo được sử dụng hiệu quả, với đầy đủ hỗ trợ kỹ thuật và bảo hành theo thỏa thuận.
                     </Paragraph>
                 </Card>
             </Content>

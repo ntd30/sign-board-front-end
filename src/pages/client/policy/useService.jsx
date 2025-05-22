@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
 import { Typography, Divider, Layout, List, Space, Card } from 'antd';
-import { FileDoneOutlined, UserOutlined, CheckCircleOutlined, ToolOutlined, CopyrightOutlined, WarningOutlined, EditOutlined, MessageOutlined, PhoneOutlined, MailOutlined, SolutionOutlined } from '@ant-design/icons'; // Các icon phù hợp
+import { FileDoneOutlined, UserOutlined, CheckCircleOutlined, ToolOutlined, CopyrightOutlined, WarningOutlined, EditOutlined, MessageOutlined, PhoneOutlined, MailOutlined, SolutionOutlined } from '@ant-design/icons';
 
 const { Title, Paragraph, Text, Link: AntLink } = Typography;
 const { Content } = Layout;
 
-// Định nghĩa styles bằng object - có thể tái sử dụng hoặc tùy chỉnh nhẹ từ trang Privacy
 const styles = {
     layout: {
         minHeight: '100vh',
@@ -93,7 +92,7 @@ const styles = {
 const UseService = () => {
     useEffect(() => {
         const antdResetCss = document.createElement("link");
-        antdResetCss.id = "antd-reset-css-terms"; // ID riêng cho trang này
+        antdResetCss.id = "antd-reset-css-terms";
         if (!document.getElementById(antdResetCss.id)) {
             antdResetCss.rel = "stylesheet";
             antdResetCss.href = "https://unpkg.com/antd/dist/reset.css";
@@ -101,25 +100,25 @@ const UseService = () => {
         }
     }, []);
 
-    const companyName = "idai.vn"; // Tên công ty/website
+    const companyName = "SignMaster.vn";
 
     const serviceScopeData = [
-        `Tương tác trực tuyến qua các nền tảng xã hội như YouTube, Telegram, và TikTok.`,
-        // Thêm các dịch vụ khác nếu có
+        `Thiết kế và sản xuất các loại biển quảng cáo, bao gồm biển LED, biển chữ nổi, biển hộp đèn và biển in bạt.`,
+        `Tư vấn, lắp đặt và bảo trì biển quảng cáo tại địa điểm của khách hàng.`,
+        `Cung cấp dịch vụ thiết kế đồ họa chuyên nghiệp cho các chiến dịch quảng cáo.`,
     ];
 
     const userResponsibilitiesData = [
-        `Sử dụng dịch vụ đúng mục đích và không thực hiện các hành vi vi phạm pháp luật.`,
-        `Cung cấp thông tin cá nhân chính xác, bảo mật tài khoản cá nhân và bảo vệ dữ liệu cá nhân.`,
-        `Không sao chép, phát tán hoặc chia sẻ tài liệu và mã nguồn từ website mà không có sự cho phép.`,
+        `Cung cấp thông tin chính xác về yêu cầu thiết kế, kích thước và vị trí lắp đặt biển quảng cáo.`,
+        `Thanh toán đầy đủ và đúng hạn theo thỏa thuận trong hợp đồng dịch vụ.`,
+        `Không tự ý tháo dỡ, sửa chữa hoặc thay đổi biển quảng cáo mà không có sự đồng ý của SignMaster.vn.`,
     ];
 
     const idaiResponsibilitiesData = [
-        `Bảo vệ quyền riêng tư và thông tin cá nhân của người dùng.`,
-        `Đảm bảo dịch vụ ổn định và sẵn sàng, nhưng không chịu trách nhiệm về các gián đoạn do các yếu tố ngoài tầm kiểm soát.`,
-        `Có quyền điều chỉnh hoặc ngừng cung cấp dịch vụ mà không cần báo trước, đồng thời bảo lưu quyền hạn chế hoặc chấm dứt tài khoản của người dùng nếu vi phạm điều khoản.`,
+        `Đảm bảo chất lượng sản phẩm và dịch vụ theo đúng cam kết trong hợp đồng.`,
+        `Cung cấp dịch vụ tư vấn và hỗ trợ kỹ thuật trong suốt quá trình thiết kế, sản xuất và lắp đặt.`,
+        `Bảo hành sản phẩm theo thời gian quy định trong hợp đồng, trừ các trường hợp hư hỏng do yếu tố khách quan hoặc sử dụng sai mục đích.`,
     ];
-
 
     return (
         <Layout style={styles.layout}>
@@ -136,7 +135,7 @@ const UseService = () => {
                         1. Chấp nhận Điều khoản Sử dụng
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        Khi truy cập và sử dụng các dịch vụ tại <Text style={styles.codeText}>{companyName}</Text>, bạn đồng ý tuân thủ các điều khoản sử dụng dịch vụ này. Vui lòng đọc kỹ để hiểu rõ quyền lợi và trách nhiệm của bạn.
+                        Khi sử dụng dịch vụ thiết kế, sản xuất và lắp đặt biển quảng cáo tại <Text style={styles.codeText}>{companyName}</Text>, bạn đồng ý tuân thủ các điều khoản sử dụng dịch vụ này. Vui lòng đọc kỹ để hiểu rõ quyền lợi và trách nhiệm của bạn.
                     </Paragraph>
 
                     <Title level={4} style={styles.sectionTitle}>
@@ -158,10 +157,10 @@ const UseService = () => {
 
                     <Title level={4} style={styles.sectionTitle}>
                         <UserOutlined style={styles.sectionTitleIcon} />
-                        3. Trách nhiệm của Người dùng
+                        3. Trách nhiệm của Khách hàng
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        Người dùng có trách nhiệm:
+                        Khách hàng có trách nhiệm:
                     </Paragraph>
                     <List
                         style={styles.contentList}
@@ -195,7 +194,7 @@ const UseService = () => {
                         5. Quyền Sở hữu Trí tuệ
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        Toàn bộ nội dung, tài liệu và mã nguồn trên <Text style={styles.codeText}>{companyName}</Text> thuộc quyền sở hữu của <Text style={styles.codeText}>{companyName}</Text> và được bảo vệ bởi luật sở hữu trí tuệ. Người dùng không được phép sao chép hoặc sử dụng cho mục đích thương mại nếu không có sự đồng ý bằng văn bản.
+                        Toàn bộ thiết kế, mẫu mã và nội dung trên <Text style={styles.codeText}>{companyName}</Text> thuộc quyền sở hữu của <Text style={styles.codeText}>{companyName}</Text> và được bảo vệ bởi luật sở hữu trí tuệ. Khách hàng không được phép sao chép hoặc sử dụng thiết kế cho mục đích thương mại nếu không có sự đồng ý bằng văn bản.
                     </Paragraph>
 
                     <Title level={4} style={styles.sectionTitle}>
@@ -203,7 +202,7 @@ const UseService = () => {
                         6. Giới hạn Trách nhiệm
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        <Text style={styles.codeText}>{companyName}</Text> không chịu trách nhiệm về các thiệt hại trực tiếp hoặc gián tiếp phát sinh từ việc sử dụng dịch vụ. Người dùng tự chịu trách nhiệm về việc sử dụng thông tin và tài nguyên trên website.
+                        <Text style={styles.codeText}>{companyName}</Text> không chịu trách nhiệm về các thiệt hại phát sinh từ việc sử dụng sai mục đích hoặc do các yếu tố ngoài tầm kiểm soát như thiên tai, hỏa hoạn. Khách hàng tự chịu trách nhiệm về việc cung cấp thông tin chính xác và sử dụng sản phẩm đúng cách.
                     </Paragraph>
 
                     <Title level={4} style={styles.sectionTitle}>
@@ -211,9 +210,8 @@ const UseService = () => {
                         7. Thay đổi Điều khoản Sử dụng
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        <Text style={styles.codeText}>{companyName}</Text> có quyền thay đổi, cập nhật các điều khoản sử dụng mà không cần báo trước. Mọi thay đổi sẽ có hiệu lực ngay khi được công bố trên website. Người dùng nên kiểm tra điều khoản định kỳ để cập nhật các thay đổi.
+                        <Text style={styles.codeText}>{companyName}</Text> có quyền thay đổi, cập nhật các điều khoản sử dụng mà không cần báo trước. Mọi thay đổi sẽ có hiệu lực ngay khi được công bố trên website. Khách hàng nên kiểm tra điều khoản định kỳ để cập nhật các thay đổi.
                     </Paragraph>
-
 
                     <Title level={4} style={styles.sectionTitle}>
                         <MessageOutlined style={styles.sectionTitleIcon} />
@@ -234,7 +232,7 @@ const UseService = () => {
                     </Paragraph>
                     <Divider style={styles.customDivider} />
                     <Paragraph style={{ textAlign: 'center', color: '#546e7a', fontSize: '14px' }}>
-                        Lưu ý: Việc tiếp tục sử dụng dịch vụ sau khi có các thay đổi đồng nghĩa với việc người dùng chấp nhận điều khoản cập nhật mới.
+                        Lưu ý: Việc tiếp tục sử dụng dịch vụ sau khi có các thay đổi đồng nghĩa với việc khách hàng chấp nhận điều khoản cập nhật mới.
                     </Paragraph>
                 </Card>
             </Content>

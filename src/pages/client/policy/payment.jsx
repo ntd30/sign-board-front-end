@@ -1,20 +1,19 @@
 import React, { useEffect } from 'react';
 import { Typography, Divider, Layout, List, Space, Card } from 'antd';
 import {
-    CreditCardOutlined, // Icon cho thanh toán
-    DollarCircleOutlined,   // Icon cho điều khoản thanh toán
-    SafetyCertificateOutlined, // Icon cho cam kết bảo mật
+    CreditCardOutlined,
+    DollarCircleOutlined,
+    SafetyCertificateOutlined,
     ContactsOutlined,
     PhoneOutlined,
     MailOutlined,
-    BankOutlined, // Icon cho chuyển khoản ngân hàng
-    ShopOutlined // Icon cho thanh toán tại văn phòng
+    BankOutlined,
+    ShopOutlined
 } from '@ant-design/icons';
 
 const { Title, Paragraph, Text, Link: AntLink } = Typography;
 const { Content } = Layout;
 
-// Định nghĩa styles bằng object - tái sử dụng và tinh chỉnh từ các trang trước
 const styles = {
     layout: {
         minHeight: '100vh',
@@ -110,7 +109,7 @@ const styles = {
 const PaymentPolicy = () => {
     useEffect(() => {
         const antdResetCss = document.createElement("link");
-        antdResetCss.id = "antd-reset-css-payment-policy"; // ID riêng cho trang này
+        antdResetCss.id = "antd-reset-css-payment-policy";
         if (!document.getElementById(antdResetCss.id)) {
             antdResetCss.rel = "stylesheet";
             antdResetCss.href = "https://unpkg.com/antd/dist/reset.css";
@@ -118,20 +117,19 @@ const PaymentPolicy = () => {
         }
     }, []);
 
-    const companyName = "IDAI.VN"; // Tên công ty/website (có thể đổi thành tên công ty biển hiệu của bạn)
-    const companyAddress = "Văn phòng giao dịch: Nhà 2B, 110 Đường Nguyễn Hoàng Tôn, Xuân La, Tây Hồ, Hà Nội"; // Địa chỉ công ty
+    const companyName = "SignMaster.vn";
+    const companyAddress = "Văn phòng giao dịch: Nhà 2B, 110 Đường Nguyễn Hoàng Tôn, Xuân La, Tây Hồ, Hà Nội";
 
     const paymentMethodsData = [
-        `Thanh toán trực tuyến qua chuyển khoản ngân hàng hoặc các phương thức thanh toán điện tử được chấp nhận (Ví dụ: Momo, VNPay,...). Thông tin tài khoản sẽ được cung cấp chi tiết trong báo giá hoặc hợp đồng.`,
-        `Thanh toán trực tiếp bằng tiền mặt hoặc thẻ tại văn phòng của <Text style={styles.codeText}>${companyName}</Text> tại địa chỉ: ${companyAddress}.`,
+        `Thanh toán qua chuyển khoản ngân hàng hoặc các ví điện tử được chấp nhận (như Momo, ZaloPay). Thông tin tài khoản ngân hàng sẽ được cung cấp trong báo giá hoặc hợp đồng.`,
+        `Thanh toán trực tiếp bằng tiền mặt hoặc thẻ tín dụng/thẻ ghi nợ tại văn phòng của <Text style={styles.codeText}>${companyName}</Text> tại địa chỉ: ${companyAddress}.`,
     ];
 
     const paymentTermsData = [
-        `Đối với các dự án thiết kế và thi công biển hiệu, biển quảng cáo, khoản thanh toán thường được chia thành các giai đoạn (ví dụ: đặt cọc, thanh toán sau khi duyệt thiết kế, thanh toán sau khi hoàn thiện thi công).`,
-        `Các điều khoản thanh toán chi tiết, bao gồm tỷ lệ thanh toán cho mỗi giai đoạn, sẽ được quy định rõ ràng trong hợp đồng hoặc thỏa thuận dịch vụ với khách hàng.`,
-        `Chúng tôi sẽ cung cấp hóa đơn VAT (nếu có) và biên nhận đầy đủ cho mọi khoản thanh toán đã được hoàn tất.`,
+        `Đối với các dự án thiết kế, sản xuất và lắp đặt biển quảng cáo, thanh toán được chia thành các giai đoạn: đặt cọc (thường 30-50%), thanh toán sau khi duyệt thiết kế, và thanh toán phần còn lại sau khi hoàn tất lắp đặt.`,
+        `Chi tiết điều khoản thanh toán, bao gồm tỷ lệ và thời điểm thanh toán, sẽ được nêu rõ trong hợp đồng dịch vụ ký kết với khách hàng.`,
+        `<Text style={styles.codeText}>${companyName}</Text> cung cấp hóa đơn VAT (nếu yêu cầu) và biên lai đầy đủ cho tất cả các giao dịch thanh toán.`,
     ];
-
 
     return (
         <Layout style={styles.layout}>
@@ -148,14 +146,13 @@ const PaymentPolicy = () => {
                         1. Hình thức Thanh toán
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        Để thuận tiện cho quý khách hàng khi đặt làm biển hiệu, biển quảng cáo tại <Text style={styles.codeText}>{companyName}</Text>, chúng tôi hỗ trợ các hình thức thanh toán linh hoạt sau:
+                        Để hỗ trợ khách hàng trong việc thanh toán cho các dịch vụ thiết kế, sản xuất và lắp đặt biển quảng cáo, <Text style={styles.codeText}>{companyName}</Text> cung cấp các hình thức thanh toán linh hoạt sau:
                     </Paragraph>
                     <List
                         style={styles.contentList}
                         dataSource={paymentMethodsData}
                         renderItem={(item, index) => (
                             <List.Item style={index === paymentMethodsData.length - 1 ? styles.listItemLast : styles.listItem}>
-                                {/* Sử dụng span thay vì Typography.Text để render HTML */}
                                 <span dangerouslySetInnerHTML={{ __html: item }} />
                             </List.Item>
                         )}
@@ -170,7 +167,6 @@ const PaymentPolicy = () => {
                         dataSource={paymentTermsData}
                         renderItem={(item, index) => (
                             <List.Item style={index === paymentTermsData.length - 1 ? styles.listItemLast : styles.listItem}>
-                                {/* Sử dụng span thay vì Typography.Text để render HTML */}
                                 <span dangerouslySetInnerHTML={{ __html: item }} />
                             </List.Item>
                         )}
@@ -181,7 +177,7 @@ const PaymentPolicy = () => {
                         3. Cam kết Bảo mật Thông tin Thanh toán
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        <Text style={styles.codeText}>{companyName}</Text> cam kết bảo vệ an toàn tuyệt đối thông tin thanh toán của quý khách. Chúng tôi áp dụng các biện pháp bảo mật tiên tiến để đảm bảo mọi giao dịch được thực hiện một cách an toàn và bảo mật. Thông tin tài chính của khách hàng sẽ không được tiết lộ cho bất kỳ bên thứ ba nào, trừ khi có yêu cầu hợp pháp từ cơ quan nhà nước có thẩm quyền.
+                        <Text style={styles.codeText}>{companyName}</Text> cam kết bảo vệ thông tin thanh toán của khách hàng bằng các biện pháp bảo mật tiên tiến. Mọi thông tin tài chính được cung cấp sẽ được xử lý an toàn và không chia sẻ với bên thứ ba, trừ khi có yêu cầu hợp pháp từ cơ quan chức năng.
                     </Paragraph>
 
                     <Title level={4} style={styles.sectionTitle}>
@@ -189,7 +185,7 @@ const PaymentPolicy = () => {
                         4. Kênh Liên hệ Hỗ trợ Thanh toán
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        Nếu quý khách có bất kỳ câu hỏi nào về chính sách thanh toán hoặc cần hỗ trợ trong quá trình giao dịch, vui lòng liên hệ với chúng tôi qua:
+                        Nếu có bất kỳ thắc mắc nào về chính sách thanh toán hoặc cần hỗ trợ trong quá trình giao dịch, quý khách vui lòng liên hệ qua:
                         <Space direction="vertical" size="small" style={{ marginTop: '15px', display: 'block', width: '100%' }}>
                             <div style={styles.contactInfoItem}>
                                 <PhoneOutlined style={styles.contactIcon} />
@@ -204,7 +200,7 @@ const PaymentPolicy = () => {
 
                     <Divider style={styles.customDivider} />
                     <Paragraph style={styles.noteText}>
-                        Lưu ý: Quý khách hàng vui lòng kiểm tra kỹ thông tin đơn hàng và các chi tiết thanh toán trước khi hoàn tất giao dịch. Hãy giữ lại các chứng từ thanh toán (biên lai, ảnh chụp màn hình giao dịch thành công) để đảm bảo quyền lợi của mình trong quá trình sử dụng dịch vụ thiết kế và thi công biển hiệu, biển quảng cáo của <Text style={styles.codeText}>{companyName}</Text>.
+                        Lưu ý: Quý khách vui lòng kiểm tra kỹ thông tin đơn hàng và chi tiết thanh toán trước khi thực hiện giao dịch. Hãy lưu giữ biên lai hoặc xác nhận giao dịch để đảm bảo quyền lợi khi sử dụng dịch vụ thiết kế, sản xuất và lắp đặt biển quảng cáo của <Text style={styles.codeText}>{companyName}</Text>.
                     </Paragraph>
                 </Card>
             </Content>
