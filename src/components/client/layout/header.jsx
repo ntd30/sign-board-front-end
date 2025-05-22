@@ -14,7 +14,7 @@ const Header = () => {
     const [drawerVisible, setDrawerVisible] = useState(false)
     const [current, setCurrent] = useState(''); // State quản lý menu item được chọn
     const [categories, setCategories] = useState([])
-    const [subCategories, setSubCategories] = useState([])
+    const token = localStorage.getItem("access_token")
 
     const screens = useBreakpoint()
     const isMobile = !screens.md
@@ -248,7 +248,7 @@ const Header = () => {
                         <Button type="text" shape="circle" icon={<SearchOutlined style={{ fontSize: 18 }} />} />
                     )} */}
 
-                    {!isMobile && user?.id ?
+                    {!isMobile && token ?
                         <Dropdown menu={{ items: itemsDropdown }} trigger={['hover']}>
                             <Space style={{ cursor: "pointer" }}>
                                 <span>Welcome {user?.fullName}</span>

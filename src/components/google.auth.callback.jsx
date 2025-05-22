@@ -3,23 +3,28 @@ import { useEffect, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { message } from "antd";
 import { AuthContext } from "./context/auth.context";
+import { getProfileAPI } from "../services/api.service";
 
 const AuthCallback = () => {
     const navigate = useNavigate();
     const location = useLocation();
     const { setUser } = useContext(AuthContext);
 
+    const loadUserInfo = async () => {
+        const res = await getProfileAPI();
+        console.log("res.data", res?.data)
+        setUser(res?.data);
+    }
+
     useEffect(() => {
+        loadUserInfo();
+
         const searchParams = new URLSearchParams(location.search);
         const token = searchParams.get("token");
-        const user = searchParams.get("user");
 
-        if (token && user) {
+        if (token) {
             try {
-                const userData = JSON.parse(decodeURIComponent(user));
                 localStorage.setItem("access_token", token);
-                localStorage.setItem("user", JSON.stringify(userData));
-                setUser(userData);
                 message.success("Đăng nhập Google thành công!");
                 navigate("/");
             } catch (error) {
