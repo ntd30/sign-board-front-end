@@ -1,15 +1,15 @@
 import { Link, useRouteError } from "react-router-dom"
 import { Result, Button } from "antd"
 
-export default function ErrorPage() {
+export default function Error403Page() {
   const error = useRouteError();
   console.error(error);
 
   return (
     <Result
-      status="404"
+      status="403"
       title="Oops!"
-      subTitle={<i>{error?.statusText || error?.message}</i>}
+      subTitle={<i>Bạn không có quyền truy cập nguồn tài nguyên này</i>}
       extra={<Button type="primary"><Link to="/">Trở về trang chủ</Link></Button>}
     />
   );

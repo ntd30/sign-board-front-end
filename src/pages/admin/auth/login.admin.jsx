@@ -3,7 +3,6 @@ import { Button, Card, Col, Divider, Flex, Form, Input, message, Row, Space, Typ
 import { useContext, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { loginAPI, loginWithGoogle } from "../../../services/api.service"
-import { AuthContext } from "../../../components/context/auth.context"
 
 const { Title, Text } = Typography
 
@@ -11,7 +10,6 @@ const LoginAdminPage = () => {
     const [form] = Form.useForm()
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
-    const { setUser } = useContext(AuthContext)
 
     const onFinish = async (values) => {
         setLoading(true)
@@ -26,8 +24,6 @@ const LoginAdminPage = () => {
             } else {
                 message.success("Đăng nhập thành công")
                 localStorage.setItem('access_token', res.data.token)
-                localStorage.setItem('user', JSON.stringify(res.data.user));
-                setUser(res.data.user)
                 navigate("/admin")
             }
         } else {

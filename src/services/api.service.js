@@ -15,6 +15,11 @@ const loginAPI = (username, password) => {
     return axios.post(URL_BACKEND, data)
 }
 
+const getProfileAPI = () => {
+    const URL_BACKEND = "/api/auth/profile"
+    return axios.get(URL_BACKEND)
+}
+
 const logoutAPI = () => {
     const URL_BACKEND = "/api/auth/logout"
     return axios.post(URL_BACKEND)
@@ -373,5 +378,6 @@ export {
     createRoleAPI, fetchAllPermissionsAPI, createPermissionAPI, updatePermissionAPI, deletePermissionAPI, fetchAllParentCategoriesAPI,
     createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI, fetchAllDesignsAPI,
     loadProductsByCategoryAPI, createContactAPI, deleteDesignAPI, deleteRoleAPI, fetchAllArticlesAPI, fetchAllContactAPI,
-    deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro, updateDesignAPI, updateContactAPI
+    deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro, updateDesignAPI, updateContactAPI,
+    getProfileAPI
 }

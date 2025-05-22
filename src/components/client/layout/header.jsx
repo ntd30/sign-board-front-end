@@ -14,7 +14,7 @@ const Header = () => {
     const [drawerVisible, setDrawerVisible] = useState(false)
     const [current, setCurrent] = useState(''); // State quản lý menu item được chọn
     const [categories, setCategories] = useState([])
-    const [subCategories, setSubCategories] = useState([])
+    const token = localStorage.getItem("access_token")
 
     const screens = useBreakpoint()
     const isMobile = !screens.md
@@ -90,7 +90,6 @@ const Header = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('access_token')
-        localStorage.removeItem('user')
         setUser({})
         message.success("Đăng xuất thành công")
         navigate('/')
@@ -119,7 +118,7 @@ const Header = () => {
             key: 'design',
             icon: <AntDesignOutlined />
         },
-        ...(!user.id ? [{
+        ...(!user?.id ? [{
             label: <Link
                 to={"/login"}
                 style={{ cursor: "pointer" }}
@@ -127,7 +126,7 @@ const Header = () => {
             key: 'login',
             icon: <LoginOutlined />
         },] : []),
-        ...(user.id ? [{
+        ...(user?.id ? [{
             label: <label
                 onClick={handleLogout}
                 style={{ cursor: "pointer" }}
@@ -185,7 +184,7 @@ const Header = () => {
         //     icon: <UserOutlined />
         // },] : []),
 
-        ...(!isMobile && user.id ? [{
+        ...(!isMobile && user?.id ? [{
             label: <label
                 onClick={handleLogout}
                 style={{ cursor: "pointer" }}
@@ -249,7 +248,7 @@ const Header = () => {
                         <Button type="text" shape="circle" icon={<SearchOutlined style={{ fontSize: 18 }} />} />
                     )} */}
 
-                    {!isMobile && user?.id ?
+                    {!isMobile && token ?
                         <Dropdown menu={{ items: itemsDropdown }} trigger={['hover']}>
                             <Space style={{ cursor: "pointer" }}>
                                 <span>Welcome {user?.fullName}</span>

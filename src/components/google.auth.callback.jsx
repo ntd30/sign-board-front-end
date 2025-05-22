@@ -1,46 +1,43 @@
-import { useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { useContext } from "react";
+// src/pages/AuthCallback.jsx
+import { useEffect, useContext } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { message } from "antd";
 import { AuthContext } from "./context/auth.context";
+import { getProfileAPI } from "../services/api.service";
 
-const GoogleAuthCallback = () => {
-    const { setUser } = useContext(AuthContext);
+const AuthCallback = () => {
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
+    const location = useLocation();
+    const { setUser } = useContext(AuthContext);
+
+    const loadUserInfo = async () => {
+        const res = await getProfileAPI();
+        console.log("res.data", res?.data)
+        setUser(res?.data);
+    }
 
     useEffect(() => {
+        loadUserInfo();
+
+        const searchParams = new URLSearchParams(location.search);
         const token = searchParams.get("token");
-        const userJson = searchParams.get("user");
 
-        console.log("token", token)
-        console.log("userJson", userJson)
-
-        if (token && userJson) {
+        if (token) {
             try {
-                // Parse the user JSON (assuming it's a stringified UserResponse)
-                const user = JSON.parse(decodeURIComponent(userJson));
-
-                // Store token in localStorage
                 localStorage.setItem("access_token", token);
-
-                // Update AuthContext with user data
-                setUser(user);
-
-                // Show success message and redirect to homepage
-                message.success("Đăng nhập với Google thành công");
+                message.success("Đăng nhập Google thành công!");
                 navigate("/");
             } catch (error) {
-                message.error("Lỗi xử lý thông tin đăng nhập");
+                message.error("Lỗi khi xử lý thông tin đăng nhập: " + error.message);
                 navigate("/login");
             }
         } else {
-            message.error("Thông tin đăng nhập không hợp lệ");
+            message.error("Không nhận được thông tin đăng nhập từ server.");
             navigate("/login");
         }
-    }, [searchParams, setUser, navigate]);
+    }, [navigate, setUser]);
 
     return <div>Đang xử lý đăng nhập...</div>;
 };
 
-export default GoogleAuthCallback;
+export default AuthCallback;
