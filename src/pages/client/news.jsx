@@ -13,7 +13,7 @@ const NewsPage = () => {
     background: '#FFFFFF',
     display: 'flex',
     flexDirection: 'column',
-    height: '100%', // Đảm bảo card chiếm toàn bộ chiều cao
+    height: '100%',
   };
 
   const productCardHoverStyle = {
@@ -24,11 +24,11 @@ const NewsPage = () => {
   const rowStyle = {
     display: 'flex',
     flexWrap: 'wrap',
-    alignItems: 'stretch', // Đảm bảo các Col có chiều cao bằng nhau
+    alignItems: 'stretch',
   };
 
   const cardBodyStyle = {
-    flexGrow: 1, // Phần body mở rộng để lấp đầy không gian
+    flexGrow: 1,
   };
 
   const descriptionStyle = {
@@ -40,24 +40,45 @@ const NewsPage = () => {
     maxHeight: '4.5em',
   };
 
-  const [dataNews, setDataNews] = useState([]);
+  const [dataNews, setDataNews] = useState([]); // All articles (up to 1000)
+  const [displayedNews, setDisplayedNews] = useState([]); // Paginated articles
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(12);
+  const [pageSize, setPageSize] = useState(12); // Set pageSize to 5
   const [total, setTotal] = useState(0);
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
 
+  // Load all articles (up to 1000) and sort them
+  const loadNews = async () => {
+    setLoading(true);
+    try {
+      const res = await fetchAllArticlesAPI(1, 1000); // Fetch up to 1000 articles
+      if (res.data) {
+        // Sort all articles by id in descending order
+        const sortedArticles = res.data.content.sort((a, b) => b.id - a.id);
+        setDataNews(sortedArticles);
+        setTotal(res.data.totalElements);
+      }
+    } catch (error) {
+      console.error("Lỗi khi tải danh sách bài viết:", error);
+    }
+    setLoading(false);
+  };
+
+  // Handle pagination on the client side
+  useEffect(() => {
+    // Calculate the slice of articles to display based on current page and pageSize
+    const startIndex = (current - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    const paginatedArticles = dataNews.slice(startIndex, endIndex);
+    setDisplayedNews(paginatedArticles);
+  }, [dataNews, current, pageSize]);
+
+  // Load articles when the component mounts
   useEffect(() => {
     loadNews();
-  }, [current, pageSize]);
-
-  const loadNews = async () => {
-    const res = await fetchAllArticlesAPI(current, pageSize);
-    if (res.data) {
-      setTotal(res.data.totalElements);
-      setDataNews(res.data.content);
-    }
-  };
+  }, []);
 
   const handlePaginationChange = (page, pageSize) => {
     setCurrent(page);
@@ -81,14 +102,20 @@ const NewsPage = () => {
       </Breadcrumb>
 
       <Row gutter={[24, 24]} style={rowStyle}>
-        {dataNews.map((product) => (
+        {displayedNews.map((product) => (
           <Col key={product.id} xs={24} sm={12} md={8} lg={6}>
             <Card
               hoverable
               style={hoveredCard === product.id ? { ...productCardStyle, ...productCardHoverStyle } : productCardStyle}
               onMouseEnter={() => setHoveredCard(product.id)}
               onMouseLeave={() => setHoveredCard(null)}
-              cover={<img alt={product.name} src={`${import.meta.env.VITE_BACKEND_URL}${product?.featuredImageUrl}`} style={{ height: '220px', objectFit: 'cover' }} />}
+              cover={
+                <img
+                  alt={product.name}
+                  src={`${import.meta.env.VITE_BACKEND_URL}${product?.featuredImageUrl}`}
+                  style={{ height: '220px', objectFit: 'cover' }}
+                />
+              }
               bodyStyle={cardBodyStyle}
               onClick={() => handleGetNewsDetail(product)}
               actions={[
@@ -107,6 +134,7 @@ const NewsPage = () => {
                   Xem ngay
                 </Button>,
               ]}
+              loading={loading}
             >
               <Card.Meta
                 title={<Title level={5} style={{ color: '#004D40' }}>{product.title}</Title>}
@@ -128,8 +156,8 @@ const NewsPage = () => {
           onChange={handlePaginationChange}
           style={{ marginTop: 32, textAlign: 'center' }}
           showSizeChanger
-          pageSizeOptions={[12, 16, 24]}
-          showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} sản phẩm`}
+          pageSizeOptions={[12, 16, 20]} // Adjusted options to include 5
+          showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} bài viết`}
         />
       )}
     </div>
