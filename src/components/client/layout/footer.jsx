@@ -21,9 +21,8 @@ const AppFooter = () => {
             <Title level={5} className="footer-title">CHÍNH SÁCH & ĐIỀU KHOẢN</Title>
             <ul className="footer-links">
               <li><Link to="/policy/privacy" className="footer-link">Chính sách về quyền riêng tư</Link></li>
-              <li><Link to="/chinh-sach-van-chuyen" className="footer-link">Chính sách vận chuyển</Link></li>
-              <li><Link to="/chinh-sach-bao-mat" className="footer-link">Chính sách bảo mật</Link></li>
-              <li><Link to="/dieu-khoan-dieu-kien" className="footer-link">Điều khoản & điều kiện</Link></li>
+              <li><Link to="/policy/useService" className="footer-link">Thỏa Thuận Sử Dụng Dịch Vụ</Link></li>
+              <li><Link to="/policy/refund" className="footer-link">Chính Sách Hoàn Trả</Link></li>
             </ul>
           </Col>
 
