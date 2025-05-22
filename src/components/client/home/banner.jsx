@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
-import { Row, Col } from 'antd'; // Removed Card and Typography from antd imports
+import { Row, Col, Grid } from 'antd'; // Removed Card and Typography from antd imports
+
+const { useBreakpoint } = Grid;
 
 // CSS cho hiệu ứng card (áp dụng cho container ảnh)
 const customBannerStyles = `
@@ -42,6 +44,9 @@ const customBannerStyles = `
 
 // Component Banner chính
 export const Banner = () => {
+  const screens = useBreakpoint()
+  const isMobile = !screens.md
+
   useEffect(() => {
     const styleSheet = document.createElement("style");
     styleSheet.id = "custom-banner-styles";
@@ -85,7 +90,7 @@ export const Banner = () => {
   ];
 
   return (
-    <Row style={{ width: "70%", margin: "50px auto 20px auto" }} gutter={[24, 24]} align="stretch">
+    <Row style={{ width: isMobile ? "95%" : "70%", margin: "50px auto 20px auto" }} gutter={[24, 24]} align="stretch">
       {/* Cột 1: Chứa 2 ảnh nhỏ */}
       <Col xs={24} sm={24} md={8} lg={6}>
         <Row gutter={[0, 24]}> {/* Gutter dọc giữa 2 ảnh */}

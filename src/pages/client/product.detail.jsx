@@ -190,8 +190,11 @@ const ProductDetailPage = () => {
               {product.images && product.images.length > 1 && (
                 <Row gutter={[8, 8]} style={{ marginTop: '16px' }} className="thumbnail-list">
                   {product.images.map((img) => (
-                    <Col key={img.id} xs={6} sm={4}>
+                    <Col key={img.id} xs={6} sm={4} >
                       <Image
+                        width={90}
+                        height={90}
+                        style={{marginRight: 20}}
                         preview={false}
                         src={`${import.meta.env.VITE_BACKEND_URL || ''}/images/${img.imageUrl}`}
                         alt={`${product.name} - thumbnail ${img.id}`}

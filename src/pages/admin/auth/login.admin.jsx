@@ -26,6 +26,7 @@ const LoginAdminPage = () => {
             } else {
                 message.success("Đăng nhập thành công")
                 localStorage.setItem('access_token', res.data.token)
+                localStorage.setItem('user', JSON.stringify(res.data.user));
                 setUser(res.data.user)
                 navigate("/admin")
             }

@@ -106,7 +106,8 @@ const UserCreate = (props) => {
                         label="Mật khẩu"
                         name="password"
                         rules={[
-                            { required: true, message: 'Vui lòng không được bỏ trống!' }
+                            { required: true, message: 'Vui lòng không được bỏ trống!' },
+                            { min: 6, message: 'Mật khẩu phải có tối thiểu 6 ký tự' }
                         ]}
                     >
                         <Input.Password />

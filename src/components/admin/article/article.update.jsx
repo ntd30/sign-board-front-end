@@ -279,7 +279,7 @@ const ArticleUpdate = (props) => {
                             >
                                 <Upload
                                     customRequest={dummyRequest}
-                                    listType="picture-card"
+                                    listType="picture"
                                     fileList={fileList}
                                     onChange={handleUploadChange}
                                     beforeUpload={beforeUpload}

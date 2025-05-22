@@ -14,27 +14,28 @@ const LoginPage = () => {
     const { setUser } = useContext(AuthContext)
 
     const onFinish = async (values) => {
-        setLoading(true)
-        const res = await loginAPI(values.username, values.password)
-
-        console.log("reslogin", res)
-
-        if (res.data) {
-            message.success("Đăng nhập thành công")
-            localStorage.setItem('access_token', res.data.token)
-            setUser(res.data.user)
-            navigate("/")
-        } else {
-            message.error(res)
+        setLoading(true);
+        try {
+            const res = await loginAPI(values.username, values.password);
+            
+            if (res.data) {
+                message.success("Đăng nhập thành công");
+                // Lưu token vào localStorage
+                localStorage.setItem('access_token', res.data.token);
+                // Lưu thông tin người dùng vào localStorage (chuyển thành chuỗi JSON)
+                localStorage.setItem('user', JSON.stringify(res.data.user));
+                // Cập nhật AuthContext
+                setUser(res.data.user);
+                navigate("/");
+            } else {
+                message.error(res.message || "Đăng nhập thất bại");
+            }
+        } catch (error) {
+            message.error("Đăng nhập thất bại: " + error.message);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false)
-    }
-
-    const handleGoogleLogin = () => {
-        // const res = await loginWithGoogle()
-
-        navigate(`${import.meta.env.VITE_BACKEND_URL}/login/oauth2/authorization/google`)
-    }
+    };
 
     const handleForgotPassword = () => {
         navigate("/forgot-password")
@@ -97,7 +98,6 @@ const LoginPage = () => {
                             <a href={`${import.meta.env.VITE_BACKEND_URL}/oauth2/authorization/google`}>
                                 <Button
                                     icon={<GoogleOutlined />}
-                                    onClick={handleGoogleLogin}
                                     block
                                     size="large"
                                 >

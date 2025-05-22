@@ -90,6 +90,7 @@ const Header = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('access_token')
+        localStorage.removeItem('user')
         setUser({})
         message.success("Đăng xuất thành công")
         navigate('/')

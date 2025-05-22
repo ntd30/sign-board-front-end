@@ -23,12 +23,6 @@ const { Option } = Select;
 
 // CSS tùy chỉnh
 const customStyles = `
-    .add-news-form-container {
-      background-color: #ffffff;
-      padding: 24px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
-    }
     .form-section-title {
       margin-bottom: 20px;
       color: #1890ff;
@@ -220,7 +214,7 @@ const ArticleCreate = (props) => {
                             >
                                 <Upload
                                     customRequest={dummyRequest}
-                                    listType="picture-card"
+                                    listType="picture"
                                     fileList={fileList}
                                     onChange={handleUploadChange}
                                     beforeUpload={(file) => {
@@ -252,9 +246,9 @@ const ArticleCreate = (props) => {
                                     )}
                                 </Upload>
                             </Form.Item>
-                            <Paragraph type="secondary" style={{ marginTop: '-10px', fontSize: '12px' }}>
+                            {/* <Paragraph type="secondary" style={{ marginTop: '-10px', fontSize: '12px' }}>
                                 Hỗ trợ JPG, PNG. Kích thước tối đa 2MB.
-                            </Paragraph>
+                            </Paragraph> */}
                         </Col>
                     </Row>
                     <Divider />
