@@ -37,6 +37,7 @@ import Privacy from './pages/client/policy/privacy.jsx';
 import UseService from './pages/client/policy/useService.jsx';
 import RefundPolicy from './pages/client/policy/refund.jsx';
 import ServiceStandards from './pages/client/policy/standard.jsx';
+import HandoverPolicy from './pages/client/policy/handOver.jsx';
 
 const router = createBrowserRouter([
   {
@@ -91,6 +92,10 @@ const router = createBrowserRouter([
       {
         path: "policy/standard",
         element: <ServiceStandards />
+      },
+      {
+        path: "policy/handOver",
+        element: <HandoverPolicy />
       },
     ]
   },
