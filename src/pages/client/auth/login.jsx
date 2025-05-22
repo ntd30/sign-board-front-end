@@ -3,7 +3,6 @@ import { Button, Card, Col, Divider, Flex, Form, Input, message, Row, Space, Typ
 import { useContext, useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { loginAPI, loginWithGoogle } from "../../../services/api.service"
-import { AuthContext } from "../../../components/context/auth.context"
 
 const { Title, Text } = Typography
 
@@ -11,7 +10,6 @@ const LoginPage = () => {
     const [form] = Form.useForm()
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
-    const { setUser } = useContext(AuthContext)
 
     const onFinish = async (values) => {
         setLoading(true);
@@ -22,10 +20,7 @@ const LoginPage = () => {
                 message.success("Đăng nhập thành công");
                 // Lưu token vào localStorage
                 localStorage.setItem('access_token', res.data.token);
-                // Lưu thông tin người dùng vào localStorage (chuyển thành chuỗi JSON)
-                localStorage.setItem('user', JSON.stringify(res.data.user));
-                // Cập nhật AuthContext
-                setUser(res.data.user);
+
                 navigate("/");
             } else {
                 message.error(res.message || "Đăng nhập thất bại");

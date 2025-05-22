@@ -1,12 +1,22 @@
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { AuthContext } from "../components/context/auth.context"
 import { Navigate } from "react-router-dom"
+import { getProfileAPI } from "../services/api.service";
 
 const PrivateRouteAdmin = (props) => {
-    // const { user } = useContext(AuthContext)
-    const user = localStorage.getItem("user");
+    const { user, setUser } = useContext(AuthContext);
 
-    if (user) {
+    useEffect(() => {
+        loadUserInfo();
+    }, []);
+
+    const loadUserInfo = async () => {
+        const res = await getProfileAPI();
+        console.log("res.data", res.data)
+        setUser(res.data);
+    }
+
+    if (user && user.roleName !== "Customer") {
         return (<> {props.children} </>)
     }
 

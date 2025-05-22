@@ -32,6 +32,7 @@ import { NewsDetail } from './pages/client/news.detail.jsx';
 import ProductContact from './components/client/product/product.contact.jsx';
 import { DashboardPage } from './pages/admin/dashboard.jsx';
 import GoogleAuthCallback from './components/google.auth.callback.jsx';
+import AuthCallback from './components/google.auth.callback.jsx';
 
 const router = createBrowserRouter([
   {
@@ -92,7 +93,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/auth/callback",
-    element: <GoogleAuthCallback />,
+    element: <AuthCallback />,
   },
 
   {

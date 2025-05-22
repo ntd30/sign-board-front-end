@@ -90,7 +90,6 @@ const Header = () => {
 
     const handleLogout = () => {
         localStorage.removeItem('access_token')
-        localStorage.removeItem('user')
         setUser({})
         message.success("Đăng xuất thành công")
         navigate('/')
@@ -119,7 +118,7 @@ const Header = () => {
             key: 'design',
             icon: <AntDesignOutlined />
         },
-        ...(!user.id ? [{
+        ...(!user?.id ? [{
             label: <Link
                 to={"/login"}
                 style={{ cursor: "pointer" }}
@@ -127,7 +126,7 @@ const Header = () => {
             key: 'login',
             icon: <LoginOutlined />
         },] : []),
-        ...(user.id ? [{
+        ...(user?.id ? [{
             label: <label
                 onClick={handleLogout}
                 style={{ cursor: "pointer" }}
@@ -185,7 +184,7 @@ const Header = () => {
         //     icon: <UserOutlined />
         // },] : []),
 
-        ...(!isMobile && user.id ? [{
+        ...(!isMobile && user?.id ? [{
             label: <label
                 onClick={handleLogout}
                 style={{ cursor: "pointer" }}
