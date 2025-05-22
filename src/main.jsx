@@ -33,6 +33,7 @@ import ProductContact from './components/client/product/product.contact.jsx';
 import { DashboardPage } from './pages/admin/dashboard.jsx';
 import GoogleAuthCallback from './components/google.auth.callback.jsx';
 import AuthCallback from './components/google.auth.callback.jsx';
+import Privacy from './pages/client/policy/privacy.jsx';
 
 const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ const router = createBrowserRouter([
       {
         path: "products/contact",
         element: <ProductContact />
+      },
+      {
+        path: "policy/privacy",
+        element: <Privacy />
       },
     ]
   },

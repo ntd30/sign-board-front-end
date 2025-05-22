@@ -1,9 +1,10 @@
 import { Layout, Row, Col, Typography, Space } from 'antd';
-import { EnvironmentOutlined, PhoneOutlined, MailOutlined } from '@ant-design/icons';
+import { EnvironmentOutlined, PhoneOutlined, MailOutlined, AppstoreFilled, EnvironmentFilled, PhoneFilled, MailFilled, FileFilled } from '@ant-design/icons';
 import '../../../styles/footer.css'; // Tạo file CSS riêng để dễ quản lý
+import { Link } from 'react-router-dom';
 
 const { Footer } = Layout;
-const { Title, Text, Link } = Typography;
+const { Title, Text } = Typography;
 
 const AppFooter = () => {
   // Lấy năm hiện tại cho bản quyền
@@ -19,10 +20,10 @@ const AppFooter = () => {
           <Col xs={24} sm={12} md={8}>
             <Title level={5} className="footer-title">CHÍNH SÁCH & ĐIỀU KHOẢN</Title>
             <ul className="footer-links">
-              <li><Link href="/chinh-sach-bao-hanh" className="footer-link">Chính sách bảo hành</Link></li>
-              <li><Link href="/chinh-sach-van-chuyen" className="footer-link">Chính sách vận chuyển</Link></li>
-              <li><Link href="/chinh-sach-bao-mat" className="footer-link">Chính sách bảo mật</Link></li>
-              <li><Link href="/dieu-khoan-dieu-kien" className="footer-link">Điều khoản & điều kiện</Link></li>
+              <li><Link to="/policy/privacy" className="footer-link">Chính sách về quyền riêng tư</Link></li>
+              <li><Link to="/chinh-sach-van-chuyen" className="footer-link">Chính sách vận chuyển</Link></li>
+              <li><Link to="/chinh-sach-bao-mat" className="footer-link">Chính sách bảo mật</Link></li>
+              <li><Link to="/dieu-khoan-dieu-kien" className="footer-link">Điều khoản & điều kiện</Link></li>
             </ul>
           </Col>
 
@@ -31,26 +32,24 @@ const AppFooter = () => {
             <Title level={5} className="footer-title">THÔNG TIN LIÊN HỆ</Title>
             <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
               <div>
-                <Text strong className="contact-label"><EnvironmentOutlined /> Trụ sở chính:</Text>
-                <Text className="contact-detail">Số nhà 10, dãy H, Khu tập thể Công an Đa Sỹ, Phường Kiến Hưng, Quận Hà Đông, Thành phố Hà Nội, Việt Nam</Text>
+                <Text strong className="contact-label"><AppstoreFilled /> CÔNG TY TNHH ĐẦU TƯ CÔNG NGHỆ TECHBYTE</Text>
               </div>
               <div>
-                <Text strong className="contact-label"><EnvironmentOutlined /> Văn phòng trưng bày và xem mẫu:</Text>
+                <Text strong className="contact-label"><FileFilled /> Mã số thuế: 0110801570</Text>
+              </div>
+              <div>
+                <Text strong className="contact-label"><PhoneFilled /> 0973.454.140</Text>
+              </div>
+              <div>
+                <Text strong className="contact-label"><MailFilled /> ai@idai.vn</Text>
+              </div>
+              <div>
+                <Text strong className="contact-label"><EnvironmentFilled /> Trụ sở chính:</Text>
+                <Text className="contact-detail">Nhà 10, dãy H, Khu tập thể Công an Đa Sỹ, Phường Kiến Hưng, Quận Hà Đông, Thành phố Hà Nội, Việt Nam</Text>
+              </div>
+              <div>
+                <Text strong className="contact-label"><EnvironmentFilled /> Văn phòng giao dịch:</Text>
                 <Text className="contact-detail">Nhà 2B, 110 Đường Nguyễn Hoàng Tôn, Xuân La, Tây Hồ, Hà Nội</Text>
-              </div>
-              <div>
-                <Text strong className="contact-label"><EnvironmentOutlined /> Xưởng sản xuất:</Text>
-                <Text className="contact-detail">Số 20, Ngõ 408, Xuân Đỉnh, Quận Từ Liêm, Thành phố Hà Nội, Việt Nam</Text> {/* Sửa lại địa chỉ nếu cần */}
-              </div>
-              <div>
-                <Text strong className="contact-label"><PhoneOutlined /> Điện thoại:</Text>
-                {/* Nên dùng thẻ Link cho số điện thoại */}
-                <Link href="tel:0973454140" className="contact-detail footer-link">0973.454.140</Link>
-              </div>
-              <div>
-                <Text strong className="contact-label"><MailOutlined /> Email:</Text>
-                {/* Nên dùng thẻ Link cho email */}
-                <Link href="mailto:nguyentienduy14119@gmail.com" className="contact-detail footer-link">ak@datvn.vn</Link> {/* Sửa lại email nếu cần */}
               </div>
             </Space>
           </Col>
@@ -72,15 +71,15 @@ const AppFooter = () => {
           </Col>
 
         </Row>
-      </div>
+      </div >
 
       {/* Phần Copyright (nền tối hơn) */}
-      <div className="footer-copyright">
+      <div div className="footer-copyright" >
         <Text className="copyright-text">
           @ Copyright {currentYear} Biển hiệu. All Rights Reserved
         </Text>
-      </div>
-    </Footer>
+      </div >
+    </Footer >
   );
 };
 
