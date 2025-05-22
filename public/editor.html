@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Editor</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+    iframe {
+      border: none;
+      width: 100%;
+      height: calc(100% - 100px); /* Để lại không gian cho hướng dẫn và nút */
+    }
+    .instructions {
+      position: fixed;
+      bottom: 60px;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      z-index: 1000;
+    }
+    .save-button {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      background-color: #1890ff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 1000;
+    }
+    .save-button:hover {
+      background-color: #40a9ff;
+    }
+    .file-input {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <iframe
+    id="editorIframe"
+    src="https://app.templated.io/editor?embed=c2874a3a-2ab6-4d55-8e3d-069d6598d582"
+    allowfullscreen
+  ></iframe>
+
+  <!-- Hướng dẫn người dùng -->
+  <div class="instructions">
+    Vui lòng bấm "Tải ảnh thiết kế" trong trình chỉnh sửa, sau đó chọn file ảnh để gửi.
+  </div>
+
+  <!-- Nút "Lưu và Gửi" -->
+  <label for="fileInput" class="save-button">Lưu và Gửi</label>
+  <input type="file" id="fileInput" class="file-input" accept="image/*" onchange="sendImageToDesignPage(event)" />
+
+  <script>
+    // Gửi ảnh về DesignPage
+    window.sendImageToDesignPage = function (event) {
+      const file = event.target.files[0];
+      if (!file) {
+        alert('Vui lòng chọn file ảnh thiết kế!');
+        return;
+      }
+
+      // Chuyển file thành base64 để gửi qua postMessage
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const imageData = e.target.result; // Dữ liệu ảnh dạng base64
+        const parentWindow = window.opener; // Lấy cửa sổ cha (DesignPage)
+
+        if (parentWindow) {
+          parentWindow.postMessage(
+            { type: 'DESIGN_IMAGE', image: imageData },
+            '*' // Thay '*' bằng domain của DesignPage để bảo mật (ví dụ: 'http://localhost:3000')
+          );
+          alert('Ảnh đã được gửi về trang thiết kế!');
+          window.close(); // Đóng cửa sổ editor sau khi gửi
+        } else {
+          alert('Không tìm thấy trang cha để gửi ảnh!');
+        }
+      };
+      reader.readAsDataURL(file);
+    };
+  </script>
+</body>
+</html>
