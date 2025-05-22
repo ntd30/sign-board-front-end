@@ -25,6 +25,7 @@ const AppFooter = () => {
               <li><Link to="/policy/refund" className="footer-link">Chính Sách Hoàn Trả</Link></li>
               <li><Link to="/policy/standard" className="footer-link">Tiêu chuẩn dịch vụ</Link></li>
               <li><Link to="/policy/handOver" className="footer-link">Chính Sách Bàn Giao</Link></li>
+              <li><Link to="/policy/payment" className="footer-link">Chính Sách Thanh Toán</Link></li>
             </ul>
           </Col>
 
