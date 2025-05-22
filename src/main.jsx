@@ -36,6 +36,7 @@ import AuthCallback from './components/google.auth.callback.jsx';
 import Privacy from './pages/client/policy/privacy.jsx';
 import UseService from './pages/client/policy/useService.jsx';
 import RefundPolicy from './pages/client/policy/refund.jsx';
+import ServiceStandards from './pages/client/policy/standard.jsx';
 
 const router = createBrowserRouter([
   {
@@ -86,6 +87,10 @@ const router = createBrowserRouter([
       {
         path: "policy/refund",
         element: <RefundPolicy />
+      },
+      {
+        path: "policy/standard",
+        element: <ServiceStandards />
       },
     ]
   },

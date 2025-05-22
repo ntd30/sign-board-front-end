@@ -23,6 +23,7 @@ const AppFooter = () => {
               <li><Link to="/policy/privacy" className="footer-link">Chính sách về quyền riêng tư</Link></li>
               <li><Link to="/policy/useService" className="footer-link">Thỏa Thuận Sử Dụng Dịch Vụ</Link></li>
               <li><Link to="/policy/refund" className="footer-link">Chính Sách Hoàn Trả</Link></li>
+              <li><Link to="/policy/standard" className="footer-link">Tiêu chuẩn dịch vụ</Link></li>
             </ul>
           </Col>
 
