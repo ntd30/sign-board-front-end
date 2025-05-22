@@ -2,10 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Carousel, Row, Col, Button, Typography } from 'antd';
 import { ProductList } from '../../components/client/home/product.list';
 import { Banner } from '../../components/client/home/banner';
-import { Link } from 'react-router-dom';
 import ProductContact from '../../components/client/product/product.contact';
 
-const { Title, Text } = Typography;
+const { Title, Text, Paragraph } = Typography;
 
 // Hàm tiện ích tạo URL ảnh placeholder
 const placeholderImg = (width, height, text, bgColor = 'cccccc', textColor = '555555') =>
@@ -149,9 +148,9 @@ const AboutUsComponent = () => {
                                     Chào mừng đến với <strong style={{ color: '#FFFFFF' }}>Website của chúng tôi</strong>! Chúng tôi tự hào là đơn vị tiên phong trong lĩnh vực thiết kế và thi công biển quảng cáo, biển hiệu chất lượng cao.
                                 </Text>
                                 <br /><br />
-                                <Text style={{ fontSize: '18px', lineHeight: '1.9', color: '#B2DFDB' }}>
+                                <Paragraph style={{ fontSize: '18px', lineHeight: '1.9', color: '#B2DFDB' }}>
                                     Với sự sáng tạo không ngừng và cam kết về chất lượng, chúng tôi mang đến những giải pháp tối ưu, giúp thương hiệu của bạn tỏa sáng và thu hút mọi ánh nhìn.
-                                </Text>
+                                </Paragraph>
                                 <Button
                                     onClick={() => setIsContactOpen(true)}
                                     type="primary"
