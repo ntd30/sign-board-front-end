@@ -112,7 +112,7 @@ const Privacy = () => {
 
     const listAccessiblePartiesData = [
         `Nhân viên của ${companyName} trong phạm vi trách nhiệm công việc để thực hiện dự án.`,
-        `Các đối tác sản xuất, vận chuyển hoặc lắp đặt đã ký kết hợp đồng bảo mật thông tin với ${companyName} (chỉ khi cần thiết cho việc hoàn thành dự án của bạn).`,
+        `Các đối tác sản xuất, vận chuyển hoặc lắp đặt đã ký kết hợp đồng bảo mật thông tin với ${companyName} .`,
         `Các cơ quan nhà nước có thẩm quyền khi có yêu cầu theo quy định của pháp luật.`,
     ];
 
@@ -196,7 +196,6 @@ const Privacy = () => {
                             <li>Yêu cầu xóa thông tin cá nhân khỏi hệ thống của chúng tôi (trong trường hợp không còn ràng buộc pháp lý hoặc hợp đồng).</li>
                             <li>Rút lại sự đồng ý cho việc thu thập và xử lý thông tin bất cứ lúc nào (việc này có thể ảnh hưởng đến khả năng cung cấp dịch vụ của chúng tôi).</li>
                         </ul>
-                        Để thực hiện các quyền này, vui lòng liên hệ với chúng tôi qua thông tin được cung cấp ở mục 7.
                     </Paragraph>
 
                     <Title level={4} style={styles.sectionTitle}>
@@ -208,15 +207,15 @@ const Privacy = () => {
                         <Space direction="vertical" size="middle" style={{ marginTop: '15px', display: 'block', width: '100%' }}>
                             <div style={styles.contactInfoItem}>
                                 <PhoneOutlined style={styles.contactIcon} />
-                                <Text>Hotline Hỗ Trợ: <Text strong>098x.xxx.xxx</Text> (Thay thế bằng SĐT thật)</Text>
+                                <Text>Hotline Hỗ Trợ: <Text strong> 0973.454.140</Text></Text>
                             </div>
                             <div style={styles.contactInfoItem}>
                                 <MailOutlined style={styles.contactIcon} />
-                                <Text>Email: <Text strong><AntLink href="mailto:hotro@bienhieudep.vn">hotro@bienhieudep.vn</AntLink></Text> (Thay thế bằng Email thật)</Text>
+                                <Text>Email: <Text strong><AntLink href="mailto: ai@idai.vn"> ai@idai.vn</AntLink></Text> </Text>
                             </div>
                             <div style={styles.contactInfoItem}>
                                 <EnvironmentOutlined style={styles.contactIcon} />
-                                <Text>Địa chỉ Văn Phòng: Số xx, Đường ABC, Phường XYZ, Quận GHI, Thành phố JKL (Thay thế bằng địa chỉ thật)</Text>
+                                <Text>Địa chỉ văn phòng: Số nhà 10, dãy H, Khu tập thể Công an Đa Sỹ, Phường Kiến Hưng, Quận Hà Đông, Hà Nội.</Text>
                             </div>
                         </Space>
                     </Paragraph>
