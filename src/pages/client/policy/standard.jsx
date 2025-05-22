@@ -15,7 +15,6 @@ import {
 const { Title, Paragraph, Text, Link: AntLink } = Typography;
 const { Content } = Layout;
 
-// Định nghĩa styles bằng object - tái sử dụng và tinh chỉnh từ các trang trước
 const styles = {
     layout: {
         minHeight: '100vh',
@@ -111,7 +110,7 @@ const styles = {
 const ServiceStandards = () => {
     useEffect(() => {
         const antdResetCss = document.createElement("link");
-        antdResetCss.id = "antd-reset-css-service-standards"; // ID riêng cho trang này
+        antdResetCss.id = "antd-reset-css-service-standards";
         if (!document.getElementById(antdResetCss.id)) {
             antdResetCss.rel = "stylesheet";
             antdResetCss.href = "https://unpkg.com/antd/dist/reset.css";
@@ -119,21 +118,21 @@ const ServiceStandards = () => {
         }
     }, []);
 
-    const companyName = "IDAI.VN";
+    const companyName = "SignMaster.vn";
 
     const customerResponsibilitiesData = [
-        `Đảm bảo tính chính xác và chất lượng của các sản phẩm, dịch vụ cung cấp.`,
-        `Hỗ trợ khách hàng liên tục qua các kênh tư vấn, hỗ trợ trực tuyến và trực tiếp.`,
+        `Đảm bảo chất lượng của các sản phẩm biển quảng cáo, từ thiết kế đến sản xuất, đáp ứng tiêu chuẩn kỹ thuật và thẩm mỹ.`,
+        `Cung cấp dịch vụ tư vấn và hỗ trợ khách hàng liên tục qua các kênh trực tuyến, điện thoại và tại chỗ.`,
     ];
 
     const progressReportingData = [
-        `Duy trì thông tin minh bạch bằng cách cung cấp báo cáo tiến độ định kỳ hàng tuần, giúp khách hàng theo dõi quá trình triển khai dự án.`,
-        `Thiết lập các cuộc họp định kỳ (Q&A) để giải đáp thắc mắc và hỗ trợ kỹ thuật cho khách hàng.`,
+        `Cung cấp báo cáo tiến độ định kỳ (hàng tuần hoặc theo thỏa thuận) về quá trình thiết kế, sản xuất và lắp đặt biển quảng cáo.`,
+        `Tổ chức các buổi gặp mặt hoặc liên hệ trực tiếp để cập nhật tiến độ và giải đáp thắc mắc của khách hàng.`,
     ];
 
     const editingCommitmentData = [
-        `Thực hiện các điều chỉnh, sửa đổi theo yêu cầu của khách hàng để đảm bảo sản phẩm hoàn thiện, đúng với mong đợi và mục tiêu đặt ra.`,
-        `Chỉnh sửa và hỗ trợ đến khi khách hàng hoàn toàn hài lòng, cam kết chất lượng dịch vụ tốt nhất trong từng sản phẩm.`,
+        `Thực hiện chỉnh sửa thiết kế biển quảng cáo theo yêu cầu của khách hàng để đảm bảo sản phẩm phù hợp với mục đích sử dụng.`,
+        `Cam kết hỗ trợ chỉnh sửa cho đến khi khách hàng hài lòng, đảm bảo chất lượng và tính thẩm mỹ của sản phẩm.`,
     ];
 
     return (
@@ -151,7 +150,7 @@ const ServiceStandards = () => {
                         1. Chất lượng Dịch vụ
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        <Text style={styles.codeText}>{companyName}</Text> cam kết cung cấp dịch vụ chất lượng cao, đáp ứng đầy đủ các yêu cầu của khách hàng trong lĩnh vực Công Nghệ Thông Tin và An Toàn Thông Tin, thiết kế website chuyên nghiệp, và xuất bản phần mềm.
+                        <Text style={styles.codeText}>{companyName}</Text> cam kết cung cấp dịch vụ thiết kế, sản xuất và lắp đặt biển quảng cáo chất lượng cao, bao gồm các loại biển LED, biển chữ nổi, biển hộp đèn và biển in bạt, đáp ứng đầy đủ yêu cầu về thẩm mỹ và kỹ thuật của khách hàng.
                     </Paragraph>
 
                     <Title level={4} style={styles.sectionTitle}>
@@ -201,7 +200,7 @@ const ServiceStandards = () => {
                         5. Phản hồi và Hỗ trợ
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        Đội ngũ chăm sóc khách hàng luôn sẵn sàng hỗ trợ, tiếp nhận phản hồi để cải thiện chất lượng dịch vụ.
+                        Đội ngũ chăm sóc khách hàng của <Text style={styles.codeText}>{companyName}</Text> luôn sẵn sàng tiếp nhận phản hồi và cung cấp hỗ trợ kỹ thuật, bảo trì để đảm bảo sự hài lòng và hiệu quả sử dụng biển quảng cáo.
                     </Paragraph>
 
                     <Title level={4} style={styles.sectionTitle}>
@@ -224,7 +223,7 @@ const ServiceStandards = () => {
 
                     <Divider style={styles.customDivider} />
                     <Paragraph style={styles.noteText}>
-                        Lưu ý: Chúng tôi luôn lắng nghe phản hồi từ khách hàng để không ngừng nâng cao tiêu chuẩn dịch vụ, đáp ứng tốt nhất nhu cầu của khách hàng trong lĩnh vực công nghệ thông tin và an toàn thông tin.
+                        Lưu ý: Chúng tôi luôn lắng nghe phản hồi từ khách hàng để không ngừng nâng cao chất lượng dịch vụ, đảm bảo mang đến những sản phẩm biển quảng cáo đáp ứng tốt nhất nhu cầu quảng bá thương hiệu.
                     </Paragraph>
                 </Card>
             </Content>
