@@ -3,9 +3,10 @@ import { AuthContext } from "../components/context/auth.context"
 import { Navigate } from "react-router-dom"
 
 const PrivateRouteAdmin = (props) => {
-    const { user } = useContext(AuthContext)
+    // const { user } = useContext(AuthContext)
+    const user = localStorage.getItem("user");
 
-    if (user && user.id) {
+    if (user) {
         return (<> {props.children} </>)
     }
 

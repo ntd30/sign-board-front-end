@@ -1,7 +1,7 @@
 import axios from './axios.customize'
 
 const fetchAllUsersAPI = (current, pageSize, search = "") => {
-    const URL_BACKEND = `/api/admin/users?page=${current}&size=${pageSize}&search=${encodeURIComponent(search)}`;
+    const URL_BACKEND = `/api/admin/users?page=${current}&size=${pageSize}&sort=id,desc&search=${encodeURIComponent(search)}`;
     return axios.get(URL_BACKEND);
 };
 
@@ -86,7 +86,7 @@ const deleteUserAPI = (id) => {
 }
 
 const fetchAllProductsAPI = (current, pageSize) => {
-    const URL_BACKEND = `/api/products/list?page=${current}&size=${pageSize}`
+    const URL_BACKEND = `/api/products/list?page=${current}&size=${pageSize}&sort=createdAt,desc`
     return axios.get(URL_BACKEND)
 }
 
@@ -120,7 +120,7 @@ const fetchAllParentCategoriesAPI = () => {
 }
 
 const fetchAllCategoriesAPI = (current, pageSize) => {
-    const URL_BACKEND = `/api/categories/list?page=${current}&size=${pageSize}`
+    const URL_BACKEND = `/api/categories/list?page=${current}&size=${pageSize}&sort=id,desc`
     return axios.get(URL_BACKEND)
 }
 

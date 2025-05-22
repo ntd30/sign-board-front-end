@@ -18,6 +18,7 @@ const LayoutAdmin = () => {
 
     const handleLogout = async () => {
         localStorage.removeItem('access_token')
+        localStorage.removeItem('user')
         setUser({})
         message.success("Đăng xuất thành công")
         navigate('/')
@@ -38,6 +39,20 @@ const LayoutAdmin = () => {
             icon: <LogoutOutlined />
         },
     ]
+
+    useEffect(() => {
+        // Lấy thông tin người dùng từ localStorage
+        const userData = localStorage.getItem('user');
+        if (userData) {
+            try {
+                const parsedUser = JSON.parse(userData);
+                setUser(parsedUser);
+            } catch (error) {
+                console.error("Lỗi khi parse thông tin người dùng:", error);
+                setUser(null);
+            }
+        }
+    }, []);
 
     useEffect(() => {
         if (user?.permissions?.length) {

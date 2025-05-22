@@ -41,8 +41,9 @@ const UserUpdate = (props) => {
     const handleUpdateUser = async (values) => {
         setLoadingBtn(true)
 
-        const { id, fullName, phoneNumber, address, active, roleName } = values
-        const res = await updateUserAPI(id, fullName, phoneNumber, address, active, roleName)
+        const { id, fullName, phoneNumber, address, active, roleId } = values
+        console.log("roleid", roleId)
+        const res = await updateUserAPI(id, fullName, phoneNumber, address, active, roleId)
 
         if (res.data) {
             resetAndCloseModal()
@@ -78,7 +79,7 @@ const UserUpdate = (props) => {
                 onFinish={handleUpdateUser}
                 form={form}
             >
-                <Form.Item label="Id" name="id">
+                <Form.Item label="Id" name="id" hidden>
                     <Input disabled />
                 </Form.Item>
 
@@ -132,7 +133,7 @@ const UserUpdate = (props) => {
 
                 <Form.Item
                     label="Quyền hạn"
-                    name="roleName"
+                    name="roleId"
                     rules={[{ required: true, message: 'Quyền hạn không được bỏ trống!' }]}
                 >
                     <Select placeholder="Chọn vai trò">

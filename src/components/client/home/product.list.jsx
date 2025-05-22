@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Row, Col, Card, Button, Typography } from 'antd';
+import { Row, Col, Card, Button, Typography, Grid } from 'antd';
 import { fetchAllProductsAPI } from '../../../services/api.service';
 import { useNavigate } from 'react-router-dom';
 
 const { Title, Text } = Typography;
+const { useBreakpoint } = Grid;
 
 // Custom CSS for the product list
 const customStyles = `
@@ -16,6 +17,9 @@ const customStyles = `
 `;
 
 export const ProductList = () => {
+    const screens = useBreakpoint()
+    const isMobile = !screens.md
+
     const productCardStyle = {
         borderRadius: '12px',
         overflow: 'hidden',
@@ -64,7 +68,6 @@ export const ProductList = () => {
     const loadProducts = async () => {
         const res = await fetchAllProductsAPI(1, 8);
         setProducts(res?.data?.content || []);
-        console.log("res products home: ", res)
     };
 
     const handleGetProductDetail = (product) => {
@@ -77,7 +80,7 @@ export const ProductList = () => {
     };
 
     return (
-        <div style={{ width: "70%", margin: "auto", padding: '60px 20px' }}>
+        <div style={{ width: isMobile ? "100%" : "70%", margin: "auto", padding: '60px 20px' }}>
             <Row justify="space-between" align="center" style={{ marginBottom: '35px', padding: '0 2%' }}>
                 <Col>
                     <Title level={2} style={{ color: '#004D40', margin: 0 }}>Sản Phẩm Tiêu Biểu</Title>

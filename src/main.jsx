@@ -20,7 +20,6 @@ import LoginAdminPage from './pages/admin/auth/login.admin.jsx';
 import PrivateRouteAdmin from './pages/private.route.admin.jsx';
 import ProductDetailPage from './pages/client/product.detail.jsx';
 import PermissionPage from './pages/admin/permission.jsx';
-import GoogleAuthCallback from './pages/client/auth/google.auth.jsx';
 import RolePage from './pages/admin/role.jsx';
 import ProductPage from './pages/admin/product.jsx';
 import CategoryPage from './pages/admin/category.jsx';
@@ -32,6 +31,7 @@ import NewsPage from './pages/client/news.jsx';
 import { NewsDetail } from './pages/client/news.detail.jsx';
 import ProductContact from './components/client/product/product.contact.jsx';
 import { DashboardPage } from './pages/admin/dashboard.jsx';
+import GoogleAuthCallback from './components/google.auth.callback.jsx';
 
 const router = createBrowserRouter([
   {
@@ -91,7 +91,7 @@ const router = createBrowserRouter([
     element: <RegisterPage />,
   },
   {
-    path: `${import.meta.env.VITE_BACKEND_URL}/oauth2/authorization/google`,
+    path: "/auth/callback",
     element: <GoogleAuthCallback />,
   },
 
