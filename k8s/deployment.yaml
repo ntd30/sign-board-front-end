@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: signboard-frontend
-        image: ai2
+        image: ai2-fe
         ports:
         - containerPort: 80
         envFrom:
