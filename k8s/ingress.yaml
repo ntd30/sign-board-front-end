@@ -1,0 +1,52 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: signboard-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://ai2.vn"
+    nginx.ingress.kubernetes.io/cors-allow-methods: "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+    nginx.ingress.kubernetes.io/cors-allow-credentials: "true"
+    nginx.ingress.kubernetes.io/cors-allow-headers: "*"
+spec:
+  tls:
+  - hosts:
+    - ai2.vn
+    - api.v1.ai2.vn
+    secretName: signboard-tls
+  rules:
+  - host: ai2.vn
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: signboard-frontend-service
+            port:
+              number: 80
+  - host: api.v1.ai2.vn
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: signboard-service
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: signboard-service
+            port:
+              number: 80
+      - path: /login/oauth2
+        pathType: Prefix
+        backend:
+          service:
+            name: signboard-service
+            port:
+              number: 80
