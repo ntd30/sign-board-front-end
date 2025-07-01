@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-ENV VITE_BACKEND_URL=https://api.v1.ai2.vn
+ENV VITE_BACKEND_URL=https://api-v1.ai2.vn
 RUN npm run build
 
 # Giai đoạn production
