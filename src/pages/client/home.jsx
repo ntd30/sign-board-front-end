@@ -91,10 +91,19 @@ const SliderComponent = () => {
         <div ref={ref} style={sliderStyle}>
             <Carousel autoplay dotPosition="bottom" effect="fade">
                 <div>
-                    <img src={"/img/1.png"} alt="Ảnh trượt 1" style={imgStyle} />
+                    <img src={"/img/1.jpg"} alt="Ảnh trượt 1" style={imgStyle} />
                 </div>
                 <div>
-                    <img src={"/img/2.png"} alt="Ảnh trượt 2" style={imgStyle} />
+                    <img src={"/img/2.jpg"} alt="Ảnh trượt 2" style={imgStyle} />
+                </div>
+                <div>
+                    <img src={"/img/3.jpg"} alt="Ảnh trượt 2" style={imgStyle} />
+                </div>
+                <div>
+                    <img src={"/img/4.jpg"} alt="Ảnh trượt 2" style={imgStyle} />
+                </div>
+                <div>
+                    <img src={"/img/5.jpg"} alt="Ảnh trượt 2" style={imgStyle} />
                 </div>
             </Carousel>
         </div>
@@ -229,7 +238,7 @@ export const HomePage = () => {
                 <ProductList />
             </div>
 
-            <AboutUsComponent />
+            {/* <AboutUsComponent /> */}
 
         </>
     );

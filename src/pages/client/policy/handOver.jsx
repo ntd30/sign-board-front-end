@@ -117,7 +117,7 @@ const HandoverPolicy = () => {
         }
     }, []);
 
-    const companyName = "SignMaster.vn";
+    const companyName = "ai2.vn";
 
     const handoverProcessData = [
         `<strong>Kiểm tra chất lượng:</strong> Sau khi hoàn thành sản xuất biển quảng cáo, ${companyName} sẽ tiến hành kiểm tra chất lượng kỹ lưỡng để đảm bảo sản phẩm đáp ứng yêu cầu thiết kế và tiêu chuẩn kỹ thuật.`,
@@ -193,7 +193,7 @@ const HandoverPolicy = () => {
                         <Space direction="vertical" size="small" style={{ marginTop: '15px', display: 'block', width: '100%' }}>
                             <div style={styles.contactInfoItem}>
                                 <PhoneOutlined style={styles.contactIcon} />
-                                <Text>Hotline: <Text strong>0973.454.140</Text></Text>
+                                <Text>Hotline: <Text strong>0375145998</Text></Text>
                             </div>
                             <div style={styles.contactInfoItem}>
                                 <MailOutlined style={styles.contactIcon} />

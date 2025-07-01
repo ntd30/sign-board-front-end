@@ -17,10 +17,19 @@ const carouselSlideImg = {
 const Banner = () => (
   <Carousel style={carouselSlide} arrows infinite={false} effect="fade">
     <div>
-      <img style={carouselSlideImg} src="/img/1.png" alt="slide1" />
+      <img style={carouselSlideImg} src="/img/1.jpg" alt="slide1" />
     </div>
     <div>
-      <img style={carouselSlideImg} src="/img/2.png" alt="slide2" />
+      <img style={carouselSlideImg} src="/img/2.jpg" alt="slide2" />
+    </div>
+    <div>
+      <img style={carouselSlideImg} src="/img/3.jpg" alt="slide2" />
+    </div>
+    <div>
+      <img style={carouselSlideImg} src="/img/4.jpg" alt="slide2" />
+    </div>
+    <div>
+      <img style={carouselSlideImg} src="/img/5.jpg" alt="slide2" />
     </div>
   </Carousel>
 )

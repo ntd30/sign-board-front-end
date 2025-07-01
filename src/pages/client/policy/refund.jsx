@@ -110,7 +110,7 @@ const RefundPolicy = () => {
         }
     }, []);
 
-    const companyName = "IDAI.VN"; // Tên công ty/website
+    const companyName = "ai2.vn"; // Tên công ty/website
 
     return (
         <Layout style={styles.layout}>

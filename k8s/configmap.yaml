@@ -4,4 +4,4 @@ metadata:
   name: signboard-frontend-config
   namespace: default
 data:
-  VITE_BACKEND_URL: https://api.v1.ai2.vn
+  VITE_BACKEND_URL: https://api-v1.ai2.vn

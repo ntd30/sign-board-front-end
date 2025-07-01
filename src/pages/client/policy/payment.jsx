@@ -117,7 +117,7 @@ const PaymentPolicy = () => {
         }
     }, []);
 
-    const companyName = "SignMaster.vn";
+    const companyName = "ai2.vn";
     const companyAddress = "Văn phòng giao dịch: Nhà 2B, 110 Đường Nguyễn Hoàng Tôn, Xuân La, Tây Hồ, Hà Nội";
 
     const paymentMethodsData = [

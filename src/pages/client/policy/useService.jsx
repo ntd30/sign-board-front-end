@@ -100,7 +100,7 @@ const UseService = () => {
         }
     }, []);
 
-    const companyName = "SignMaster.vn";
+    const companyName = "ai2.vn";
 
     const serviceScopeData = [
         `Thiết kế và sản xuất các loại biển quảng cáo, bao gồm biển LED, biển chữ nổi, biển hộp đèn và biển in bạt.`,
@@ -111,7 +111,7 @@ const UseService = () => {
     const userResponsibilitiesData = [
         `Cung cấp thông tin chính xác về yêu cầu thiết kế, kích thước và vị trí lắp đặt biển quảng cáo.`,
         `Thanh toán đầy đủ và đúng hạn theo thỏa thuận trong hợp đồng dịch vụ.`,
-        `Không tự ý tháo dỡ, sửa chữa hoặc thay đổi biển quảng cáo mà không có sự đồng ý của SignMaster.vn.`,
+        `Không tự ý tháo dỡ, sửa chữa hoặc thay đổi biển quảng cáo mà không có sự đồng ý của ai2.vn.`,
     ];
 
     const idaiResponsibilitiesData = [

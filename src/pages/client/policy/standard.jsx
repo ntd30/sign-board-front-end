@@ -118,7 +118,7 @@ const ServiceStandards = () => {
         }
     }, []);
 
-    const companyName = "SignMaster.vn";
+    const companyName = "ai2.vn";
 
     const customerResponsibilitiesData = [
         `Đảm bảo chất lượng của các sản phẩm biển quảng cáo, từ thiết kế đến sản xuất, đáp ứng tiêu chuẩn kỹ thuật và thẩm mỹ.`,

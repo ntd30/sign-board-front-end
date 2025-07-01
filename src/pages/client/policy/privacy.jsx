@@ -101,7 +101,7 @@ const Privacy = () => {
         }
     }, []);
 
-    const companyName = "BienHieuDep.vn"; // Tên công ty mẫu
+    const companyName = "ai2.vn"; // Tên công ty mẫu
 
     const listPurposeData = [
         `Xử lý yêu cầu thiết kế, báo giá và thi công các dự án biển hiệu, biển quảng cáo.`,
@@ -207,7 +207,7 @@ const Privacy = () => {
                         <Space direction="vertical" size="middle" style={{ marginTop: '15px', display: 'block', width: '100%' }}>
                             <div style={styles.contactInfoItem}>
                                 <PhoneOutlined style={styles.contactIcon} />
-                                <Text>Hotline Hỗ Trợ: <Text strong> 0973.454.140</Text></Text>
+                                <Text>Hotline Hỗ Trợ: <Text strong>0375145998</Text></Text>
                             </div>
                             <div style={styles.contactInfoItem}>
                                 <MailOutlined style={styles.contactIcon} />

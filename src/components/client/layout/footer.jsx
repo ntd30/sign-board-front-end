@@ -40,7 +40,7 @@ const AppFooter = () => {
                 <Text strong className="contact-label"><FileFilled /> Mã số thuế: 0110801570</Text>
               </div>
               <div>
-                <Text strong className="contact-label"><PhoneFilled /> 0973.454.140</Text>
+                <Text strong className="contact-label"><PhoneFilled /> 0375145998</Text>
               </div>
               <div>
                 <Text strong className="contact-label"><MailFilled /> ai@idai.vn</Text>
