@@ -79,7 +79,14 @@ const ArticleTable = (props) => {
             title: 'Ảnh',
             dataIndex: 'featuredImageUrl',
             render: (text, record) => {
-                const imageUrl = text ? `${import.meta.env.VITE_BACKEND_URL}${text}` : '';
+                const imageUrl = record.imageBase64
+                    ? `data:image/jpeg;base64,${record.imageBase64}`
+                    :
+                    record.featuredImageUrl
+                        ? `${import.meta.env.VITE_BACKEND_URL}${record.featuredImageUrl}`
+                        :
+
+                        "/default-image.jpg" // fallback nếu không có ảnh nào
                 return (
                     <div>
                         {imageUrl ? (

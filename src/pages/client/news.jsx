@@ -57,7 +57,7 @@ const NewsPage = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
   const [loading, setLoading] = useState(false); // Add loading state
   const navigate = useNavigate();
-
+  console.log("new", displayedNews)
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const isMobile = !screens.md;
@@ -125,10 +125,20 @@ const NewsPage = () => {
               cover={
                 <img
                   alt={product.name}
-                  src={`${import.meta.env.VITE_BACKEND_URL}${product?.featuredImageUrl}`}
+                  src={
+                    product.imageBase64
+                      ? `data:image/jpeg;base64,${product.imageBase64}`
+                      :
+                      product.featuredImageUrl
+                        ? `${import.meta.env.VITE_BACKEND_URL}${product.featuredImageUrl}`
+                        :
+
+                        "/default-image.jpg" // fallback nếu không có ảnh nào
+                  }
                   style={{ height: '220px', objectFit: 'cover' }}
                 />
               }
+
               bodyStyle={cardBodyStyle}
               onClick={() => handleGetNewsDetail(product)}
               actions={[
@@ -170,7 +180,7 @@ const NewsPage = () => {
           style={{ marginTop: 32, textAlign: 'center' }}
           showSizeChanger
           pageSizeOptions={[12, 16, 20]} // Adjusted options to include 5
-          // showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} bài viết`}
+        // showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} bài viết`}
         />
       )}
     </div>
