@@ -1,4 +1,4 @@
-import { Button, Cascader, Col, Form, Input, InputNumber, Modal, notification, Row, Select, Upload } from "antd";
+import { Button, Cascader, Col, Form, Input, InputNumber, Modal, notification, Row, Upload } from "antd";
 import { useEffect, useState } from "react";
 import { createProductAPI } from "../../../services/api.service";
 import { PlusOutlined } from '@ant-design/icons';
@@ -24,26 +24,24 @@ const ProductCreate = (props) => {
         const { name, categoryId, length, width, height } = values;
 
         const formData = new FormData();
-        formData.append(
-            "product",
-            new Blob(
-                [
-                    JSON.stringify({
-                        name,
-                        categoryId: categoryId[categoryId.length - 1],
-                        description,
-                        dimensions: `${length}x${width}x${height} mm`,
-                        slug: name.toLowerCase().replace(/\s+/g, "-"),
-                        price: 0,
-                        discount: 0,
-                        discountPrice: 0,
-                        materialIds: [],
-                    }),
-                ],
-                { type: "application/json" }
-            )
-        );
+        formData.append("name", name);
+        formData.append("slug", name.toLowerCase().replace(/\s+/g, "-"));
+        formData.append("description", description);
+        formData.append("dimensions", `${length}x${width}x${height}`);
+        formData.append("categoryId", categoryId[categoryId.length - 1]); // Take the last ID in the category chain
 
+        // Add temporary price fields
+        formData.append("price", "0");
+        formData.append("discount", "0");
+        formData.append("discountPrice", "0");
+
+        // Add materialIds if available (e.g., from a checkbox or multi-select)
+        const materialIds = []; // Replace with actual data if available
+        materialIds.forEach((id) => {
+            formData.append("materialIds", id);
+        });
+
+        // Add images
         fileList.forEach((file) => {
             formData.append("images", file.originFileObj);
         });
@@ -61,7 +59,7 @@ const ProductCreate = (props) => {
             } else {
                 notification.error({
                     message: "Lỗi thêm mới Sản phẩm",
-                    description: JSON.stringify(resCreateProduct.message),
+                    description: resCreateProduct.message || "Lỗi không xác định",
                 });
             }
         } catch (error) {
@@ -138,12 +136,14 @@ const ProductCreate = (props) => {
                                 label="Mô tả"
                                 name="description"
                                 rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
-                                initialValue={description}
                             >
                                 <ReactQuill
                                     theme="snow"
                                     value={description}
-                                    onChange={setDescription}
+                                    onChange={(value) => {
+                                        setDescription(value);
+                                        form.setFieldsValue({ description: value });
+                                    }}
                                     placeholder="Nhập mô tả"
                                     modules={{
                                         toolbar: [
@@ -178,9 +178,8 @@ const ProductCreate = (props) => {
                                 label="Dài"
                                 name="length"
                                 rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
-                                layout="horizontal"
                             >
-                                <InputNumber />
+                                <InputNumber min={0} style={{ width: '100%' }} />
                             </Form.Item>
                         </Col>
 
@@ -189,9 +188,8 @@ const ProductCreate = (props) => {
                                 label="Rộng"
                                 name="width"
                                 rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
-                                layout="horizontal"
                             >
-                                <InputNumber />
+                                <InputNumber min={0} style={{ width: '100%' }} />
                             </Form.Item>
                         </Col>
 
@@ -200,20 +198,26 @@ const ProductCreate = (props) => {
                                 label="Cao"
                                 name="height"
                                 rules={[{ required: true, message: 'Vui lòng không bỏ trống' }]}
-                                layout="horizontal"
                             >
-                                <InputNumber />
+                                <InputNumber min={0} style={{ width: '100%' }} />
                             </Form.Item>
                         </Col>
 
                         <Col span={24}>
-                            <Form.Item label="Hình ảnh">
+                            <Form.Item
+                                label="Hình ảnh"
+                                name="images"
+                                rules={[{ required: true, message: 'Vui lòng tải lên ít nhất một hình ảnh!' }]}
+                                validateStatus={fileList.length === 0 ? 'error' : ''}
+                                help={fileList.length === 0 ? 'Vui lòng tải lên ít nhất một hình ảnh!' : ''}
+                            >
                                 <Upload
                                     listType="picture-card"
                                     fileList={fileList}
                                     onChange={handleUploadChange}
                                     multiple
                                     maxCount={5}
+                                    beforeUpload={() => false} // Prevent auto-upload
                                 >
                                     {fileList.length >= 5 ? null : uploadButton}
                                 </Upload>

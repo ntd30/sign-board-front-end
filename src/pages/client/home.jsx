@@ -3,6 +3,7 @@ import { Carousel, Row, Col, Button, Typography } from 'antd';
 import { ProductList } from '../../components/client/home/product.list';
 import { Banner } from '../../components/client/home/banner';
 import ProductContact from '../../components/client/product/product.contact';
+import PopupOffer from '../../components/PopupOffer';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -230,6 +231,9 @@ export const HomePage = () => {
 
     return (
         <>
+              <PopupOffer />
+
+
             <SliderComponent />
             <div ref={bannerRef} className={`zoom-in-section ${bannerVisible ? 'visible' : ''}`}>
                 <Banner />

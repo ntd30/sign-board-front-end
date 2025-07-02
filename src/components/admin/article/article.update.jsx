@@ -20,7 +20,7 @@ import { updateArticleAPI } from "../../../services/api.service";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-const { Title, Paragraph } = Typography;
+const { Title } = Typography;
 const { Option } = Select;
 
 const customStyles = `
@@ -36,23 +36,19 @@ const customStyles = `
       border-bottom: 1px solid #f0f0f0;
       padding-bottom: 10px;
     }
-
     .ant-upload-picture-card-wrapper .ant-upload-list-picture-card .ant-upload-list-item,
     .ant-upload.ant-upload-select-picture-card {
       width: 450px !important;
       height: 450px !important;
       border-radius: 12px;
     }
-
     .ant-upload.ant-upload-select-picture-card > div {
       font-size: 18px;
       padding: 16px 8px;
     }
-
     .ant-upload-list-picture-card .ant-upload-list-item-info {
       border-radius: 12px;
     }
-
     .ant-upload-list-item-info {
       background: rgba(0, 0, 0, 0.05);
     }
@@ -73,18 +69,19 @@ const ArticleUpdate = (props) => {
 
     useEffect(() => {
         if (dataUpdate && dataUpdate.id) {
+            const initialContent = dataUpdate.content || '<p></p>';
             form.setFieldsValue({
                 title: dataUpdate.title,
-                content: dataUpdate.content,
                 excerpt: dataUpdate.excerpt || '',
                 type: dataUpdate.type,
                 isFeatured: dataUpdate.isFeatured || false,
             });
+            setContent(initialContent);
 
             if (dataUpdate.featuredImageUrl && typeof dataUpdate.featuredImageUrl === 'string' && dataUpdate.featuredImageUrl.match(/\.(jpg|jpeg|png)$/i)) {
                 setFileList([{
                     uid: '-1',
-                    name: 'image.jpg',
+                    name: dataUpdate.featuredImageUrl.split('/').pop() || 'image.jpg',
                     status: 'done',
                     url: `${import.meta.env.VITE_BACKEND_URL}${dataUpdate.featuredImageUrl}`,
                     isExisting: true,
@@ -105,41 +102,49 @@ const ArticleUpdate = (props) => {
     const onFinish = async (values) => {
         setLoadingBtn(true);
 
-        const { title, excerpt, type, isFeatured, images } = values;
-
+        const { title, excerpt, type, isFeatured } = values;
         const slug = title
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
             .replace(/(^-|-$)/g, '');
 
-        const articleData = {
-            title,
-            slug,
-            content,
-            excerpt: excerpt || content.slice(0, 200),
-            isFeatured: isFeatured || false,
-            type,
-        };
+        const formData = new FormData();
+        formData.append("title", title);
+        formData.append("slug", slug);
+        formData.append("content", content);
+        formData.append("excerpt", excerpt || content.slice(0, 200));
+        formData.append("isFeatured", isFeatured || false);
+        formData.append("type", type);
 
-        const imageFile = images?.fileList[0]?.originFileObj;
-
-        const resUpdateArticle = await updateArticleAPI(dataUpdate.id, articleData, imageFile);
-
-        if (resUpdateArticle.data) {
-            resetAndCloseModal();
-            await loadArticles();
-            notification.success({
-                message: "Cập nhật bài viết",
-                description: "Cập nhật bài viết thành công",
-            });
-        } else {
-            notification.error({
-                message: "Lỗi cập nhật bài viết",
-                description: resUpdateArticle.message,
-            });
+        // Append image only if a new file is uploaded
+        const newImageFile = fileList.length > 0 && !fileList[0].isExisting ? fileList[0].originFileObj : null;
+        if (newImageFile) {
+            formData.append("image", newImageFile);
         }
 
-        setLoadingBtn(false);
+        try {
+            const resUpdateArticle = await updateArticleAPI(dataUpdate.id, formData);
+            if (resUpdateArticle) {
+                resetAndCloseModal();
+                await loadArticles();
+                notification.success({
+                    message: "Cập nhật bài viết",
+                    description: "Cập nhật bài viết thành công",
+                });
+            } else {
+                notification.error({
+                    message: "Lỗi cập nhật bài viết",
+                    description: "Không có dữ liệu phản hồi từ server",
+                });
+            }
+        } catch (error) {
+            notification.error({
+                message: "Lỗi cập nhật bài viết",
+                description: error.message || 'Đã xảy ra lỗi khi cập nhật',
+            });
+        } finally {
+            setLoadingBtn(false);
+        }
     };
 
     const resetAndCloseModal = () => {
@@ -179,7 +184,7 @@ const ArticleUpdate = (props) => {
             message.error('Ảnh phải nhỏ hơn 2MB!');
             return Upload.LIST_IGNORE;
         }
-        if (fileList.length >= 1) {
+        if (fileList.length >= 1 && !fileList[0].isExisting) {
             message.warning('Chỉ được phép tải lên một ảnh đại diện.');
             return Upload.LIST_IGNORE;
         }
@@ -239,10 +244,8 @@ const ArticleUpdate = (props) => {
                                 />
                             </Form.Item>
                             <Form.Item
-                                name="content"
                                 label="Nội dung bài viết"
                                 rules={[{ required: true, message: 'Vui lòng nhập nội dung!' }]}
-                                initialValue={content}
                             >
                                 <ReactQuill
                                     theme="snow"
@@ -286,17 +289,27 @@ const ArticleUpdate = (props) => {
                                 </Select>
                             </Form.Item>
                             <Form.Item
+                                name="isFeatured"
+                                label="Nổi bật"
+                                valuePropName="checked"
+                            >
+                                <Switch />
+                            </Form.Item>
+                            <Form.Item
                                 name="images"
                                 label="Ảnh bài viết"
+                                rules={[{ required: true, message: 'Vui lòng tải lên ảnh của bài viết!' }]}
                             >
                                 <Upload
                                     customRequest={dummyRequest}
-                                    listType="picture"
+                                    listType="picture-card"
                                     fileList={fileList}
                                     onChange={handleUploadChange}
                                     beforeUpload={beforeUpload}
                                     onPreview={handlePreview}
-                                    onRemove={() => setFileList([])}
+                                    onRemove={(file) => {
+                                        if (!file.isExisting) setFileList([]);
+                                    }}
                                     maxCount={1}
                                     showUploadList={{
                                         showPreviewIcon: true,

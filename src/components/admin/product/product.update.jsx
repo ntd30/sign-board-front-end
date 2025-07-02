@@ -24,7 +24,8 @@ const ProductUpdate = (props) => {
     const [fileList, setFileList] = useState([]);
     const [description, setDescription] = useState('');
     const [form] = Form.useForm();
-
+        
+    
     useEffect(() => {
         let numbersOnlyArray = [];
         if (dataUpdate?.dimensions) {
@@ -83,63 +84,65 @@ const ProductUpdate = (props) => {
         }
     }, [dataUpdate, form]);
 
-    const handleUpdateProduct = async (values) => {
-        setLoadingBtn(true);
+const handleUpdateProduct = async (values) => {
+    setLoadingBtn(true);
+    const formData = new FormData();
 
-        const formData = new FormData();
+    // Gửi các trường thông tin cơ bản
+    formData.append("name", values.name);
+    formData.append("categoryId", typeof values.categoryName === "string"
+        ? values.categoryId
+        : values.categoryName[values.categoryName.length - 1]
+    );
+    formData.append("description", description);
+    formData.append("slug", values.slug);
+    if (Array.isArray(values.materialIds)) {
+        values.materialIds.forEach(id => formData.append("materialIds", id));
+    }
+    formData.append("dimensions", `${values.length}x${values.width}x${values.height}`);
 
-        const productData = {
-            name: values.name,
-            categoryId: typeof values.categoryName === "string" ? values.categoryId : values.categoryName[values.categoryId?.length - 1],
-            description,
-            price: values.price,
-            discount: values.discount,
-            discountPrice: values.discountPrice,
-            slug: values.slug,
-            materialIds: values.materialIds || [],
-            dimensions: `${values.length}x${values.width}x${values.height}`,
-        };
+    // Lấy danh sách ảnh cũ được giữ lại (dựa vào fileList)
+    const keptExistingImages = fileList
+        .filter(file => file.isExisting && file.url)
+        .map(file => {
+            const urlParts = file.url.split('/');
+            return urlParts[urlParts.length - 1]; // Lấy tên file ảnh
+        });
 
-        formData.append('product', new Blob([JSON.stringify(productData)], { type: 'application/json' }));
+    formData.append("keptImageUrls", JSON.stringify(keptExistingImages));
 
-        const newImages = fileList.filter(file => !file.url);
-        if (newImages.length > 0) {
-            newImages.forEach(file => {
-                if (file.originFileObj) {
-                    formData.append('images', file.originFileObj);
-                }
-            });
+    // Ảnh mới được thêm
+    const newImages = fileList.filter(file => !file.url);
+    newImages.forEach(file => {
+        if (file.originFileObj) {
+            formData.append("images", file.originFileObj);
         }
+    });
 
-        try {
-            const res = await updateProductAPI(dataUpdate.id, formData);
-
-            if (res) {
-                resetAndCloseModal();
-                await loadProducts();
-                notification.success({
-                    message: "Cập nhật Sản phẩm",
-                    description: "Cập nhật Sản phẩm thành công",
-                });
-            } else {
-                notification.error({
-                    message: "Lỗi Cập nhật Sản phẩm",
-                    description: res.message || "Có lỗi xảy ra khi cập nhật sản phẩm",
-                });
-            }
-        } catch (error) {
-            const errorMessage = error.response?.data?.message ||
-                error.response?.data?.error ||
-                error.message ||
-                "Có lỗi không xác định khi cập nhật sản phẩm";
+    try {
+        const res = await updateProductAPI(dataUpdate.id, formData);
+        if (res) {
+            resetAndCloseModal();
+            await loadProducts();
+            notification.success({
+                message: "Cập nhật Sản phẩm",
+                description: "Cập nhật thành công",
+            });
+        } else {
             notification.error({
-                message: "Lỗi Cập nhật Sản phẩm",
-                description: errorMessage,
+                message: "Lỗi cập nhật",
+                description: res.message || "Đã xảy ra lỗi",
             });
-            console.error("API Error:", error.response?.data || error);
         }
-        setLoadingBtn(false);
-    };
+    } catch (error) {
+        notification.error({
+            message: "Lỗi cập nhật",
+            description: error.message || "Lỗi không xác định",
+        });
+    }
+    setLoadingBtn(false);
+};
+
 
     const resetAndCloseModal = () => {
         setIsUpdateOpen(false);

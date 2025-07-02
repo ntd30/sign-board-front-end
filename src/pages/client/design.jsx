@@ -3,6 +3,7 @@ import { Button, Card, Col, Divider, notification, Row, Typography, Upload } fro
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../components/context/auth.context';
 import { uploadDesign } from '../../services/api.service';
+import { useNavigate } from 'react-router-dom';
 
 const { Title, Paragraph } = Typography;
 
@@ -29,7 +30,9 @@ const DesignPage = () => {
     const [preview, setPreview] = useState(null);
     const [description, setDescription] = useState('');
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
 
+    console.log("User", user);
     // Hàm chuyển base64 thành file để gửi qua API
     const base64ToFile = (base64, filename) => {
         const arr = base64.split(',');
@@ -59,16 +62,27 @@ const DesignPage = () => {
     }, []);
 
     const handleOnChangeFile = ({ file }) => {
-        if (!file) {
-            setSelectedFile(null);
-            setPreview(null);
+
+        if (user && user.id) {
+            if (!file) {
+                setSelectedFile(null);
+                setPreview(null);
+                setDescription('');
+                return;
+            }
+
+            setSelectedFile(file);
+            setPreview(URL.createObjectURL(file));
             setDescription('');
-            return;
+
+        } else {
+            notification.error({
+                message: 'Lỗi xác thực',
+                description: 'Vui lòng đăng nhập để tải lên bản thiết kế',
+            });
+            navigate('/login')
         }
 
-        setSelectedFile(file);
-        setPreview(URL.createObjectURL(file));
-        setDescription('');
     };
 
     const handleUpload = async () => {
@@ -99,7 +113,17 @@ const DesignPage = () => {
     };
 
     const handleOpenEditor = () => {
+        if(user && user.id) {
+
         window.open('/editor.html', '_blank');
+        }
+        else {
+            notification.error({
+                message: 'Lỗi xác thực',
+                description: 'Vui lòng đăng nhập để mở trình chỉnh sửa thiết kế',
+            });
+            navigate('/login');
+        }
     };
 
     return (
@@ -156,7 +180,6 @@ const DesignPage = () => {
                     >
                         Hoặc tải lên bản thiết kế độc đáo của bạn hoặc mở trình chỉnh sửa để bắt đầu từ ý tưởng mới!
                     </Paragraph>
-
                     <Upload
                         showUploadList={false}
                         beforeUpload={() => false} // Prevent auto-upload

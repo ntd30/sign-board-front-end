@@ -188,7 +188,7 @@ const ProductContact = (props) => {
                             <Form.Item
                                 label="Địa chỉ của bạn"
                                 name="address"
-                                rules={[{ required: true, message: 'Vui lòng nhập Địa chỉ!' }]}
+                                rules={[{ required: false, message: 'Vui lòng nhập Địa chỉ!' }]}
                             >
                                 <Input rows={3} placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố" />
                             </Form.Item>

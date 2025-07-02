@@ -46,42 +46,56 @@ const ArticleCreate = (props) => {
     const [form] = Form.useForm();
 
     const onFinish = async (values) => {
+        console.log("Form values:", values);
         setLoadingBtn(true);
 
-        const { title, excerpt, type, images } = values;
-        const slug = title
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/(^-|-$)/g, '');
+        // Create FormData
+        const formData = new FormData();
+        // Append individual fields
+        formData.append("title", values.title);
+        console.log("tile", values.title);
+        formData.append("content", content); // Use the `content` state directly
+        formData.append("excerpt", values.excerpt || content.slice(0, 200)); // Use excerpt or first 200 chars of content
+        formData.append("isFeatured", false); // Default value if not provided
+        formData.append("type", values.type);
 
-        const imageFile = images?.fileList[0].originFileObj;
+        // Append image file
+        if (fileList.length > 0 && fileList[0].originFileObj) {
+            formData.append("image", fileList[0].originFileObj);
+        }
+                console.log("formData2", formData);
 
-        const articleData = {
-            title,
-            slug,
-            content,
-            excerpt: excerpt || content.slice(0, 200),
-            isFeatured: false,
-            type,
-        };
 
-        const resCreateArticle = await createArticleAPI(articleData, imageFile);
+        try {
+                    console.log("formData", formData);
 
-        if (resCreateArticle.data) {
-            resetAndCloseModal();
-            await loadArticles();
-            notification.success({
-                message: "Thêm Tin tức / Dự án",
-                description: "Thêm Tin tức / Dự án mới thành công",
-            });
-        } else {
+            const resCreateArticle = await createArticleAPI(formData);
+            if (resCreateArticle.data) {
+                resetAndCloseModal();
+                await loadArticles();
+                notification.success({
+                    message: "Thêm Tin tức / Dự án",
+                    description: "Thêm Tin tức / Dự án mới thành công",
+                });
+            } else {
+                notification.error({
+                    message: "Lỗi thêm mới Tin tức / Dự án",
+                    description: resCreateArticle.message,
+                });
+            }
+        } catch (error) {
+            const errorMessage = error.response?.data?.message ||
+                error.response?.data?.error ||
+                error.message ||
+                "Có lỗi không xác định khi thêm mới sản phẩm";
             notification.error({
                 message: "Lỗi thêm mới Tin tức / Dự án",
-                description: resCreateArticle.message,
+                description: errorMessage,
             });
+            console.error("API Error:", error.response?.data || error);
+        } finally {
+            setLoadingBtn(false);
         }
-
-        setLoadingBtn(false);
     };
 
     const resetAndCloseModal = () => {

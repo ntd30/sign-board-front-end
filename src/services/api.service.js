@@ -322,47 +322,24 @@ const fetchAllContactAPI = (current, pageSize) => {
     return axios.get(URL_BACKEND)
 }
 
-const createArticleAPI = async (articleData, imageFile) => {
-    const formData = new FormData();
-
-    formData.append('article', JSON.stringify(articleData));
-
-    if (imageFile) {
-        formData.append('image', imageFile);
-    }
-
-    try {
-        const response = await axios.post('/api/admin/article/create', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
-        return { data: response.data };
-    } catch (error) {
-        return {
-            data: null,
-            message: error.response?.data?.message || error.message || 'Lỗi không xác định',
-        };
-    }
+// Không gói lại FormData nữa
+const createArticleAPI = async (formData) => {
+    const URL_BACKEND = "/api/admin/article/create";
+    return axios.post(URL_BACKEND, formData);
 };
 
-const updateArticleAPI = async (id, articleData, imageFile) => {
-    const formData = new FormData();
-    formData.append('article', JSON.stringify(articleData));
-    if (imageFile) {
-        formData.append('image', imageFile);
-    }
 
+const updateArticleAPI = async (id, formData) => {
+const URL_BACKEND = `api/admin/article/edit/${id}`
     try {
-        const response = await axios.put(`/api/admin/article/edit/${id}`, formData, {
-            headers: { 'Content-Type': 'multipart/form-data' },
+        const response = await axios.put(URL_BACKEND, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
         });
-        return { data: response.data };
+        return response.data;
     } catch (error) {
-        return {
-            data: null,
-            message: error.response?.data?.message || error.message || 'Lỗi không xác định',
-        };
+        throw error.response?.data || { message: "Lỗi khi gọi API cập nhật tin tức" };
     }
 };
 
