@@ -24,8 +24,8 @@ const ProductUpdate = (props) => {
     const [fileList, setFileList] = useState([]);
     const [description, setDescription] = useState('');
     const [form] = Form.useForm();
-        
-    
+
+
     useEffect(() => {
         let numbersOnlyArray = [];
         if (dataUpdate?.dimensions) {
@@ -56,18 +56,29 @@ const ProductUpdate = (props) => {
                 const existingImages = dataUpdate.images
                     .filter(item => item)
                     .map((item, index) => {
-                        const url = typeof item === 'string' ? item : item?.imageUrl;
-                        if (!url || typeof url !== 'string' || !url.match(/\.(jpg|jpeg|png)$/i)) {
-                            console.warn(`Invalid image at index ${index}:`, item);
-                            return null;
+                        const imageUrl = typeof item === 'string' ? item : item?.imageUrl;
+                        const imageBase64 = item?.imageBase64;
+                        if (imageBase64) {
+                            // Ưu tiên sử dụng Base64
+                            return {
+                                uid: `existing-${index}`,
+                                name: `image-${index}.jpg`,
+                                status: 'done',
+                                url: `data:image/jpeg;base64,${imageBase64}`,
+                                isExisting: true,
+                            };
+                        } else if (imageUrl && typeof imageUrl === 'string' && imageUrl.match(/\.(jpg|jpeg|png)$/i)) {
+                            // Fallback về imageUrl nếu Base64 không có
+                            return {
+                                uid: `existing-${index}`,
+                                name: `image-${index}.jpg`,
+                                status: 'done',
+                                url: `${import.meta.env.VITE_BACKEND_URL}/images/${imageUrl}`,
+                                isExisting: true,
+                            };
                         }
-                        return {
-                            uid: `existing-${index}`,
-                            name: `image-${index}.jpg`,
-                            status: 'done',
-                            url: `${import.meta.env.VITE_BACKEND_URL}/images/${url}`,
-                            isExisting: true,
-                        };
+                        console.warn(`Invalid image at index ${index}:`, item);
+                        return null;
                     })
                     .filter(item => item);
                 setFileList(existingImages);
@@ -84,64 +95,64 @@ const ProductUpdate = (props) => {
         }
     }, [dataUpdate, form]);
 
-const handleUpdateProduct = async (values) => {
-    setLoadingBtn(true);
-    const formData = new FormData();
+    const handleUpdateProduct = async (values) => {
+        setLoadingBtn(true);
+        const formData = new FormData();
 
-    // Gửi các trường thông tin cơ bản
-    formData.append("name", values.name);
-    formData.append("categoryId", typeof values.categoryName === "string"
-        ? values.categoryId
-        : values.categoryName[values.categoryName.length - 1]
-    );
-    formData.append("description", description);
-    formData.append("slug", values.slug);
-    if (Array.isArray(values.materialIds)) {
-        values.materialIds.forEach(id => formData.append("materialIds", id));
-    }
-    formData.append("dimensions", `${values.length}x${values.width}x${values.height}`);
+        // Gửi các trường thông tin cơ bản
+        formData.append("name", values.name);
+        formData.append("categoryId", typeof values.categoryName === "string"
+            ? values.categoryId
+            : values.categoryName[values.categoryName.length - 1]
+        );
+        formData.append("description", description);
+        formData.append("slug", values.slug);
+        if (Array.isArray(values.materialIds)) {
+            values.materialIds.forEach(id => formData.append("materialIds", id));
+        }
+        formData.append("dimensions", `${values.length}x${values.width}x${values.height}`);
 
-    // Lấy danh sách ảnh cũ được giữ lại (dựa vào fileList)
-    const keptExistingImages = fileList
-        .filter(file => file.isExisting && file.url)
-        .map(file => {
-            const urlParts = file.url.split('/');
-            return urlParts[urlParts.length - 1]; // Lấy tên file ảnh
+        // Lấy danh sách ảnh cũ được giữ lại (dựa vào fileList)
+        const keptExistingImages = fileList
+            .filter(file => file.isExisting && file.url)
+            .map(file => {
+                const urlParts = file.url.split('/');
+                return urlParts[urlParts.length - 1]; // Lấy tên file ảnh
+            });
+
+        formData.append("keptImageUrls", JSON.stringify(keptExistingImages));
+
+        // Ảnh mới được thêm
+        const newImages = fileList.filter(file => !file.url);
+        newImages.forEach(file => {
+            if (file.originFileObj) {
+                formData.append("images", file.originFileObj);
+            }
         });
 
-    formData.append("keptImageUrls", JSON.stringify(keptExistingImages));
-
-    // Ảnh mới được thêm
-    const newImages = fileList.filter(file => !file.url);
-    newImages.forEach(file => {
-        if (file.originFileObj) {
-            formData.append("images", file.originFileObj);
-        }
-    });
-
-    try {
-        const res = await updateProductAPI(dataUpdate.id, formData);
-        if (res) {
-            resetAndCloseModal();
-            await loadProducts();
-            notification.success({
-                message: "Cập nhật Sản phẩm",
-                description: "Cập nhật thành công",
-            });
-        } else {
+        try {
+            const res = await updateProductAPI(dataUpdate.id, formData);
+            if (res) {
+                resetAndCloseModal();
+                await loadProducts();
+                notification.success({
+                    message: "Cập nhật Sản phẩm",
+                    description: "Cập nhật thành công",
+                });
+            } else {
+                notification.error({
+                    message: "Lỗi cập nhật",
+                    description: res.message || "Đã xảy ra lỗi",
+                });
+            }
+        } catch (error) {
             notification.error({
                 message: "Lỗi cập nhật",
-                description: res.message || "Đã xảy ra lỗi",
+                description: error.message || "Lỗi không xác định",
             });
         }
-    } catch (error) {
-        notification.error({
-            message: "Lỗi cập nhật",
-            description: error.message || "Lỗi không xác định",
-        });
-    }
-    setLoadingBtn(false);
-};
+        setLoadingBtn(false);
+    };
 
 
     const resetAndCloseModal = () => {
@@ -177,8 +188,26 @@ const handleUpdateProduct = async (values) => {
     };
 
     const handlePreview = (file) => {
-        if (file.url || file.preview) {
-            window.open(file.url || file.preview, '_blank');
+        if (file.url) {
+            // Nếu ảnh là Base64, hiển thị trực tiếp
+            if (file.url.startsWith('data:image')) {
+                window.open(file.url, '_blank');
+            } else {
+                // Nếu là URL, kiểm tra và fallback về Base64 nếu có
+                const img = new Image();
+                img.src = file.url;
+                img.onerror = () => {
+                    const image = dataUpdate.images?.find(item => file.url.includes(item.imageUrl));
+                    if (image?.imageBase64) {
+                        window.open(`data:image/jpeg;base64,${image.imageBase64}`, '_blank');
+                    } else {
+                        message.error('Không thể xem trước ảnh này.');
+                    }
+                };
+                img.onload = () => {
+                    window.open(file.url, '_blank');
+                };
+            }
         } else {
             message.error('Không thể xem trước ảnh này.');
         }

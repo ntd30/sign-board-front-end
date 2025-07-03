@@ -312,13 +312,14 @@ const updateDesignAPI = (id, desc, status) => {
     return axios.put(URL_BACKEND)
 }
 
-const fetchAllArticlesAPI = (current, pageSize) => {
-    const URL_BACKEND = `/api/cms/list?page=${current}&size=${pageSize}`
-    return axios.get(URL_BACKEND)
-}
+const fetchAllArticlesAPI = (current, pageSize, style = "") => {
+    const URL_BACKEND = `/api/cms/list?page=${current}&size=${pageSize}&style=${style}`;
+    return axios.get(URL_BACKEND);
+};
+
 
 const fetchAllContactAPI = (current, pageSize) => {
-    const URL_BACKEND = `/api/admin/inquiry/list?page=${current}&size=${pageSize}`
+    const URL_BACKEND = `/api/admin/inquiry/list?page=${current}?size=${pageSize}`
     return axios.get(URL_BACKEND)
 }
 

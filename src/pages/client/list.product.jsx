@@ -98,6 +98,7 @@ const ListProductCard = () => {
         }
         setTotal(filtered.length); // Cập nhật tổng số sản phẩm cho phân trang dựa trên kết quả lọc
         const startIndex = (current - 1) * pageSize;
+        console.log("Filtered Products:", filtered);
         return filtered.slice(startIndex, startIndex + pageSize);
     }, [allCategoryProducts, searchTerm, current, pageSize]);
 
@@ -176,7 +177,13 @@ const ListProductCard = () => {
                                     cover={
                                         <img
                                             alt={product.name}
-                                            src={product?.images?.[0]?.imageUrl ? `${import.meta.env.VITE_BACKEND_URL}/images/${product.images[0].imageUrl}` : 'https://placehold.co/400x220/E0F2F1/00796B?text=Ảnh+SP'}
+                                            src={
+                                                product?.images?.[0]?.imageBase64
+                                                    ? `data:image/jpeg;base64,${product.images[0].imageBase64}`
+                                                    : product?.images?.[0]?.imageUrl
+                                                        ? `${import.meta.env.VITE_BACKEND_URL}/images/${product.images[0].imageUrl}`
+                                                        : 'https://placehold.co/400x220/E0F2F1/00796B?text=Ảnh+SP'
+                                            }
                                             style={cardImageStyle}
                                         />
                                     }
@@ -220,7 +227,7 @@ const ListProductCard = () => {
                             style={{ marginTop: 40, textAlign: 'center' }}
                             showSizeChanger
                             pageSizeOptions={[12, 16, 24, 48]}
-                            // showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} sản phẩm`}
+                        // showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} sản phẩm`}
                         />
                     )}
                 </>

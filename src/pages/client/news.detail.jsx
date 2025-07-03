@@ -167,7 +167,11 @@ export const NewsDetail = () => {
                     {featuredImageUrl && (
                         <Image
                             width="100%"
-                            src={`${import.meta.env.VITE_BACKEND_URL}${featuredImageUrl}`}
+                            src={
+                                newsItem.imageBase64
+                                    ? `data:image/jpeg;base64,${newsItem.imageBase64}`
+                                    : `${import.meta.env.VITE_BACKEND_URL}${featuredImageUrl}`
+                            }
                             alt={`Ảnh minh họa cho bài viết: ${title}`}
                             style={{ borderRadius: '8px', marginBottom: '24px', maxHeight: '500px', objectFit: 'cover' }}
                             preview={true}

@@ -68,37 +68,46 @@ const ArticleUpdate = (props) => {
     const [form] = Form.useForm();
 
     useEffect(() => {
-        if (dataUpdate && dataUpdate.id) {
-            const initialContent = dataUpdate.content || '<p></p>';
-            form.setFieldsValue({
-                title: dataUpdate.title,
-                excerpt: dataUpdate.excerpt || '',
-                type: dataUpdate.type,
-                isFeatured: dataUpdate.isFeatured || false,
-            });
-            setContent(initialContent);
+    if (dataUpdate && dataUpdate.id) {
+        const initialContent = dataUpdate.content || '<p></p>';
+        console.log("dataUpdate:", dataUpdate);
+        form.setFieldsValue({
+            title: dataUpdate.title,
+            excerpt: dataUpdate.excerpt || '',
+            type: dataUpdate.type,
+            isFeatured: dataUpdate.isFeatured || false,
+        });
+        setContent(initialContent);
 
-            if (dataUpdate.featuredImageUrl && typeof dataUpdate.featuredImageUrl === 'string' && dataUpdate.featuredImageUrl.match(/\.(jpg|jpeg|png)$/i)) {
-                setFileList([{
-                    uid: '-1',
-                    name: dataUpdate.featuredImageUrl.split('/').pop() || 'image.jpg',
-                    status: 'done',
-                    url: `${import.meta.env.VITE_BACKEND_URL}${dataUpdate.featuredImageUrl}`,
-                    isExisting: true,
-                }]);
-            } else {
-                setFileList([{
-                    uid: '-1',
-                    name: 'no-image.jpg',
-                    status: 'done',
-                    url: 'https://via.placeholder.com/150?text=No+Image',
-                    isExisting: true,
-                }]);
-                message.info('Bài viết hiện tại chưa có ảnh.');
-            }
+        // Ưu tiên sử dụng imageBase64, sau đó mới đến featuredImageUrl
+        if (dataUpdate.imageBase64) {
+            setFileList([{
+                uid: '-1',
+                name: 'image-base64.jpg',
+                status: 'done',
+                url: `data:image/jpeg;base64,${dataUpdate.imageBase64}`,
+                isExisting: true,
+            }]);
+        } else if (dataUpdate.featuredImageUrl && typeof dataUpdate.featuredImageUrl === 'string' && dataUpdate.featuredImageUrl.match(/\.(jpg|jpeg|png)$/i)) {
+            setFileList([{
+                uid: '-1',
+                name: dataUpdate.featuredImageUrl.split('/').pop() || 'image.jpg',
+                status: 'done',
+                url: `${import.meta.env.VITE_BACKEND_URL}${dataUpdate.featuredImageUrl}`,
+                isExisting: true,
+            }]);
+        } else {
+            setFileList([{
+                uid: '-1',
+                name: 'no-image.jpg',
+                status: 'done',
+                url: 'https://via.placeholder.com/150?text=No+Image',
+                isExisting: true,
+            }]);
+            message.info('Bài viết hiện tại chưa có ảnh.');
         }
-    }, [dataUpdate, form]);
-
+    }
+}, [dataUpdate, form]);
     const onFinish = async (values) => {
         setLoadingBtn(true);
 
@@ -192,12 +201,29 @@ const ArticleUpdate = (props) => {
     };
 
     const handlePreview = (file) => {
-        if (file.url || file.preview) {
-            window.open(file.url || file.preview, '_blank');
+    if (file.url) {
+        // Nếu ảnh là Base64, hiển thị trực tiếp
+        if (file.url.startsWith('data:image')) {
+            window.open(file.url, '_blank');
         } else {
-            message.error('Không thể xem trước ảnh này.');
+            // Nếu là URL, kiểm tra và fallback về Base64 nếu có
+            const img = new Image();
+            img.src = file.url;
+            img.onerror = () => {
+                if (dataUpdate.imageBase64) {
+                    window.open(`data:image/jpeg;base64,${dataUpdate.imageBase64}`, '_blank');
+                } else {
+                    message.error('Không thể xem trước ảnh này.');
+                }
+            };
+            img.onload = () => {
+                window.open(file.url, '_blank');
+            };
         }
-    };
+    } else {
+        message.error('Không thể xem trước ảnh này.');
+    }
+};
 
     return (
         <div>

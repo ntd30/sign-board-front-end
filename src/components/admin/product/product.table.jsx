@@ -85,13 +85,37 @@ const ProductTable = (props) => {
         {
             title: "Ảnh sản phẩm",
             dataIndex: "images",
-            render: (text, record) => (
-                <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/images/${text[0].imageUrl}`}
-                    style={{ width: "100%", height: 200, objectFit: "contain", display: "block" }}
-                    alt="Product"
-                />
-            ),
+            render: (text, record) => {
+                const image = record.images && record.images[0]; // Lấy ảnh đầu tiên
+                if (image && image.imageBase64) {
+                    // Ưu tiên hiển thị ảnh Base64
+                    return (
+                        <img
+                            src={`data:image/jpeg;base64,${image.imageBase64}`}
+                            style={{ width: "100%", height: 200, objectFit: "contain", display: "block" }}
+                            alt="Product"
+                        />
+                    );
+                } else if (image && image.imageUrl) {
+                    // Fallback về imageUrl nếu Base64 không có
+                    return (
+                        <img
+                            src={`${import.meta.env.VITE_BACKEND_URL}/images/${image.imageUrl}`}
+                            style={{ width: "100%", height: 200, objectFit: "contain", display: "block" }}
+                            alt="Product"
+                        />
+                    );
+                } else {
+                    // Hiển thị ảnh placeholder nếu cả hai không có
+                    return (
+                        <img
+                            src="https://via.placeholder.com/150?text=No+Image"
+                            style={{ width: "100%", height: 200, objectFit: "contain", display: "block" }}
+                            alt="No Image"
+                        />
+                    );
+                }
+            },
             width: 220,
         },
         {
@@ -111,7 +135,7 @@ const ProductTable = (props) => {
         {
             title: "Ảnh",
             dataIndex: "image",
-            render: (_, record) => {},
+            render: (_, record) => { },
             hidden: true,
         },
         {
@@ -150,7 +174,7 @@ const ProductTable = (props) => {
                             title="Xóa Sản phẩm"
                             description="Bạn có chắc muốn xóa Sản phẩm này?"
                             onConfirm={() => handleDeleteProduct(record.id)}
-                            onCancel={() => {}}
+                            onCancel={() => { }}
                             okText="Xác nhận"
                             cancelText="Hủy"
                             placement="left"

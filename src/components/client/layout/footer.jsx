@@ -53,6 +53,10 @@ const AppFooter = () => {
                 <Text strong className="contact-label"><EnvironmentFilled /> Văn phòng giao dịch:</Text>
                 <Text className="contact-detail">Nhà 2B, 110 Đường Nguyễn Hoàng Tôn, Xuân La, Tây Hồ, Hà Nội</Text>
               </div>
+              <div>
+                <Text strong className="contact-label"><EnvironmentFilled /> Xưởng sản xuất:</Text>
+                <Text className="contact-detail">Số 20, Ngõ 408, Xuân Đỉnh, Quận Từ liêm,Thành phố Hà Nội, Việt Nam</Text>
+              </div>
             </Space>
           </Col>
 

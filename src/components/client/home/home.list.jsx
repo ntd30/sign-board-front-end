@@ -107,12 +107,18 @@ const HomeList = () => {
                     <Card
                       hoverable
                       cover={
-                        <img
-                          alt={product.slug}
-                          src={`${import.meta.env.VITE_BACKEND_URL}/images/${product?.images[0].imageUrl}`}
-                          style={{ width: '100%', height: 200, objectFit: 'cover', display: 'block' }}
-                        />
-                      }
+  <img
+    alt={product.name}
+    src={
+      product?.images[0]?.imageBase64
+        ? `data:image/jpeg;base64,${product.images[0].imageBase64}`
+        : product?.images[0]?.imageUrl
+        ? `${import.meta.env.VITE_BACKEND_URL}/images/${product.images[0].imageUrl}`
+        : 'https://via.placeholder.com/150?text=No+Image'
+    }
+    style={{ height: '220px', objectFit: 'cover' }}
+  />
+}
                       onClick={() => handleGetProductDetail(product)}
                     >
                       <Meta
