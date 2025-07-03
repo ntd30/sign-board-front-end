@@ -96,63 +96,64 @@ const ProductUpdate = (props) => {
     }, [dataUpdate, form]);
 
     const handleUpdateProduct = async (values) => {
-        setLoadingBtn(true);
-        const formData = new FormData();
+    setLoadingBtn(true);
+    const formData = new FormData();
 
-        // Gửi các trường thông tin cơ bản
-        formData.append("name", values.name);
-        formData.append("categoryId", typeof values.categoryName === "string"
-            ? values.categoryId
-            : values.categoryName[values.categoryName.length - 1]
-        );
-        formData.append("description", description);
-        formData.append("slug", values.slug);
-        if (Array.isArray(values.materialIds)) {
-            values.materialIds.forEach(id => formData.append("materialIds", id));
-        }
-        formData.append("dimensions", `${values.length}x${values.width}x${values.height}`);
+    // 1. Thêm các trường dữ liệu cơ bản
+    formData.append("name", values.name);
+    formData.append("categoryId", values.categoryId);
+    formData.append("description", description || '');
+    formData.append("slug", values.slug || '');
+    formData.append("dimensions", `${values.length}x${values.width}x${values.height}`);
 
-        // Lấy danh sách ảnh cũ được giữ lại (dựa vào fileList)
-        const keptExistingImages = fileList
-            .filter(file => file.isExisting && file.url)
-            .map(file => {
-                const urlParts = file.url.split('/');
-                return urlParts[urlParts.length - 1]; // Lấy tên file ảnh
-            });
-
-        formData.append("keptImageUrls", JSON.stringify(keptExistingImages));
-
-        // Ảnh mới được thêm
-        const newImages = fileList.filter(file => !file.url);
-        newImages.forEach(file => {
-            if (file.originFileObj) {
-                formData.append("images", file.originFileObj);
+    // 2. Xử lý ảnh cần giữ lại (theo đúng format Postman)
+    const existingImages = fileList
+        .filter(file => file.isExisting)
+        .map(file => {
+            // Lấy tên file từ URL hoặc từ originalData
+            if (file.url.includes(import.meta.env.VITE_BACKEND_URL)) {
+                return file.url.split('/').pop();
             }
+            return file.originalUrl || file.name;
         });
 
-        try {
-            const res = await updateProductAPI(dataUpdate.id, formData);
-            if (res) {
-                resetAndCloseModal();
-                await loadProducts();
-                notification.success({
-                    message: "Cập nhật Sản phẩm",
-                    description: "Cập nhật thành công",
-                });
-            } else {
-                notification.error({
-                    message: "Lỗi cập nhật",
-                    description: res.message || "Đã xảy ra lỗi",
-                });
-            }
-        } catch (error) {
-            notification.error({
-                message: "Lỗi cập nhật",
-                description: error.message || "Lỗi không xác định",
+    // Thêm từng ảnh cần giữ vào FormData (giống Postman)
+    existingImages.forEach((imageUrl, index) => {
+        formData.append(index === 0 ? "keptImageUrl" : "keptImageUrls", imageUrl);
+    });
+
+    // 3. Thêm ảnh mới tải lên
+    fileList
+        .filter(file => !file.isExisting && file.originFileObj)
+        .forEach(file => {
+            formData.append("images", file.originFileObj);
+        });
+
+    // Debug: Kiểm tra dữ liệu trước khi gửi
+    for (let [key, value] of formData.entries()) {
+        console.log(key, value instanceof File ? value.name : value);
+    }
+
+    try {
+        const res = await updateProductAPI(dataUpdate.id, formData);
+        if (res) {
+            notification.success({
+                message: "Thành công",
+                description: "Cập nhật sản phẩm thành công"
             });
+            resetAndCloseModal();
+            await loadProducts();
         }
+    } catch (error) {
+        console.error("Error updating product:", error);
+        notification.error({
+            message: "Lỗi",
+            description: error.response?.data?.message || "Cập nhật thất bại"
+        });
+    } finally {
         setLoadingBtn(false);
-    };
+    }
+};
 
 
     const resetAndCloseModal = () => {
