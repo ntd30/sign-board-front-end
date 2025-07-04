@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Col, Form, Input, Modal, notification, Row, Typography } from "antd";
 import { createContactAPI } from '../../../services/api.service';
 
 const ProductContact = (props) => {
-    const { isContactOpen, setIsContactOpen, productId } = props;
+    const { isContactOpen, setIsContactOpen, productId, productName } = props;
     const [form] = Form.useForm();
     const [loadingBtn, setLoadingBtn] = React.useState(false);
 
-    // Custom styles (updated to remove contact-info-column styles)
+    // Custom styles
     const customStyles = `
         .gradient-modal .ant-modal-content {
             background: linear-gradient(135deg, #FFB6C1 0%, #FF82AB 100%);
@@ -53,6 +53,14 @@ const ProductContact = (props) => {
             color: #A52A2A;
             font-weight: 500;
         }
+        .product-info {
+            background: #FFF0F5;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 16px;
+            color: #A52A2A;
+            font-weight: 500;
+        }
         @media (max-width: 767px) {
             .gradient-modal .ant-modal-body {
                 padding: 16px;
@@ -67,6 +75,10 @@ const ProductContact = (props) => {
                 font-size: 15px;
                 height: 38px !important;
             }
+            .product-info {
+                padding: 10px;
+                margin-bottom: 12px;
+            }
         }
         @media (max-width: 480px) {
             .gradient-modal .ant-modal-body {
@@ -80,6 +92,10 @@ const ProductContact = (props) => {
             }
             .submit-button-gradient {
                 height: 36px !important;
+            }
+            .product-info {
+                padding: 8px;
+                margin-bottom: 10px;
             }
         }
     `;
@@ -110,12 +126,12 @@ const ProductContact = (props) => {
         setLoadingBtn(true);
         const { name, phone, email, address, message } = values;
         try {
-            const res = await createContactAPI(name, phone, email, address, message, productId);
-            if (res.data) {
+            const res = await createContactAPI(name, phone, email, address, message, productId ?? null); // Đảm bảo productId là null nếu undefined
+            if (res.status === 201 || (res.status === 400 && res.data)) { // Xử lý cả 400 nếu có data
                 resetAndCloseModal();
                 notification.success({
                     message: "Gửi Liên Hệ Thành Công",
-                    description: "Chúng tôi đã nhận được thông tin của bạn và sẽ phản hồi sớm nhất!",
+                    description: `Chúng tôi đã nhận được thông tin của bạn${productName ? ` về sản phẩm "${productName}"` : ''} và sẽ phản hồi sớm nhất!`,
                 });
             } else {
                 notification.error({
@@ -143,7 +159,9 @@ const ProductContact = (props) => {
         <>
             <Modal
                 className="gradient-modal"
-                title={<Typography.Title level={3} style={{ color: '#FFFFFF', textAlign: 'center', margin: 0 }}>LIÊN HỆ VỚI CHÚNG TÔI</Typography.Title>}
+                title={<Typography.Title level={3} style={{ color: '#FFFFFF', textAlign: 'center', margin: 0 }}>
+                    LIÊN HỆ VỚI CHÚNG TÔI
+                </Typography.Title>}
                 maskClosable={false}
                 open={isContactOpen}
                 onCancel={resetAndCloseModal}
@@ -152,6 +170,11 @@ const ProductContact = (props) => {
             >
                 <Row gutter={[32, 24]} style={{ marginTop: 10, justifyContent: 'center' }}>
                     <Col xs={24} md={12}>
+                        {productName && (
+                            <div className="product-info">
+                                Bạn đang liên hệ về sản phẩm: <strong>{productName}</strong>
+                            </div>
+                        )}
                         <Form
                             layout="vertical"
                             onFinish={handleContact}

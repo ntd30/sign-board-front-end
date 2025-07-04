@@ -95,6 +95,11 @@ const fetchAllProductsAPI = (current, pageSize) => {
     return axios.get(URL_BACKEND)
 }
 
+const GetProductById= (id) => {
+    const URL_BACKEND = `/api/products/${id}`
+    return axios.get(URL_BACKEND)
+}
+
 const createProductAPI = (formData) => {
     const URL_BACKEND = "api/admin/product/create";
     return axios.post(URL_BACKEND, formData);
@@ -152,6 +157,12 @@ const fetchAllNewsAPI = () => {
     const URL_BACKEND = "/api/cms/news"
     return axios.get(URL_BACKEND)
 }
+
+const GetNewById = (id) => {
+    const URL_BACKEND = `/api/cms/${id}`
+    return axios.get(URL_BACKEND)
+}
+
 
 const fetchAllProjectsAPI = () => {
     const URL_BACKEND = "/api/cms/featured-projects"
@@ -319,8 +330,8 @@ const fetchAllArticlesAPI = (current, pageSize, style = "") => {
 
 
 const fetchAllContactAPI = (current, pageSize) => {
-    const URL_BACKEND = `/api/admin/inquiry/list?page=${current}?size=${pageSize}`
-    return axios.get(URL_BACKEND)
+    const URL_BACKEND = `/api/admin/inquiry/list?page=${current}&size=${pageSize}`;
+    return axios.get(URL_BACKEND);
 }
 
 // Không gói lại FormData nữa
@@ -359,5 +370,5 @@ export {
     createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI, fetchAllDesignsAPI,
     loadProductsByCategoryAPI, createContactAPI, deleteDesignAPI, deleteRoleAPI, fetchAllArticlesAPI, fetchAllContactAPI,
     deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro, updateDesignAPI, updateContactAPI,
-    getProfileAPI
+    getProfileAPI,GetProductById,GetNewById
 }

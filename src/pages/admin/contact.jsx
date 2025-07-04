@@ -17,7 +17,8 @@ const ContactPage = () => {
     const loadContacts = async () => {
         setLoadingTable(true);
         try {
-            const res = await fetchAllContactAPI(1, 1000); // Fetch up to 1000 contacts
+            const res = await fetchAllContactAPI(1,1000); // Fetch up to 1000 contacts
+            console.log("Danh sách liên hệ:", res);
             if (res?.data) {
                 // Sort all contacts by id in descending order
                 const sortedContacts = res.data.content.sort((a, b) => b.id - a.id);

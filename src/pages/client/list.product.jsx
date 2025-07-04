@@ -43,7 +43,7 @@ const ListProductCard = () => {
     const parentCategoryName = location?.state?.parentCategoryName;
     const childCategoryId = location?.state?.childCategoryId;
     const childCategoryName = location?.state?.childCategoryName;
-
+    console.log("ListProductCard - Parent Category ID:", parentCategoryId);
     const [allCategoryProducts, setAllCategoryProducts] = useState([]);
     const [current, setCurrent] = useState(1);
     const [pageSize, setPageSize] = useState(12);
@@ -101,15 +101,16 @@ const ListProductCard = () => {
         console.log("Filtered Products:", filtered);
         return filtered.slice(startIndex, startIndex + pageSize);
     }, [allCategoryProducts, searchTerm, current, pageSize]);
+const handleGetProductDetail = (productId) => {
+  navigate(`/products/detail/${productId}`, {
+    state: {
+      categoryId: parentCategoryId ? parentCategoryId : childCategoryId
+    }
+  });
 
-    const handleGetProductDetail = (product, id) => {
-        navigate("/products/detail", {
-            state: {
-                product: product,
-                categoryId: id,
-            }
-        });
-    };
+  console.log("Navigating to product detail with ID:", productId, "and category ID:", categoryId);
+  window.scrollTo(0, 0);
+};
 
     const handlePaginationChange = (page, newPageSize) => {
         setCurrent(page);
@@ -173,7 +174,7 @@ const ListProductCard = () => {
                                     style={hoveredCard === product.id ? { ...productCardStyle, ...productCardHoverStyle } : productCardStyle}
                                     onMouseEnter={() => setHoveredCard(product.id)}
                                     onMouseLeave={() => setHoveredCard(null)}
-                                    onClick={() => handleGetProductDetail(product, parentCategoryId ? parentCategoryId : childCategoryId)}
+onClick={() => handleGetProductDetail(product.id)}
                                     cover={
                                         <img
                                             alt={product.name}
@@ -207,7 +208,7 @@ const ListProductCard = () => {
                                             <Title
                                                 level={5}
                                                 style={{ color: '#004D40', minHeight: '44px', marginBottom: '8px', cursor: 'pointer' }}
-                                                onClick={() => handleGetProductDetail(product)} // Click vào tên cũng ra chi tiết
+onClick={() => handleGetProductDetail(product.id)}
                                             >
                                                 {product.name}
                                             </Title>

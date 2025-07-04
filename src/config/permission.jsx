@@ -55,6 +55,7 @@ export const ALL_MODULES = [
     { value: 'PRODUCT', label: 'PRODUCT' },
     { value: 'DESIGN', label: 'DESIGN' },
     { value: 'USER', label: 'USER' },
+    { value: 'BANNER', label: 'BANNER' },
     { value: 'CATEGORY', label: 'CATEGORY' },
     { value: 'INQUIRY', label: 'INQUIRY' },
     { value: 'PERMISSION', label: 'PERMISSION' },

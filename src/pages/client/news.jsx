@@ -14,7 +14,6 @@ const NewsPage = () => {
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
-    height: '100%',
   };
 
   const productCardHoverStyle = {
@@ -26,11 +25,9 @@ const NewsPage = () => {
     display: 'flex',
     flexWrap: 'wrap',
     alignItems: 'stretch',
-    alignItems: 'stretch',
   };
 
   const cardBodyStyle = {
-    flexGrow: 1,
     flexGrow: 1,
   };
 
@@ -49,26 +46,24 @@ const NewsPage = () => {
     return div.textContent || div.innerText || "";
   };
 
-  const [dataNews, setDataNews] = useState([]); // All articles (up to 1000)
-  const [displayedNews, setDisplayedNews] = useState([]); // Paginated articles
+  const [dataNews, setDataNews] = useState([]);
+  const [displayedNews, setDisplayedNews] = useState([]);
   const [current, setCurrent] = useState(1);
-  const [pageSize, setPageSize] = useState(12); // Set pageSize to 5
+  const [pageSize, setPageSize] = useState(12);
   const [total, setTotal] = useState(0);
   const [hoveredCard, setHoveredCard] = useState(null);
-  const [loading, setLoading] = useState(false); // Add loading state
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  console.log("new", displayedNews)
+  
   const { useBreakpoint } = Grid;
   const screens = useBreakpoint();
   const isMobile = !screens.md;
 
-  // Load all articles (up to 1000) and sort them
   const loadNews = async () => {
     setLoading(true);
     try {
-      const res = await fetchAllArticlesAPI(1, 1000); // Fetch up to 1000 articles
+      const res = await fetchAllArticlesAPI(1, 1000);
       if (res.data) {
-        // Sort all articles by id in descending order
         const sortedArticles = res.data.content.sort((a, b) => b.id - a.id);
         setDataNews(sortedArticles);
         setTotal(res.data.totalElements);
@@ -79,16 +74,13 @@ const NewsPage = () => {
     setLoading(false);
   };
 
-  // Handle pagination on the client side
   useEffect(() => {
-    // Calculate the slice of articles to display based on current page and pageSize
     const startIndex = (current - 1) * pageSize;
     const endIndex = startIndex + pageSize;
     const paginatedArticles = dataNews.slice(startIndex, endIndex);
     setDisplayedNews(paginatedArticles);
   }, [dataNews, current, pageSize]);
 
-  // Load articles when the component mounts
   useEffect(() => {
     loadNews();
   }, []);
@@ -98,10 +90,8 @@ const NewsPage = () => {
     setPageSize(pageSize);
   };
 
-  const handleGetNewsDetail = (news) => {
-    navigate("/news/detail", {
-      state: { news },
-    });
+  const handleGetNewsDetail = (newsId) => {
+    navigate(`/news/detail/${newsId}`);
   };
 
   return (
@@ -128,31 +118,19 @@ const NewsPage = () => {
                   src={
                     product.imageBase64
                       ? `data:image/jpeg;base64,${product.imageBase64}`
-                      :
-                      product.featuredImageUrl
+                      : product.featuredImageUrl
                         ? `${import.meta.env.VITE_BACKEND_URL}${product.featuredImageUrl}`
-                        :
-
-                        "/default-image.jpg" // fallback nếu không có ảnh nào
+                        : "/default-image.jpg"
                   }
                   style={{ height: '220px', objectFit: 'cover' }}
                 />
               }
-
               bodyStyle={cardBodyStyle}
-              onClick={() => handleGetNewsDetail(product)}
+              onClick={() => handleGetNewsDetail(product.id)}
               actions={[
                 <Button
                   type="primary"
                   style={{ backgroundColor: '#FF6F00', borderColor: '#FF6F00', fontWeight: 'bold', width: '80%' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#FF8F00';
-                    e.currentTarget.style.borderColor = '#FF8F00';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#FF6F00';
-                    e.currentTarget.style.borderColor = '#FF6F00';
-                  }}
                 >
                   Xem ngay
                 </Button>,
@@ -179,8 +157,7 @@ const NewsPage = () => {
           onChange={handlePaginationChange}
           style={{ marginTop: 32, textAlign: 'center' }}
           showSizeChanger
-          pageSizeOptions={[12, 16, 20]} // Adjusted options to include 5
-        // showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} bài viết`}
+          pageSizeOptions={[12, 16, 20]}
         />
       )}
     </div>

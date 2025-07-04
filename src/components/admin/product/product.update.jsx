@@ -24,33 +24,45 @@ const ProductUpdate = (props) => {
     const [fileList, setFileList] = useState([]);
     const [description, setDescription] = useState('');
     const [form] = Form.useForm();
-
-
+    const [deletedImages, setDeletedImages] = useState([]);
+    console.log("dataCategories:", dataCategories);
     useEffect(() => {
-        let numbersOnlyArray = [];
-        if (dataUpdate?.dimensions) {
-            const numbersArray = dataUpdate.dimensions.split('x');
-            const lastNumber = numbersArray[numbersArray.length - 1].split(' ')[0];
-            numbersOnlyArray = [...numbersArray.slice(0, -1), lastNumber];
-        }
+      let numbersOnlyArray = [];
+  if (dataUpdate?.dimensions) {
+    const numbersArray = dataUpdate.dimensions.split('x');
+    const lastNumber = numbersArray[numbersArray.length - 1].split(' ')[0];
+    numbersOnlyArray = [...numbersArray.slice(0, -1), lastNumber];
+  }
 
-        if (dataUpdate && dataUpdate.id) {
-            form.setFieldsValue({
-                id: dataUpdate.id,
-                name: dataUpdate.name,
-                categoryId: dataUpdate.category?.id,
-                categoryName: dataUpdate.category?.name,
-                description: dataUpdate.description,
-                price: 0,
-                discount: 0,
-                discountPrice: 0,
-                slug: dataUpdate.name?.toLowerCase().replace(/\s+/g, "-"),
-                materialIds: [],
-                length: parseFloat(numbersOnlyArray[0]) || 0,
-                width: parseFloat(numbersOnlyArray[1]) || 0,
-                height: parseFloat(numbersOnlyArray[2]) || 0,
-            });
-            setDescription(dataUpdate.description || '');
+  if (dataUpdate && dataUpdate.id) {
+    // Hàm tìm đường dẫn danh mục
+    const findCategoryPath = (categories, targetId, path = []) => {
+      for (let category of categories) {
+        path.push(category.value);
+        if (category.value === targetId) return [...path];
+        if (category.children) {
+          const childPath = findCategoryPath(category.children, targetId, path);
+          if (childPath.length > 0) return childPath;
+        }
+        path.pop();
+      }
+      return [];
+    };
+
+    const categoryPath = dataUpdate.category?.id
+      ? findCategoryPath(dataCategories, dataUpdate.category.id)
+      : [];
+
+    form.setFieldsValue({
+      id: dataUpdate.id,
+      name: dataUpdate.name,
+      categoryId: categoryPath.length > 0 ? categoryPath : undefined, // Gán mảng đường dẫn
+      description: dataUpdate.description,
+      length: parseFloat(numbersOnlyArray[0]) || 0,
+      width: parseFloat(numbersOnlyArray[1]) || 0,
+      height: parseFloat(numbersOnlyArray[2]) || 0,
+    });
+    setDescription(dataUpdate.description || '');
 
             if (Array.isArray(dataUpdate?.images) && dataUpdate.images.length > 0) {
                 const existingImages = dataUpdate.images
@@ -95,65 +107,77 @@ const ProductUpdate = (props) => {
         }
     }, [dataUpdate, form]);
 
-    const handleUpdateProduct = async (values) => {
-    setLoadingBtn(true);
-    const formData = new FormData();
-
-    // 1. Thêm các trường dữ liệu cơ bản
-    formData.append("name", values.name);
-    formData.append("categoryId", values.categoryId);
-    formData.append("description", description || '');
-    formData.append("slug", values.slug || '');
-    formData.append("dimensions", `${values.length}x${values.width}x${values.height}`);
-
-    // 2. Xử lý ảnh cần giữ lại (theo đúng format Postman)
-    const existingImages = fileList
-        .filter(file => file.isExisting)
-        .map(file => {
-            // Lấy tên file từ URL hoặc từ originalData
-            if (file.url.includes(import.meta.env.VITE_BACKEND_URL)) {
-                return file.url.split('/').pop();
-            }
-            return file.originalUrl || file.name;
-        });
-
-    // Thêm từng ảnh cần giữ vào FormData (giống Postman)
-    existingImages.forEach((imageUrl, index) => {
-        formData.append(index === 0 ? "keptImageUrl" : "keptImageUrls", imageUrl);
-    });
-
-    // 3. Thêm ảnh mới tải lên
-    fileList
-        .filter(file => !file.isExisting && file.originFileObj)
-        .forEach(file => {
-            formData.append("images", file.originFileObj);
-        });
-
-    // Debug: Kiểm tra dữ liệu trước khi gửi
-    for (let [key, value] of formData.entries()) {
-        console.log(key, value instanceof File ? value.name : value);
-    }
-
-    try {
-        const res = await updateProductAPI(dataUpdate.id, formData);
-        if (res) {
-            notification.success({
-                message: "Thành công",
-                description: "Cập nhật sản phẩm thành công"
-            });
-            resetAndCloseModal();
-            await loadProducts();
+    const handleRemoveImage = (file) => {
+        // Nếu là ảnh hiện có trên server (không phải ảnh mới tải lên)
+        if (file.isExisting) {
+            // Thêm vào danh sách ảnh đã xóa
+            const imageName = file.url.split('/').pop();
+            setDeletedImages(prev => [...prev, imageName]);
         }
-    } catch (error) {
-        console.error("Error updating product:", error);
-        notification.error({
-            message: "Lỗi",
-            description: error.response?.data?.message || "Cập nhật thất bại"
+
+        // Cập nhật fileList (loại bỏ ảnh vừa xóa)
+        const newFileList = fileList.filter(item => item.uid !== file.uid);
+        setFileList(newFileList);
+
+        return true; // Cho phép xóa
+    };
+
+    const handleUpdateProduct = async (values) => {
+        setLoadingBtn(true);
+        const formData = new FormData();
+
+        // Thêm các trường dữ liệu cơ bản
+        formData.append("name", values.name);
+        formData.append("categoryId", values.categoryId);
+        console.log("Category ID:", values.categoryId);
+        formData.append("description", description || '');
+        formData.append("dimensions", `${values.length}x${values.width}x${values.height}`);
+
+        // Thêm danh sách ảnh cần xóa
+        deletedImages.forEach(imageName => {
+            formData.append("deletedImages", imageName);
         });
-    } finally {
-        setLoadingBtn(false);
-    }
-};
+
+        // Xử lý ảnh cần giữ lại
+        const keptImages = fileList
+            .filter(file => file.isExisting)
+            .map(file => file.url.split('/').pop())
+            .filter(Boolean);
+
+        keptImages.forEach(imageName => {
+            formData.append("keptImageUtils", imageName);
+        });
+
+        console.log("Kept Images:", keptImages);
+
+        // Thêm ảnh mới tải lên
+        fileList
+            .filter(file => !file.isExisting && file.originFileObj)
+            .forEach(file => {
+                formData.append("images", file.originFileObj);
+            });
+
+        try {
+            console.log("Form Data:", Array.from(formData.entries()));
+            const res = await updateProductAPI(dataUpdate.id, formData);
+            if (res) {
+                notification.success({
+                    message: "Thành công",
+                    description: "Cập nhật sản phẩm thành công"
+                });
+                resetAndCloseModal();
+                await loadProducts();
+            }
+        } catch (error) {
+            console.error("Error updating product:", error);
+            notification.error({
+                message: "Lỗi",
+                description: error.response?.data?.message || "Cập nhật thất bại"
+            });
+        } finally {
+            setLoadingBtn(false);
+        }
+    };
 
 
     const resetAndCloseModal = () => {
@@ -161,6 +185,7 @@ const ProductUpdate = (props) => {
         form.resetFields();
         setFileList([]);
         setDescription('');
+        setDeletedImages([]); // Reset danh sách ảnh đã xóa
     };
 
     const handleUploadChange = ({ fileList: newFileList }) => {
@@ -244,30 +269,23 @@ const ProductUpdate = (props) => {
                             </Form.Item>
                         </Col>
 
-                        <Col lg={12} md={12} sm={24} xs={24}>
-                            <Form.Item
-                                label="Thuộc Danh mục"
-                                name="categoryName"
-                                rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
-                            >
-                                <Cascader
-                                    options={dataCategories}
-                                    placeholder="Nhập tên danh mục"
-                                />
-                            </Form.Item>
-                        </Col>
-
-                        <Col lg={12} md={12} sm={24} xs={24}>
-                            <Form.Item
-                                label="Thuộc Danh mục"
-                                name="categoryId"
-                                rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
-                                hidden
-                            >
-                                <Input />
-                            </Form.Item>
-                        </Col>
-
+                      <Col lg={12} md={12} sm={24} xs={24}>
+  <Form.Item
+    label="Thuộc Danh mục"
+    name="categoryId"
+    rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
+  >
+    <Cascader
+      options={dataCategories}
+      fieldNames={{ label: 'label', value: 'value' }}
+      placeholder="Chọn danh mục"
+      onChange={(value) => {
+        form.setFieldsValue({ categoryId: value }); // Đảm bảo giữ nguyên mảng giá trị
+      }}
+      displayRender={(labels) => labels[labels.length - 1]} // Hiển thị tên cuối cùng
+    />
+  </Form.Item>
+</Col>
                         <Col span={24}>
                             <Form.Item
                                 label="Mô tả"
@@ -313,6 +331,7 @@ const ProductUpdate = (props) => {
                                     fileList={fileList}
                                     onChange={handleUploadChange}
                                     beforeUpload={beforeUpload}
+                                    onRemove={handleRemoveImage} // Thêm callback xử lý xóa ảnh
                                     multiple
                                     accept="image/*"
                                     listType="picture-card"

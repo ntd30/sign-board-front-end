@@ -55,7 +55,7 @@ const router = createBrowserRouter([
         element: <NewsPage />,
       },
       {
-        path: "news/detail",
+        path: "news/detail/:id",
         element: <NewsDetail />,
       },
       {
@@ -71,7 +71,7 @@ const router = createBrowserRouter([
         element: <ListProduct />
       },
       {
-        path: "products/detail",
+        path: "products/detail/:id",
         element: <ProductDetailPage />
       },
       {
