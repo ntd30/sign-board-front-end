@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Row, Col, Card, Typography, Button, Breadcrumb } from 'antd';
+import { Row, Col, Card, Typography, Button } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { fetchAllArticlesAPI } from '../../../services/api.service';
 
@@ -9,6 +9,7 @@ const FeaturedProjects = () => {
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(false);
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [isMobile, setIsMobile] = useState(false);
   const navigate = useNavigate();
 
   // Card styling to match ListProductCard
@@ -19,7 +20,6 @@ const FeaturedProjects = () => {
     background: '#FFFFFF',
     display: 'flex',
     flexDirection: 'column',
-    height: '100%'
   };
   
   const projectCardHoverStyle = {
@@ -46,59 +46,63 @@ const FeaturedProjects = () => {
   };
 
   useEffect(() => {
-  const stripHtmlTags = (html) => {
-    const div = document.createElement("div");
-    div.innerHTML = html;
-    return div.textContent || div.innerText || "";
-  };
+    const stripHtmlTags = (html) => {
+      const div = document.createElement("div");
+      div.innerHTML = html;
+      return div.textContent || div.innerText || "";
+    };
 
-  const loadProjects = async () => {
-    setLoading(true);
-    try {
-      const res = await fetchAllArticlesAPI(1, 4, 'project');
-      if (res.data && res.data.content) {
-        const formattedProjects = res.data.content.map(project => {
-          const rawSummary = project.summary;
-          const rawContent = project.content;
+    const loadProjects = async () => {
+      setLoading(true);
+      try {
+        const res = await fetchAllArticlesAPI(1, 4, 'project');
+        if (res.data && res.data.content) {
+          const formattedProjects = res.data.content.map(project => {
+            const rawSummary = project.summary;
+            const rawContent = project.content;
 
-          const cleanDescription = rawSummary
-            ? stripHtmlTags(rawSummary)
-            : rawContent
-              ? stripHtmlTags(rawContent)
-              : '';
+            const cleanDescription = rawSummary
+              ? stripHtmlTags(rawSummary)
+              : rawContent
+                ? stripHtmlTags(rawContent)
+                : '';
 
-          return {
-            id: project.id,
-            name: project.title,
-            imageBase64: project.imageBase64,
-            featuredImageUrl: project.featuredImageUrl,
-            description: cleanDescription.substring(0, 100) + '...',
-            rawData: project
-          };
-        });
+            return {
+              id: project.id,
+              name: project.title,
+              imageBase64: project.imageBase64,
+              featuredImageUrl: project.featuredImageUrl,
+              description: cleanDescription.substring(0, 100) + '...',
+              rawData: project
+            };
+          });
 
-        setProjects(formattedProjects);
+          setProjects(formattedProjects);
+        }
+      } catch (error) {
+        console.error("Error loading projects:", error);
       }
-    } catch (error) {
-      console.error("Error loading projects:", error);
-    }
-    setLoading(false);
-  };
+      setLoading(false);
+    };
 
-  loadProjects();
-}, []);
+    loadProjects();
 
+    // Detect mobile screen
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    handleResize(); // Initial check
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleProjectClick = (project) => {
-    navigate("/news/detail", {
-      state: { news: project.rawData },
-    });
+    console.log("Project clicked:", project);
+    navigate(`/news/detail/${project.id}`);
   };
 
   return (
-<div style={{ maxWidth: "1200px", margin: "40px auto", padding: '0 20px' }}>
-      
-
+    <div style={{ maxWidth: "1200px", margin: "40px auto", padding: '0 20px' }}>
       <Title level={2} style={{ textAlign: 'center', marginBottom: '30px', color: '#004D40', fontWeight: 'bold' }}>
         Dự án tiêu biểu
       </Title>
@@ -112,7 +116,7 @@ const FeaturedProjects = () => {
       ) : (
         <Row gutter={[24, 24]}>
           {projects.map((project) => (
-<Col key={project.id} xs={12} sm={12} md={12} lg={6} style={{ display: 'flex' }}>
+            <Col key={project.id} xs={12} sm={12} md={12} lg={6} style={{ display: 'flex' }}>
               <Card
                 hoverable
                 loading={loading}
@@ -159,25 +163,34 @@ const FeaturedProjects = () => {
               >
                 <Card.Meta
                   title={
-                    <Title
-                      level={5}
-                      style={{ 
-                        color: '#004D40', 
-                        minHeight: '44px', 
-                        marginBottom: '8px', 
-                        cursor: 'pointer' 
+                    <div
+                      style={{
+                        color: '#004D40',
+                        marginBottom: '8px',
+                        cursor: 'pointer',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                        lineHeight: '1.4',
+                        maxHeight: '2.8em',
+                        wordBreak: 'break-word',
+                        whiteSpace: 'normal',
+                        fontSize: '16px',
+                        fontWeight: 'bold'
                       }}
                     >
                       {project.name}
-                    </Title>
+                    </div>
                   }
                   description={
-                    <Text 
-                      style={{ 
-                        color: '#455A64', 
+                    <Text
+                      style={{
+                        color: '#455A64',
                         fontSize: '14px',
                         display: '-webkit-box',
-                        WebkitLineClamp: 2,
+                        WebkitLineClamp: isMobile ? 1 : 2, // 1 line on mobile, 2 lines on desktop
                         WebkitBoxOrient: 'vertical',
                         overflow: 'hidden'
                       }}

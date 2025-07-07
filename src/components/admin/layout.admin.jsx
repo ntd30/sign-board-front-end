@@ -1,5 +1,5 @@
 import {
-    AliwangwangOutlined, ApiOutlined, AppstoreOutlined, BugOutlined, ContactsOutlined, EditOutlined, ExceptionOutlined, GlobalOutlined, HomeOutlined,
+    AliwangwangOutlined, ApiOutlined, AppstoreOutlined, BugOutlined, ContactsOutlined, EditOutlined, ExceptionOutlined, GlobalOutlined, PictureOutlined, HomeOutlined,
     LogoutOutlined, MenuFoldOutlined, MenuUnfoldOutlined, UnorderedListOutlined, UserOutlined
 } from "@ant-design/icons";
 import { Avatar, Button, Dropdown, Layout, Menu, message, Space } from "antd"
@@ -82,6 +82,11 @@ const LayoutAdmin = () => {
                 && item.method === ALL_PERMISSIONS?.INQUIRY?.GET_PAGINATE?.method
             )
 
+            const viewBanner = user?.permissions?.find(item =>
+                item.apiPath === ALL_PERMISSIONS?.BANNER?.GET_PAGINATE?.apiPath
+                && item.method === ALL_PERMISSIONS?.BANNER?.GET_PAGINATE?.method
+            )
+
             const full = [
                 {
                     label: <Link to='/admin'>Dashboard</Link>,
@@ -127,6 +132,11 @@ const LayoutAdmin = () => {
                     label: <Link to='/admin/contact'>Liên hệ</Link>,
                     key: '/admin/contact',
                     icon: <ContactsOutlined />
+                }] : []),
+                ...(viewBanner ? [{
+                    label: <Link to='/admin/banners'>Quản lý Banner</Link>,
+                    key: '/admin/banners',
+                    icon: <PictureOutlined />
                 }] : []),
 
             ];

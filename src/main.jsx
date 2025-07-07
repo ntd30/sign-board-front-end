@@ -39,6 +39,7 @@ import RefundPolicy from './pages/client/policy/refund.jsx';
 import ServiceStandards from './pages/client/policy/standard.jsx';
 import HandoverPolicy from './pages/client/policy/handOver.jsx';
 import PaymentPolicy from './pages/client/policy/payment.jsx';
+import BannerPage from './pages/admin/banner.jsx';
 
 const router = createBrowserRouter([
   {
@@ -168,6 +169,9 @@ const router = createBrowserRouter([
       {
         path: "contact",
         element: <ContactPage />
+      },{
+        path: "banners",
+        element: <BannerPage />
       }
     ]
   },

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Breadcrumb, Button, Card, Col, Pagination, Row, Typography, Input, Spin } from "antd";
 import Meta from "antd/es/card/Meta";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { loadProductsByCategoryAPI } from "../../services/api.service";
+import { loadProductsByCategoryAPI, fetchAllProductsAPI } from "../../services/api.service";
 
 const { Title, Text } = Typography;
 const { Search } = Input;
@@ -15,7 +15,7 @@ const ListProductCard = () => {
         background: '#FFFFFF',
         display: 'flex',
         flexDirection: 'column',
-        height: '100%' // Ensure cards have same height for alignment
+        height: '100%'
     };
     const productCardHoverStyle = {
         transform: 'translateY(-10px)',
@@ -23,17 +23,17 @@ const ListProductCard = () => {
     };
     const cardImageStyle = {
         height: '220px',
-        objectFit: 'cover', // Changed from 'contain' to 'cover' for better fill
-        padding: '5px', // Optional: if you want some padding around the image
-        borderBottom: '1px solid #f0f0f0' // Separator line
+        objectFit: 'cover',
+        padding: '5px',
+        borderBottom: '1px solid #f0f0f0'
     };
     const cardBodyStyle = {
-        flexGrow: 1, // Allows the body to take up remaining space
-        padding: '16px' // Standard Ant Design Card padding
+        flexGrow: 1,
+        padding: '16px'
     };
     const cardActionsStyle = {
-        marginTop: 'auto', // Pushes actions to the bottom
-        padding: '10px 16px', // Consistent padding
+        marginTop: 'auto',
+        padding: '10px 16px',
         borderTop: '1px solid #f0f0f0'
     };
 
@@ -47,47 +47,45 @@ const ListProductCard = () => {
     const [allCategoryProducts, setAllCategoryProducts] = useState([]);
     const [current, setCurrent] = useState(1);
     const [pageSize, setPageSize] = useState(12);
-    const [total, setTotal] = useState(0); // Total for pagination, based on filtered products
+    const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(false);
     const [hoveredCard, setHoveredCard] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
-    // Contact Modal State (nếu bạn muốn nút "Liên Hệ Ngay" mở modal thay vì chi tiết)
-    // const [isContactModalOpen, setIsContactModalOpen] = useState(false);
-    // const [selectedProductIdForContact, setSelectedProductIdForContact] = useState(null);
-
 
     useEffect(() => {
         const fetchAllProductsForCategory = async () => {
-            const categoryId = parentCategoryId ? parentCategoryId : childCategoryId;
-            if (!categoryId) {
-                setAllCategoryProducts([]);
-                setTotal(0);
-                return;
-            }
-
+            const categoryId = parentCategoryId || childCategoryId;
             setLoading(true);
             try {
-                // Cố gắng lấy nhiều sản phẩm (ví dụ: tối đa 1000) để tìm kiếm phía client.
-                // Nếu API của bạn không hỗ trợ pageSize lớn hoặc "lấy tất cả",
-                // việc tìm kiếm sẽ chỉ giới hạn trong trang đầu tiên được tải.
-                const res = await loadProductsByCategoryAPI(categoryId, 1, 1000);
+                let res;
+                if (!categoryId) {
+                    // Nếu không có danh mục cha hoặc con, lấy tất cả sản phẩm
+                    res = await fetchAllProductsAPI(current, pageSize);
+                } else {
+                    // Nếu có danh mục, lấy sản phẩm theo danh mục
+                    res = await loadProductsByCategoryAPI(categoryId, current, pageSize);
+                }
+
                 if (res?.data?.content) {
                     setAllCategoryProducts(res.data.content);
+                    setTotal(res.data.total || res.data.content.length);
                 } else {
                     setAllCategoryProducts([]);
+                    setTotal(0);
                 }
             } catch (error) {
-                console.error("Failed to load products by category:", error);
+                console.error("Failed to load products:", error);
                 setAllCategoryProducts([]);
+                setTotal(0);
             } finally {
                 setLoading(false);
             }
         };
 
         fetchAllProductsForCategory();
-        setCurrent(1); // Reset to page 1 when category changes
-        setSearchTerm(""); // Clear search term when category changes
-    }, [parentCategoryId, childCategoryId]);
+        setCurrent(1);
+        setSearchTerm("");
+    }, [parentCategoryId, childCategoryId, current, pageSize]);
 
     const processedProducts = useMemo(() => {
         let filtered = allCategoryProducts;
@@ -96,21 +94,22 @@ const ListProductCard = () => {
                 product.name.toLowerCase().includes(searchTerm.toLowerCase())
             );
         }
-        setTotal(filtered.length); // Cập nhật tổng số sản phẩm cho phân trang dựa trên kết quả lọc
+        setTotal(filtered.length);
         const startIndex = (current - 1) * pageSize;
         console.log("Filtered Products:", filtered);
         return filtered.slice(startIndex, startIndex + pageSize);
     }, [allCategoryProducts, searchTerm, current, pageSize]);
-const handleGetProductDetail = (productId) => {
-  navigate(`/products/detail/${productId}`, {
-    state: {
-      categoryId: parentCategoryId ? parentCategoryId : childCategoryId
-    }
-  });
 
-  console.log("Navigating to product detail with ID:", productId, "and category ID:", categoryId);
-  window.scrollTo(0, 0);
-};
+    const handleGetProductDetail = (productId) => {
+        const categoryId = parentCategoryId || childCategoryId;
+        navigate(`/products/detail/${productId}`, {
+            state: {
+                categoryId
+            }
+        });
+        console.log("Navigating to product detail with ID:", productId, "and category ID:", categoryId);
+        window.scrollTo(0, 0);
+    };
 
     const handlePaginationChange = (page, newPageSize) => {
         setCurrent(page);
@@ -119,27 +118,23 @@ const handleGetProductDetail = (productId) => {
 
     const onSearch = (value) => {
         setSearchTerm(value.trim());
-        setCurrent(1); // Quay về trang đầu khi thực hiện tìm kiếm mới
+        setCurrent(1);
     };
-
-    // const openContactModal = (productId) => {
-    //     setSelectedProductIdForContact(productId);
-    //     setIsContactModalOpen(true);
-    // };
 
     return (
         <div style={{ maxWidth: "95%", margin: "40px auto", padding: '0 20px' }}>
             <Title level={2} style={{ textAlign: 'center', marginBottom: '10px', color: '#004D40', fontWeight: 'bold' }}>
-                {childCategoryName ? childCategoryName : parentCategoryName || "Sản phẩm"}
+                {childCategoryName || parentCategoryName || "Sản phẩm"}
             </Title>
-            <Breadcrumb style={{ fontSize: 16, marginBottom: 30, textAlign: 'center' }}>
-                <Breadcrumb.Item>
-                    <Link to="/">Trang chủ</Link>
-                </Breadcrumb.Item>
-                {/* {parentCategoryName && <Breadcrumb.Item><Link to="/categories" state={{ parentCategoryId, parentCategoryName }}>{parentCategoryName}</Link></Breadcrumb.Item>} */}
-                {parentCategoryName && <Breadcrumb.Item>{parentCategoryName}</Breadcrumb.Item>}
-                {childCategoryName && <Breadcrumb.Item>{childCategoryName}</Breadcrumb.Item>}
-            </Breadcrumb>
+            <div style={{ fontSize: 16, marginBottom: 30, textAlign: 'center' }}>
+                <Breadcrumb>
+                    <Breadcrumb.Item>
+                        <Link to="/">Trang chủ</Link>
+                    </Breadcrumb.Item>
+                    {parentCategoryName && <Breadcrumb.Item>{parentCategoryName}</Breadcrumb.Item>}
+                    {childCategoryName && <Breadcrumb.Item>{childCategoryName}</Breadcrumb.Item>}
+                </Breadcrumb>
+            </div>
 
             <Search
                 placeholder="Tìm kiếm sản phẩm theo tên..."
@@ -148,7 +143,7 @@ const handleGetProductDetail = (productId) => {
                 size="large"
                 onSearch={onSearch}
                 onChange={(e) => {
-                    if (!e.target.value.trim()) { // Nếu ô tìm kiếm trống sau khi xóa
+                    if (!e.target.value.trim()) {
                         setSearchTerm("");
                         setCurrent(1);
                     }
@@ -174,7 +169,7 @@ const handleGetProductDetail = (productId) => {
                                     style={hoveredCard === product.id ? { ...productCardStyle, ...productCardHoverStyle } : productCardStyle}
                                     onMouseEnter={() => setHoveredCard(product.id)}
                                     onMouseLeave={() => setHoveredCard(null)}
-onClick={() => handleGetProductDetail(product.id)}
+                                    onClick={() => handleGetProductDetail(product.id)}
                                     cover={
                                         <img
                                             alt={product.name}
@@ -182,8 +177,8 @@ onClick={() => handleGetProductDetail(product.id)}
                                                 product?.images?.[0]?.imageBase64
                                                     ? `data:image/jpeg;base64,${product.images[0].imageBase64}`
                                                     : product?.images?.[0]?.imageUrl
-                                                        ? `${import.meta.env.VITE_BACKEND_URL}/images/${product.images[0].imageUrl}`
-                                                        : 'https://placehold.co/400x220/E0F2F1/00796B?text=Ảnh+SP'
+                                                    ? `${import.meta.env.VITE_BACKEND_URL}/images/${product.images[0].imageUrl}`
+                                                    : 'https://placehold.co/400x220/E0F2F1/00796B?text=Ảnh+SP'
                                             }
                                             style={cardImageStyle}
                                         />
@@ -195,11 +190,8 @@ onClick={() => handleGetProductDetail(product.id)}
                                             style={{ backgroundColor: '#FF6F00', borderColor: '#FF6F00', fontWeight: 'bold', width: 'calc(100% - 32px)', margin: '0 16px' }}
                                             onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#FF8F00'; e.currentTarget.style.borderColor = '#FF8F00'; }}
                                             onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#FF6F00'; e.currentTarget.style.borderColor = '#FF6F00'; }}
-                                        // Nếu muốn nút này mở modal liên hệ:
-                                        // onClick={() => openContactModal(product.id)}
                                         >
                                             Xem Chi Tiết
-                                            {/* Liên Hệ Ngay */}
                                         </Button>,
                                     ]}
                                 >
@@ -208,7 +200,7 @@ onClick={() => handleGetProductDetail(product.id)}
                                             <Title
                                                 level={5}
                                                 style={{ color: '#004D40', minHeight: '44px', marginBottom: '8px', cursor: 'pointer' }}
-onClick={() => handleGetProductDetail(product.id)}
+                                                onClick={() => handleGetProductDetail(product.id)}
                                             >
                                                 {product.name}
                                             </Title>
@@ -228,21 +220,12 @@ onClick={() => handleGetProductDetail(product.id)}
                             style={{ marginTop: 40, textAlign: 'center' }}
                             showSizeChanger
                             pageSizeOptions={[12, 16, 24, 48]}
-                        // showTotal={(total, range) => `Hiển thị ${range[0]}-${range[1]} trên ${total} sản phẩm`}
                         />
                     )}
                 </>
             )}
-            {/* Nếu bạn có ProductContact component và muốn dùng nút "Liên Hệ Ngay":
-            <ProductContact
-                isContactOpen={isContactModalOpen}
-                setIsContactOpen={setIsContactModalOpen}
-                productId={selectedProductIdForContact}
-            /> 
-            */}
         </div>
     );
 };
 
 export default ListProductCard;
-

@@ -115,8 +115,10 @@ const DesignPage = () => {
     const handleOpenEditor = () => {
         if(user && user.id) {
 
-        window.open('/editor.html', '_blank');
-        }
+        // window.open('/editor.html', '_blank');
+
+window.open('https://www.canva.com', '_blank');
+    }
         else {
             notification.error({
                 message: 'Lỗi xác thực',

@@ -281,7 +281,6 @@ const loadRelatedProducts = async () => {
             </Space>
 
             <Paragraph className="product-price">
-              Giá: {product.price ? `${product.price.toLocaleString()}đ` : 'Liên hệ'}
             </Paragraph>
 
             <Button

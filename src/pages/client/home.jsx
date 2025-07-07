@@ -7,6 +7,7 @@ import PopupOffer from '../../components/PopupOffer';
 import FeaturedProjects from '../../components/client/home/FeaturedProjects';
 
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import SliderComponent from '../../components/client/home/SliderComponent';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -78,72 +79,7 @@ const getAnimatedGradientStyle = (colors) => ({
 });
 
 // Component 1: Slider
-const SliderComponent = () => {
-    const carouselRef = useRef();
 
-    const outerContainerStyle = {
-        maxWidth: "1200px",
-        margin: "0 auto",
-        padding: "0px",
-        borderRadius: "12px",
-        overflow: "hidden",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.1)",
-        backgroundColor: "#000", // Nền chờ ảnh load
-        position: "relative", // Cho nút điều hướng đặt được chính xác
-        aspectRatio: "21 / 9", // Tỷ lệ vàng
-    };
-
-    const imgStyle = {
-        width: "100%",
-        height: "100%",
-        objectFit: "cover", // Hiển thị đầy khung không để trống
-        display: "block",
-    };
-
-    const arrowStyle = {
-        position: "absolute",
-        top: "50%",
-        transform: "translateY(-50%)",
-        fontSize: "24px",
-        color: "#fff",
-        backgroundColor: "rgba(0,0,0,0.4)",
-        borderRadius: "50%",
-        padding: "10px",
-        zIndex: 2,
-        cursor: "pointer",
-        transition: "0.3s",
-    };
-
-    return (
-        <div style={outerContainerStyle}>
-            {/* Nút trái */}
-            <LeftOutlined
-                onClick={() => carouselRef.current.prev()}
-                style={{ ...arrowStyle, left: "10px" }}
-            />
-
-            {/* Nút phải */}
-            <RightOutlined
-                onClick={() => carouselRef.current.next()}
-                style={{ ...arrowStyle, right: "10px" }}
-            />
-
-            {/* Carousel */}
-            <Carousel
-                autoplay
-                effect="fade"
-                dotPosition="bottom"
-                ref={carouselRef}
-                arrows={false} // Tắt mặc định để dùng custom nút
-            >
-                <div><img src="/img/12.jpg" alt="Slide 1" style={imgStyle} /></div>
-                <div><img src="/img/2.jpg" alt="Slide 2" style={imgStyle} /></div>
-                <div><img src="/img/33.jpg" alt="Slide 3" style={imgStyle} /></div>
-                <div><img src="/img/43.jpg" alt="Slide 4" style={imgStyle} /></div>
-            </Carousel>
-        </div>
-    );
-};
 
 // Component 4: Về Chúng Tôi (About Us)
 const AboutUsComponent = () => {
@@ -234,7 +170,9 @@ const AboutUsComponent = () => {
 export const HomePage = () => {
     const [isContactOpen, setIsContactOpen] = useState(false);
     const [showPopup, setShowPopup] = useState(false);
-
+useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}, []);
     // Thêm keyframes và Ant Design CSS vào style của trang
     useEffect(() => {
         // Inject custom styles
@@ -361,15 +299,7 @@ export const HomePage = () => {
             <style jsx global>{`
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap');
 `}</style>
-            <SliderComponent
-                slides={[
-                    { src: '/img/12.jpg', alt: 'Slide 1' },
-                    { src: '/img/2.jpg', alt: 'Slide 2' },
-                    { src: '/img/33.jpg', alt: 'Slide 3' },
-                    { src: '/img/43.jpg', alt: 'Slide 4' },
-                ]}
-                autoplaySpeed={4000}
-            />
+            <SliderComponent autoplaySpeed={4000} />
             <div ref={bannerRef} className={`zoom-in-section ${bannerVisible ? 'visible' : ''}`}>
                 <FeaturedProjects />
             </div>

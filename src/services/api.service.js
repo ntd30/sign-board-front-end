@@ -277,6 +277,26 @@ const deletePermissionAPI = (id) => {
     const URL_BACKEND = `api/admin/permissions/${id}`
     return axios.delete(URL_BACKEND)
 }
+const fetchAllBannersAPI = (current, pageSize) => {
+    const page = current - 1; // Vì Spring Boot bắt đầu từ 0
+    const URL_BACKEND = `/api/banners?page=${page}&size=${pageSize}`;
+    return axios.get(URL_BACKEND);
+};
+const createBannerAPI = (bannerData) => {
+    const URL_BACKEND = `/api/banners`;
+    return axios.post(URL_BACKEND, bannerData);
+};
+
+const updateBannerAPI = (id, bannerData) => {
+    const URL_BACKEND = `/api/banners/${id}`;
+    return axios.put(URL_BACKEND, bannerData);
+};
+
+const deleteBannerAPI = (id) => {
+    const URL_BACKEND = `/api/banners/${id}`;
+    return axios.delete(URL_BACKEND);
+};
+
 
 const deleteCategoryAPI = (id) => {
     const URL_BACKEND = `api/admin/category/delete/${id}`
@@ -370,5 +390,5 @@ export {
     createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI, fetchAllDesignsAPI,
     loadProductsByCategoryAPI, createContactAPI, deleteDesignAPI, deleteRoleAPI, fetchAllArticlesAPI, fetchAllContactAPI,
     deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro, updateDesignAPI, updateContactAPI,
-    getProfileAPI,GetProductById,GetNewById
+    getProfileAPI,GetProductById,GetNewById,fetchAllBannersAPI,updateBannerAPI ,createBannerAPI,deleteBannerAPI
 }
