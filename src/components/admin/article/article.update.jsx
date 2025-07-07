@@ -68,46 +68,43 @@ const ArticleUpdate = (props) => {
     const [form] = Form.useForm();
 
     useEffect(() => {
-    if (dataUpdate && dataUpdate.id) {
-        const initialContent = dataUpdate.content || '<p></p>';
-        console.log("dataUpdate:", dataUpdate);
-        form.setFieldsValue({
-            title: dataUpdate.title,
-            excerpt: dataUpdate.excerpt || '',
-            type: dataUpdate.type,
-            isFeatured: dataUpdate.isFeatured || false,
-        });
-        setContent(initialContent);
+        if (dataUpdate && dataUpdate.id) {
+            const initialContent = dataUpdate.content || '<p></p>';
+            console.log("dataUpdate:", dataUpdate);
+            form.setFieldsValue({
+                title: dataUpdate.title,
+                excerpt: dataUpdate.excerpt || '',
+                type: dataUpdate.type,
+                isFeatured: dataUpdate.isFeatured || false,
+            });
+            setContent(initialContent);
 
-        // Ưu tiên sử dụng imageBase64, sau đó mới đến featuredImageUrl
-        if (dataUpdate.imageBase64) {
-            setFileList([{
-                uid: '-1',
-                name: 'image-base64.jpg',
-                status: 'done',
-                url: `data:image/jpeg;base64,${dataUpdate.imageBase64}`,
-                isExisting: true,
-            }]);
-        } else if (dataUpdate.featuredImageUrl && typeof dataUpdate.featuredImageUrl === 'string' && dataUpdate.featuredImageUrl.match(/\.(jpg|jpeg|png)$/i)) {
-            setFileList([{
-                uid: '-1',
-                name: dataUpdate.featuredImageUrl.split('/').pop() || 'image.jpg',
-                status: 'done',
-                url: `${import.meta.env.VITE_BACKEND_URL}${dataUpdate.featuredImageUrl}`,
-                isExisting: true,
-            }]);
-        } else {
-            setFileList([{
-                uid: '-1',
-                name: 'no-image.jpg',
-                status: 'done',
-                url: 'https://via.placeholder.com/150?text=No+Image',
-                isExisting: true,
-            }]);
-            message.info('Bài viết hiện tại chưa có ảnh.');
+            let initialFiles = [];
+            if (dataUpdate.imageBase64) {
+                initialFiles = [{
+                    uid: '-1',
+                    name: 'image-base64.jpg',
+                    status: 'done',
+                    url: `data:image/jpeg;base64,${dataUpdate.imageBase64}`,
+                    isExisting: true,
+                }];
+            } else if (dataUpdate.featuredImageUrl && typeof dataUpdate.featuredImageUrl === 'string' && dataUpdate.featuredImageUrl.match(/\.(jpg|jpeg|png)$/i)) {
+                initialFiles = [{
+                    uid: '-1',
+                    name: dataUpdate.featuredImageUrl.split('/').pop() || 'image.jpg',
+                    status: 'done',
+                    url: `${import.meta.env.VITE_BACKEND_URL}${dataUpdate.featuredImageUrl}`,
+                    isExisting: true,
+                }];
+            } else {
+                initialFiles = [];
+                message.info('Bài viết hiện tại chưa có ảnh.');
+            }
+            console.log("Initial fileList:", initialFiles);
+            setFileList(initialFiles);
         }
-    }
-}, [dataUpdate, form]);
+    }, [dataUpdate, form]);
+
     const onFinish = async (values) => {
         setLoadingBtn(true);
 
@@ -125,13 +122,21 @@ const ArticleUpdate = (props) => {
         formData.append("isFeatured", isFeatured || false);
         formData.append("type", type);
 
-        // Append image only if a new file is uploaded
-        const newImageFile = fileList.length > 0 && !fileList[0].isExisting ? fileList[0].originFileObj : null;
-        if (newImageFile) {
-            formData.append("image", newImageFile);
+        if (fileList.length === 0) {
+            console.log("No image, requesting to delete existing image");
+            formData.append("deleteImage", "true");
+        } else {
+            const newImageFile = fileList.length > 0 && !fileList[0].isExisting ? fileList[0].originFileObj : null;
+            if (newImageFile) {
+                console.log("Uploading new image:", newImageFile);
+                formData.append("image", newImageFile);
+            } else {
+                console.log("No new image uploaded, keeping existing image");
+            }
         }
 
         try {
+            console.log("Form Data:", Array.from(formData.entries()));
             const resUpdateArticle = await updateArticleAPI(dataUpdate.id, formData);
             if (resUpdateArticle) {
                 resetAndCloseModal();
@@ -147,9 +152,10 @@ const ArticleUpdate = (props) => {
                 });
             }
         } catch (error) {
+            console.error("Error updating article:", error);
             notification.error({
                 message: "Lỗi cập nhật bài viết",
-                description: error.message || 'Đã xảy ra lỗi khi cập nhật',
+                description: error.response?.data?.message || 'Đã xảy ra lỗi khi cập nhật',
             });
         } finally {
             setLoadingBtn(false);
@@ -176,6 +182,7 @@ const ArticleUpdate = (props) => {
     };
 
     const handleUploadChange = ({ fileList: newFileList }) => {
+        console.log("New fileList:", newFileList);
         setFileList(newFileList.map(file => ({
             ...file,
             isExisting: file.isExisting || false,
@@ -183,6 +190,7 @@ const ArticleUpdate = (props) => {
     };
 
     const beforeUpload = (file) => {
+        console.log("File to upload:", file);
         const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
         if (!isJpgOrPng) {
             message.error('Bạn chỉ có thể tải lên file JPG/PNG!');
@@ -193,37 +201,31 @@ const ArticleUpdate = (props) => {
             message.error('Ảnh phải nhỏ hơn 2MB!');
             return Upload.LIST_IGNORE;
         }
-        if (fileList.length >= 1 && !fileList[0].isExisting) {
-            message.warning('Chỉ được phép tải lên một ảnh đại diện.');
-            return Upload.LIST_IGNORE;
-        }
-        return true;
+        return false;
     };
 
     const handlePreview = (file) => {
-    if (file.url) {
-        // Nếu ảnh là Base64, hiển thị trực tiếp
-        if (file.url.startsWith('data:image')) {
-            window.open(file.url, '_blank');
-        } else {
-            // Nếu là URL, kiểm tra và fallback về Base64 nếu có
-            const img = new Image();
-            img.src = file.url;
-            img.onerror = () => {
-                if (dataUpdate.imageBase64) {
-                    window.open(`data:image/jpeg;base64,${dataUpdate.imageBase64}`, '_blank');
-                } else {
-                    message.error('Không thể xem trước ảnh này.');
-                }
-            };
-            img.onload = () => {
+        if (file.url) {
+            if (file.url.startsWith('data:image')) {
                 window.open(file.url, '_blank');
-            };
+            } else {
+                const img = new Image();
+                img.src = file.url;
+                img.onerror = () => {
+                    if (dataUpdate.imageBase64) {
+                        window.open(`data:image/jpeg;base64,${dataUpdate.imageBase64}`, '_blank');
+                    } else {
+                        message.error('Không thể xem trước ảnh này.');
+                    }
+                };
+                img.onload = () => {
+                    window.open(file.url, '_blank');
+                };
+            }
+        } else {
+            message.error('Không thể xem trước ảnh này.');
         }
-    } else {
-        message.error('Không thể xem trước ảnh này.');
-    }
-};
+    };
 
     return (
         <div>
@@ -324,7 +326,6 @@ const ArticleUpdate = (props) => {
                             <Form.Item
                                 name="images"
                                 label="Ảnh bài viết"
-                                rules={[{ required: true, message: 'Vui lòng tải lên ảnh của bài viết!' }]}
                             >
                                 <Upload
                                     customRequest={dummyRequest}
@@ -333,8 +334,9 @@ const ArticleUpdate = (props) => {
                                     onChange={handleUploadChange}
                                     beforeUpload={beforeUpload}
                                     onPreview={handlePreview}
-                                    onRemove={(file) => {
-                                        if (!file.isExisting) setFileList([]);
+                                    onRemove={() => {
+                                        setFileList([]);
+                                        return true;
                                     }}
                                     maxCount={1}
                                     showUploadList={{

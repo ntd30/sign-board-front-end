@@ -24,7 +24,7 @@ const ProductTable = (props) => {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
-
+console.log("dataupdate", dataUpdate);  
     const onChange = (pagination) => {
         if (+pagination.current !== +current) {
             setCurrent(+pagination.current);

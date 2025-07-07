@@ -27,42 +27,42 @@ const ProductUpdate = (props) => {
     const [deletedImages, setDeletedImages] = useState([]);
     console.log("dataCategories:", dataCategories);
     useEffect(() => {
-      let numbersOnlyArray = [];
-  if (dataUpdate?.dimensions) {
-    const numbersArray = dataUpdate.dimensions.split('x');
-    const lastNumber = numbersArray[numbersArray.length - 1].split(' ')[0];
-    numbersOnlyArray = [...numbersArray.slice(0, -1), lastNumber];
-  }
-
-  if (dataUpdate && dataUpdate.id) {
-    // Hàm tìm đường dẫn danh mục
-    const findCategoryPath = (categories, targetId, path = []) => {
-      for (let category of categories) {
-        path.push(category.value);
-        if (category.value === targetId) return [...path];
-        if (category.children) {
-          const childPath = findCategoryPath(category.children, targetId, path);
-          if (childPath.length > 0) return childPath;
+        let numbersOnlyArray = [];
+        if (dataUpdate?.dimensions) {
+            const numbersArray = dataUpdate.dimensions.split('x');
+            const lastNumber = numbersArray[numbersArray.length - 1].split(' ')[0];
+            numbersOnlyArray = [...numbersArray.slice(0, -1), lastNumber];
         }
-        path.pop();
-      }
-      return [];
-    };
 
-    const categoryPath = dataUpdate.category?.id
-      ? findCategoryPath(dataCategories, dataUpdate.category.id)
-      : [];
+        if (dataUpdate && dataUpdate.id) {
+            // Hàm tìm đường dẫn danh mục
+            const findCategoryPath = (categories, targetId, path = []) => {
+                for (let category of categories) {
+                    path.push(category.value);
+                    if (category.value === targetId) return [...path];
+                    if (category.children) {
+                        const childPath = findCategoryPath(category.children, targetId, path);
+                        if (childPath.length > 0) return childPath;
+                    }
+                    path.pop();
+                }
+                return [];
+            };
 
-    form.setFieldsValue({
-      id: dataUpdate.id,
-      name: dataUpdate.name,
-      categoryId: categoryPath.length > 0 ? categoryPath : undefined, // Gán mảng đường dẫn
-      description: dataUpdate.description,
-      length: parseFloat(numbersOnlyArray[0]) || 0,
-      width: parseFloat(numbersOnlyArray[1]) || 0,
-      height: parseFloat(numbersOnlyArray[2]) || 0,
-    });
-    setDescription(dataUpdate.description || '');
+            const categoryPath = dataUpdate.category?.id
+                ? findCategoryPath(dataCategories, dataUpdate.category.id)
+                : [];
+
+            form.setFieldsValue({
+                id: dataUpdate.id,
+                name: dataUpdate.name,
+                categoryId: categoryPath.length > 0 ? categoryPath : undefined, // Gán mảng đường dẫn
+                description: dataUpdate.description,
+                length: parseFloat(numbersOnlyArray[0]) || 0,
+                width: parseFloat(numbersOnlyArray[1]) || 0,
+                height: parseFloat(numbersOnlyArray[2]) || 0,
+            });
+            setDescription(dataUpdate.description || '');
 
             if (Array.isArray(dataUpdate?.images) && dataUpdate.images.length > 0) {
                 const existingImages = dataUpdate.images
@@ -269,23 +269,23 @@ const ProductUpdate = (props) => {
                             </Form.Item>
                         </Col>
 
-                      <Col lg={12} md={12} sm={24} xs={24}>
-  <Form.Item
-    label="Thuộc Danh mục"
-    name="categoryId"
-    rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
-  >
-    <Cascader
-      options={dataCategories}
-      fieldNames={{ label: 'label', value: 'value' }}
-      placeholder="Chọn danh mục"
-      onChange={(value) => {
-        form.setFieldsValue({ categoryId: value }); // Đảm bảo giữ nguyên mảng giá trị
-      }}
-      displayRender={(labels) => labels[labels.length - 1]} // Hiển thị tên cuối cùng
-    />
-  </Form.Item>
-</Col>
+                        <Col lg={12} md={12} sm={24} xs={24}>
+                            <Form.Item
+                                label="Thuộc Danh mục"
+                                name="categoryId"
+                                rules={[{ required: true, message: 'Vui lòng không bỏ trống!' }]}
+                            >
+                                <Cascader
+                                    options={dataCategories}
+                                    fieldNames={{ label: 'label', value: 'value' }}
+                                    placeholder="Chọn danh mục"
+                                    onChange={(value) => {
+                                        form.setFieldsValue({ categoryId: value }); // Đảm bảo giữ nguyên mảng giá trị
+                                    }}
+                                    displayRender={(labels) => labels[labels.length - 1]} // Hiển thị tên cuối cùng
+                                />
+                            </Form.Item>
+                        </Col>
                         <Col span={24}>
                             <Form.Item
                                 label="Mô tả"
