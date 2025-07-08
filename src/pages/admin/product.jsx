@@ -57,6 +57,7 @@ const ProductPage = () => {
     // Tải danh mục
     const getCategoriesSelect = async () => {
         const res = await fetchAllParentCategoriesAPI();
+        console.log("res", res);
         setDataCategories(
             res.data.map((item) => ({
                 value: item.id,
