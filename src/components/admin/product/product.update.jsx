@@ -24,8 +24,7 @@ const ProductUpdate = (props) => {
     const [fileList, setFileList] = useState([]);
     const [description, setDescription] = useState('');
     const [form] = Form.useForm();
-    const [deletedImages, setDeletedImages] = useState([]);
-    console.log("dataCategories:", dataCategories);
+
     useEffect(() => {
         let numbersOnlyArray = [];
         if (dataUpdate?.dimensions) {
@@ -35,7 +34,6 @@ const ProductUpdate = (props) => {
         }
 
         if (dataUpdate && dataUpdate.id) {
-            // Hàm tìm đường dẫn danh mục
             const findCategoryPath = (categories, targetId, path = []) => {
                 for (let category of categories) {
                     path.push(category.value);
@@ -56,7 +54,7 @@ const ProductUpdate = (props) => {
             form.setFieldsValue({
                 id: dataUpdate.id,
                 name: dataUpdate.name,
-                categoryId: categoryPath.length > 0 ? categoryPath : undefined, // Gán mảng đường dẫn
+                categoryId: categoryPath.length > 0 ? categoryPath : undefined,
                 description: dataUpdate.description,
                 length: parseFloat(numbersOnlyArray[0]) || 0,
                 width: parseFloat(numbersOnlyArray[1]) || 0,
@@ -70,26 +68,26 @@ const ProductUpdate = (props) => {
                     .map((item, index) => {
                         const imageUrl = typeof item === 'string' ? item : item?.imageUrl;
                         const imageBase64 = item?.imageBase64;
+                        const name = imageUrl && typeof imageUrl === 'string' && imageUrl.match(/\.(jpg|jpeg|png)$/i)
+                            ? imageUrl.split('/').pop()
+                            : `image-${index}.jpg`; // Fallback nếu không có imageUrl
                         if (imageBase64) {
-                            // Ưu tiên sử dụng Base64
                             return {
                                 uid: `existing-${index}`,
-                                name: `image-${index}.jpg`,
+                                name: name,
                                 status: 'done',
                                 url: `data:image/jpeg;base64,${imageBase64}`,
                                 isExisting: true,
                             };
-                        } else if (imageUrl && typeof imageUrl === 'string' && imageUrl.match(/\.(jpg|jpeg|png)$/i)) {
-                            // Fallback về imageUrl nếu Base64 không có
+                        } else if (imageUrl) {
                             return {
                                 uid: `existing-${index}`,
-                                name: `image-${index}.jpg`,
+                                name: name,
                                 status: 'done',
                                 url: `${import.meta.env.VITE_BACKEND_URL}/images/${imageUrl}`,
                                 isExisting: true,
                             };
                         }
-                        console.warn(`Invalid image at index ${index}:`, item);
                         return null;
                     })
                     .filter(item => item);
@@ -108,18 +106,9 @@ const ProductUpdate = (props) => {
     }, [dataUpdate, form]);
 
     const handleRemoveImage = (file) => {
-        // Nếu là ảnh hiện có trên server (không phải ảnh mới tải lên)
-        if (file.isExisting) {
-            // Thêm vào danh sách ảnh đã xóa
-            const imageName = file.url.split('/').pop();
-            setDeletedImages(prev => [...prev, imageName]);
-        }
-
-        // Cập nhật fileList (loại bỏ ảnh vừa xóa)
         const newFileList = fileList.filter(item => item.uid !== file.uid);
         setFileList(newFileList);
-
-        return true; // Cho phép xóa
+        return true;
     };
 
     const handleUpdateProduct = async (values) => {
@@ -128,29 +117,23 @@ const ProductUpdate = (props) => {
 
         // Thêm các trường dữ liệu cơ bản
         formData.append("name", values.name);
-        formData.append("categoryId", values.categoryId);
-        console.log("Category ID:", values.categoryId);
+        formData.append("categoryId", values.categoryId[values.categoryId.length - 1]);
         formData.append("description", description || '');
         formData.append("dimensions", `${values.length}x${values.width}x${values.height}`);
 
-        // Thêm danh sách ảnh cần xóa
-        deletedImages.forEach(imageName => {
-            formData.append("deletedImages", imageName);
-        });
-
-        // Xử lý ảnh cần giữ lại
-        const keptImages = fileList
+        // Tạo keptImageUrls từ fileList cho ảnh hiện có
+        const keptImageUrls = fileList
             .filter(file => file.isExisting)
-            .map(file => file.url.split('/').pop())
-            .filter(Boolean);
+            .map(file => file.name);
 
-        keptImages.forEach(imageName => {
-            formData.append("keptImageUtils", imageName);
+        console.log("Kept Image Urls:", keptImageUrls);
+
+        // Gửi keptImageUrls
+        keptImageUrls.forEach(imageName => {
+            formData.append("keptImageUrls", imageName);
         });
 
-        console.log("Kept Images:", keptImages);
-
-        // Thêm ảnh mới tải lên
+        // Gửi ảnh mới
         fileList
             .filter(file => !file.isExisting && file.originFileObj)
             .forEach(file => {
@@ -158,7 +141,7 @@ const ProductUpdate = (props) => {
             });
 
         try {
-            console.log("Form Data:", Array.from(formData.entries()));
+            console.log("Form Data entries:", Array.from(formData.entries()));
             const res = await updateProductAPI(dataUpdate.id, formData);
             if (res) {
                 notification.success({
@@ -179,13 +162,11 @@ const ProductUpdate = (props) => {
         }
     };
 
-
     const resetAndCloseModal = () => {
         setIsUpdateOpen(false);
         form.resetFields();
         setFileList([]);
         setDescription('');
-        setDeletedImages([]); // Reset danh sách ảnh đã xóa
     };
 
     const handleUploadChange = ({ fileList: newFileList }) => {
@@ -215,11 +196,9 @@ const ProductUpdate = (props) => {
 
     const handlePreview = (file) => {
         if (file.url) {
-            // Nếu ảnh là Base64, hiển thị trực tiếp
             if (file.url.startsWith('data:image')) {
                 window.open(file.url, '_blank');
             } else {
-                // Nếu là URL, kiểm tra và fallback về Base64 nếu có
                 const img = new Image();
                 img.src = file.url;
                 img.onerror = () => {
@@ -280,9 +259,9 @@ const ProductUpdate = (props) => {
                                     fieldNames={{ label: 'label', value: 'value' }}
                                     placeholder="Chọn danh mục"
                                     onChange={(value) => {
-                                        form.setFieldsValue({ categoryId: value }); // Đảm bảo giữ nguyên mảng giá trị
+                                        form.setFieldsValue({ categoryId: value });
                                     }}
-                                    displayRender={(labels) => labels[labels.length - 1]} // Hiển thị tên cuối cùng
+                                    displayRender={(labels) => labels[labels.length - 1]}
                                 />
                             </Form.Item>
                         </Col>
@@ -331,7 +310,7 @@ const ProductUpdate = (props) => {
                                     fileList={fileList}
                                     onChange={handleUploadChange}
                                     beforeUpload={beforeUpload}
-                                    onRemove={handleRemoveImage} // Thêm callback xử lý xóa ảnh
+                                    onRemove={handleRemoveImage}
                                     multiple
                                     accept="image/*"
                                     listType="picture-card"
@@ -357,7 +336,7 @@ const ProductUpdate = (props) => {
                                 </Upload>
                                 <div style={{ color: '#888', fontSize: '12px', marginTop: '8px' }}>
                                     {fileList.length > 0
-                                        ? 'Tải lên tối đa 5 ảnh (JPG/PNG, <2MB). Ảnh hiện tại sẽ được thay thế nếu tải ảnh mới.'
+                                        ? 'Tải lên tối đa 5 ảnh (JPG/PNG, <2MB). Ảnh hiện tại sẽ bị xóa nếu không giữ lại.'
                                         : 'Chưa có ảnh. Tải lên tối đa 5 ảnh (JPG/PNG, <2MB).'}
                                 </div>
                             </Form.Item>
