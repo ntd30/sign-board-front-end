@@ -36,7 +36,7 @@ const CategoryPage = () => {
 
     return (
         <>
-            {permissionsOfCurrentUser.includes("MANAGE_CATEGORIES_CREATE") && (
+            {permissionsOfCurrentUser.includes("CATEGORY_CREATE") && (
                 <CategoryCreate
                     loadCategories={loadCategories}
                     dataParentCategories={dataParentCategories}

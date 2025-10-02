@@ -17,6 +17,11 @@ const ProductPage = () => {
     const { user } = useContext(AuthContext);
     const permissionsOfCurrentUser = (user?.permissions || []).map(perm => perm.name);
 
+    // Debug: Kiểm tra quyền hiện tại
+    console.log("🔐 User permissions:", permissionsOfCurrentUser);
+    console.log("👤 Current user:", user?.name || "No user");
+    console.log("📋 All user permissions:", user?.permissions || "No permissions");
+
     // Tải toàn bộ danh sách sản phẩm
     const loadProducts = async () => {
         setLoadingTable(true);
@@ -79,7 +84,7 @@ const ProductPage = () => {
 
     return (
         <>
-            {permissionsOfCurrentUser.includes("CREATE_PRODUCTS") && (
+            {permissionsOfCurrentUser.includes("PRODUCT_CREATE") && (
                 <ProductCreate
                     loadProducts={loadProducts}
                     dataCategories={dataCategories}

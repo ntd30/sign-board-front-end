@@ -58,7 +58,7 @@ const ArticlesPage = () => {
 
     return (
         <>
-            {permissionsOfCurrentUser.includes("MANAGE_ARTICLES_CREATE") && (
+            {permissionsOfCurrentUser.includes("ARTICLE_CREATE") && (
                 <ArticleCreate
                     loadArticles={loadArticles}
                 />

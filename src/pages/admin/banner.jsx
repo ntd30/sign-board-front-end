@@ -56,7 +56,7 @@ const BannerPage = () => {
 
     return (
         <div style={{ padding: 16 }}>
-            {permissionsOfCurrentUser.includes("MANAGE_BANNERS_CREATE") && (
+            {permissionsOfCurrentUser.includes("BANNER_CREATE") && (
                 <div style={{ marginBottom: 16 }}>
                     <BannerCreate loadBanners={loadBanners} />
                 </div>

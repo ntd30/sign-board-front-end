@@ -24,6 +24,11 @@ const ProductTable = (props) => {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
+
+    // Debug: Kiểm tra permissions được truyền vào
+    console.log("🔐 Permissions in ProductTable:", permissionsOfCurrentUser);
+    console.log("📊 Total products:", dataProducts?.length || 0);
+    console.log("🔍 Search term:", searchTerm);
 console.log("dataupdate", dataUpdate);  
     const onChange = (pagination) => {
         if (+pagination.current !== +current) {
@@ -161,29 +166,40 @@ console.log("dataupdate", dataUpdate);
         },
         {
             title: "Action",
-            render: (_, record) => (
-                <Space size="middle" style={{ gap: "20px" }}>
-                    {permissionsOfCurrentUser.includes("UPDATE_PRODUCTS") && (
-                        <EditOutlined
-                            style={{ color: "orange", cursor: "pointer" }}
-                            onClick={() => handleEditProduct(record)}
-                        />
-                    )}
-                    {permissionsOfCurrentUser.includes("DELETE_PRODUCTS") && (
-                        <Popconfirm
-                            title="Xóa Sản phẩm"
-                            description="Bạn có chắc muốn xóa Sản phẩm này?"
-                            onConfirm={() => handleDeleteProduct(record.id)}
-                            onCancel={() => { }}
-                            okText="Xác nhận"
-                            cancelText="Hủy"
-                            placement="left"
-                        >
-                            <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
-                        </Popconfirm>
-                    )}
-                </Space>
-            ),
+            render: (_, record) => {
+                // Debug: Kiểm tra điều kiện hiển thị các nút
+                const hasUpdatePermission = permissionsOfCurrentUser.includes("PRODUCT_UPDATE");
+                const hasDeletePermission = permissionsOfCurrentUser.includes("PRODUCT_DELETE");
+
+                console.log("🔧 Record ID:", record.id, "Has UPDATE permission:", hasUpdatePermission, "Has DELETE permission:", hasDeletePermission);
+
+                return (
+                    <Space size="middle" style={{ gap: "20px" }}>
+                        {hasUpdatePermission && (
+                            <EditOutlined
+                                style={{ color: "orange", cursor: "pointer" }}
+                                onClick={() => handleEditProduct(record)}
+                            />
+                        )}
+                        {hasDeletePermission && (
+                            <Popconfirm
+                                title="Xóa Sản phẩm"
+                                description="Bạn có chắc muốn xóa Sản phẩm này?"
+                                onConfirm={() => handleDeleteProduct(record.id)}
+                                onCancel={() => { }}
+                                okText="Xác nhận"
+                                cancelText="Hủy"
+                                placement="left"
+                            >
+                                <DeleteOutlined style={{ color: "red", cursor: "pointer" }} />
+                            </Popconfirm>
+                        )}
+                        {!hasUpdatePermission && !hasDeletePermission && (
+                            <span style={{ color: "gray", fontSize: "12px" }}>Không có quyền</span>
+                        )}
+                    </Space>
+                );
+            },
             width: 120,
         },
     ];

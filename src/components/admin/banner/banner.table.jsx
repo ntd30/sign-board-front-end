@@ -116,13 +116,13 @@ console.log("record",dataBanners)
                         style={{ color: "blue", cursor: "pointer" }}
                         onClick={() => handleGetDetailBanner(record)}
                     />
-                    {permissionsOfCurrentUser.includes("MANAGE_BANNERS_UPDATE") && (
+                    {permissionsOfCurrentUser.includes("BANNER_UPDATE") && (
                         <EditOutlined
                             style={{ color: "orange", cursor: "pointer" }}
                             onClick={() => handleEditBanner(record)}
                         />
                     )}
-                    {permissionsOfCurrentUser.includes("MANAGE_BANNERS_DELETE") && (
+                    {permissionsOfCurrentUser.includes("BANNER_DELETE") && (
                         <Popconfirm
                             title="Xóa banner"
                             description="Bạn có chắc muốn xóa banner này?"

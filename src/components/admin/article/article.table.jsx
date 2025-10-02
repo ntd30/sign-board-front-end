@@ -141,13 +141,13 @@ console.log("dataupdate", dataUpdate);
             title: "Action",
             render: (_, record) => (
                 <Space size="middle" style={{ gap: "20px" }}>
-                    {permissionsOfCurrentUser.includes("MANAGE_ARTICLES_UPDATE") && (
+                    {permissionsOfCurrentUser.includes("ARTICLE_UPDATE") && (
                         <EditOutlined
                             style={{ color: "orange", cursor: "pointer" }}
                             onClick={() => handleEditArticle(record)}
                         />
                     )}
-                    {permissionsOfCurrentUser.includes("MANAGE_ARTICLES_DELETE") && (
+                    {permissionsOfCurrentUser.includes("ARTICLE_DELETE") && (
                         <Popconfirm
                             title="Xóa bài viết"
                             description="Bạn có chắc muốn xóa bài viết này?"

@@ -113,14 +113,14 @@ const CategoryTable = (props) => {
       title: 'Action',
       render: (_, record) => (
         <Space size="middle" style={{ gap: "20px" }}>
-          {permissionsOfCurrentUser.includes("MANAGE_CATEGORIES_UPDATE") && (
+          {permissionsOfCurrentUser.includes("CATEGORY_UPDATE") && (
             <EditOutlined
               style={{ color: "orange", cursor: "pointer" }}
               onClick={() => handleEditCategory(record)}
             />
           )}
 
-          {permissionsOfCurrentUser.includes("MANAGE_CATEGORIES_DELETE") && (
+          {permissionsOfCurrentUser.includes("CATEGORY_DELETE") && (
             <Popconfirm
               title="Xóa Danh mục"
               description="Bạn có chắc muốn xóa Danh mục này?"

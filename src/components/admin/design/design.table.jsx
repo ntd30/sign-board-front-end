@@ -173,8 +173,8 @@ const DesignTable = (props) => {
         {
             title: 'Action',
             render: (_, record) => {
-                const hasUpdatePermission = permissionsOfCurrentUser && permissionsOfCurrentUser.includes("MANAGE_DESIGNS_UPDATE");
-                const hasDeletePermission = permissionsOfCurrentUser && permissionsOfCurrentUser.includes("MANAGE_DESIGNS_DELETE");
+                const hasUpdatePermission = permissionsOfCurrentUser && permissionsOfCurrentUser.includes("DESIGN_UPDATE");
+                const hasDeletePermission = permissionsOfCurrentUser && permissionsOfCurrentUser.includes("DESIGN_DELETE");
 
                 if (!hasUpdatePermission && !hasDeletePermission) {
                     return <span>-</span>;
