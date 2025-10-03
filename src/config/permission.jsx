@@ -27,9 +27,7 @@ export const ALL_PERMISSIONS = {
     },
     INQUIRY: {
         GET_PAGINATE: { method: "GET", apiPath: '/api/admin/inquiry/list', module: "INQUIRY" },
-        // CREATE: { method: "POST", apiPath: '/api/admin/contact/create', module: "CONTACT" },
-        UPDATE: { method: "PUT", apiPath: '/api/admin/inquiry/edit/{id}', module: "INQUIRY" },
-        // DELETE: { method: "DELETE", apiPath: '/api/admin/contact/delete/{id}', module: "CONTACT" },
+        UPDATE: { method: "PUT", apiPath: '/api/admin/inquiry/', module: "INQUIRY" },
     },
     PERMISSION: {
         GET_PAGINATE: { method: "GET", apiPath: '/api/admin/permissions', module: "PERMISSION" },

@@ -237,7 +237,7 @@ useEffect(() => {
                     letterSpacing: '-0.5px',
                     lineHeight: '1.2',
                     textShadow: '0 2px 4px rgba(0,0,0,0.1)'
-                }}>AI2.VN - Giải pháp bảng hiệu thông minh thời đại mới</h1>
+                }}>Quảng cáo Nhân Việt - Giải pháp bảng hiệu thông minh thời đại mới</h1>
 
                 <Button
                     type="primary"

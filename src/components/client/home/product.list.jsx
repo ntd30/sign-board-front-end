@@ -150,7 +150,7 @@ export const ProductList = () => {
       <>
         🎁 Tặng website mẫu + bảng hiệu 2D. <br />
         🗺️ Hỗ trợ Google Map, thiết kế tận tâm.<br />
-        ✨ AI2 cam kết đúng tiến độ, trách nhiệm, uy tín.
+        ✨ Quảng cáo Nhân Việt cam kết đúng tiến độ, trách nhiệm, uy tín.
       </>
     );
 

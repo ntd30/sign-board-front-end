@@ -101,7 +101,7 @@ const Privacy = () => {
         }
     }, []);
 
-    const companyName = "ai2.vn"; // Tên công ty mẫu
+    const companyName = "Quảng cáo Nhân Việt"; // Tên công ty mẫu
 
     const listPurposeData = [
         `Xử lý yêu cầu thiết kế, báo giá và thi công các dự án biển hiệu, biển quảng cáo.`,

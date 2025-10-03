@@ -262,9 +262,8 @@ const createPermissionAPI = (name, apiPath, method, module) => {
 }
 
 const updatePermissionAPI = (id, name, apiPath, method, module) => {
-    const URL_BACKEND = "api/admin/permissions"
+    const URL_BACKEND = `api/admin/permissions/${id}`
     const data = {
-        id: id,
         name: name,
         apiPath: apiPath,
         method: method,

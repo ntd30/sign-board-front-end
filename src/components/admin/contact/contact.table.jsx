@@ -43,6 +43,7 @@ const ContactTable = (props) => {
         const { id, status } = values;
         try {
             const res = await updateContactAPI(id, status);
+            console.log("Kết quả cập nhật liên hệ:", res);
             if (res.data) {
                 notification.success({
                     message: "Cập nhật liên hệ",

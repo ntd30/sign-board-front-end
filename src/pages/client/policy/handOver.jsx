@@ -117,7 +117,7 @@ const HandoverPolicy = () => {
         }
     }, []);
 
-    const companyName = "ai2.vn";
+    const companyName = "Quảng cáo Nhân Việt";
 
     const handoverProcessData = [
         `<strong>Kiểm tra chất lượng:</strong> Sau khi hoàn thành sản xuất biển quảng cáo, ${companyName} sẽ tiến hành kiểm tra chất lượng kỹ lưỡng để đảm bảo sản phẩm đáp ứng yêu cầu thiết kế và tiêu chuẩn kỹ thuật.`,
