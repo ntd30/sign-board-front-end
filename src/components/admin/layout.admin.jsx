@@ -103,7 +103,7 @@ const LayoutAdmin = () => {
                     key: '/admin/products',
                     icon: <AliwangwangOutlined />
                 }] : []),
-                ...(user.roleName === "Admin" ? [{
+                ...(user.roleName === "ADMIN" ? [{
                     label: <Link to='/admin/users'>Người dùng</Link>,
                     key: '/admin/users',
                     icon: <UserOutlined />
@@ -113,12 +113,12 @@ const LayoutAdmin = () => {
                     key: '/admin/designs',
                     icon: <EditOutlined />
                 }] : []),
-                ...(user.roleName === "Admin" ? [{
+                ...(user.roleName === "ADMIN" ? [{
                     label: <Link to='/admin/roles'>Vai trò</Link>,
                     key: '/admin/roles',
                     icon: <ExceptionOutlined />
                 }] : []),
-                ...(user.roleName === "Admin" ? [{
+                ...(user.roleName === "ADMIN" ? [{
                     label: <Link to='/admin/permissions'>Quyền hạn</Link>,
                     key: '/admin/permissions',
                     icon: <ApiOutlined />

@@ -27,7 +27,7 @@ export const ALL_PERMISSIONS = {
     },
     INQUIRY: {
         GET_PAGINATE: { method: "GET", apiPath: '/api/admin/inquiry/list', module: "INQUIRY" },
-        UPDATE: { method: "PUT", apiPath: '/api/admin/inquiry/', module: "INQUIRY" },
+        UPDATE: { method: "PUT", apiPath: '/api/admin/inquiry', module: "INQUIRY" },
     },
     PERMISSION: {
         GET_PAGINATE: { method: "GET", apiPath: '/api/admin/permissions', module: "PERMISSION" },
@@ -48,10 +48,10 @@ export const ALL_PERMISSIONS = {
         DELETE: { method: "DELETE", apiPath: '/api/admin/article/delete/{id}', module: "ARTICLE" },
     },
     BANNER: {
-        GET_PAGINATE: { method: "GET", apiPath: '/api/banners', module: "BANNER" },
-        CREATE: { method: "POST", apiPath: '/api/banners', module: "BANNER" },
-        UPDATE: { method: "PUT", apiPath: '/api/banners/{id}', module: "BANNER" },
-        DELETE: { method: "DELETE", apiPath: '/api/banners/{id}', module: "BANNER" },
+        GET_PAGINATE: { method: "GET", apiPath: '/api/admin/banners', module: "BANNER" },
+        CREATE: { method: "POST", apiPath: '/api/admin/banners', module: "BANNER" },
+        UPDATE: { method: "PUT", apiPath: '/api/admin/banners/{id}', module: "BANNER" },
+        DELETE: { method: "DELETE", apiPath: '/api/admin/banners/{id}', module: "BANNER" },
     }
 }
 

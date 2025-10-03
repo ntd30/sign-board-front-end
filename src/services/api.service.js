@@ -261,15 +261,9 @@ const createPermissionAPI = (name, apiPath, method, module) => {
     return axios.post(URL_BACKEND, data)
 }
 
-const updatePermissionAPI = (id, name, apiPath, method, module) => {
-    const URL_BACKEND = `api/admin/permissions/${id}`
-    const data = {
-        name: name,
-        apiPath: apiPath,
-        method: method,
-        module: module
-    }
-    return axios.put(URL_BACKEND, data)
+const updatePermissionAPI = (permissionData) => {
+    const URL_BACKEND = `api/admin/permissions`
+    return axios.put(URL_BACKEND, permissionData)
 }
 
 const deletePermissionAPI = (id) => {

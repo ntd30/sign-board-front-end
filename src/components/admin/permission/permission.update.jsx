@@ -21,9 +21,9 @@ const PermissionUpdate = (props) => {
     }, [dataUpdate])
 
     const handleUpdatePermission = async (values) => {
+        console.log("Update values:", values, "dataUpdate.id:", dataUpdate.id)
         setLoadingBtn(true)
-        const { name, apiPath, method, module } = values
-        const res = await updatePermissionAPI(dataUpdate.id, name, apiPath, method, module)
+        const res = await updatePermissionAPI({ ...values, id: Number(dataUpdate.id) })
 
         if (res.data) {
             resetAndCloseModal()
