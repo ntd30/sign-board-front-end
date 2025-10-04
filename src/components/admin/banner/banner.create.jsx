@@ -36,7 +36,7 @@ const BannerCreate = (props) => {
         const formData = new FormData();
         formData.append("title", values.title);
         formData.append("description", values.description);
-        formData.append("isActive", values.isActive);
+        formData.append("isActive", values.isActive ? 1 : 0);
         console.log("values", values.isActive);
         formData.append("productId", values.productId || "");
         
@@ -121,13 +121,13 @@ const BannerCreate = (props) => {
 
                           
 
-                            <Form.Item
+                            {/* <Form.Item
                                 name="isActive"
                                 label="Trạng thái"
                                 valuePropName="checked"
                             >
                                 <Switch checkedChildren="Hoạt động" unCheckedChildren="Ẩn" />
-                            </Form.Item>
+                            </Form.Item> */}
                         </Col>
                         <Col span={12}>
                             <Form.Item

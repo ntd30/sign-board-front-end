@@ -30,12 +30,10 @@ const LayoutAdmin = () => {
             icon: <HomeOutlined />
         },
         {
-            label: <label
-                style={{ cursor: 'pointer' }}
-                onClick={handleLogout}
-            >Đăng xuất</label>,
+            label: "Đăng xuất",
             key: 'logout',
-            icon: <LogoutOutlined />
+            icon: <LogoutOutlined />,
+            onClick: handleLogout
         },
     ]
 

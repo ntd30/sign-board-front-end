@@ -27,7 +27,7 @@ export const ALL_PERMISSIONS = {
     },
     INQUIRY: {
         GET_PAGINATE: { method: "GET", apiPath: '/api/admin/inquiry/list', module: "INQUIRY" },
-        UPDATE: { method: "PUT", apiPath: '/api/admin/inquiry', module: "INQUIRY" },
+        UPDATE: { method: "PUT", apiPath: '/api/admin/inquiry/{id}/status', module: "INQUIRY" },
     },
     PERMISSION: {
         GET_PAGINATE: { method: "GET", apiPath: '/api/admin/permissions', module: "PERMISSION" },

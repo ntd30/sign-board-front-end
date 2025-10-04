@@ -34,29 +34,29 @@ const AppFooter = () => {
             <Title level={5} className="footer-title">THÔNG TIN LIÊN HỆ</Title>
             <Space direction="vertical" size="middle" style={{ display: 'flex' }}>
               <div>
-                <Text strong className="contact-label"><AppstoreFilled /> CÔNG TY TNHH ĐẦU TƯ CÔNG NGHỆ TECHBYTE</Text>
+                <Text strong className="contact-label"><AppstoreFilled /> CÔNG TY CỔ PHẦN QUẢNG CÁO VÀ TRUYỀN THÔNG NHÂN VIỆT
+</Text>
               </div>
               <div>
-                <Text strong className="contact-label"><FileFilled /> Mã số thuế: 0110801570</Text>
+                <Text strong className="contact-label"><FileFilled /> Mã số thuế: 0111208677</Text>
               </div>
               <div>
-                <Text strong className="contact-label"><PhoneFilled /> 0375145998</Text>
+                <Text strong className="contact-label"><PhoneFilled /> 0879485678</Text>
               </div>
-              <div>
+              {/* <div>
                 <Text strong className="contact-label"><MailFilled /> ai@idai.vn</Text>
-              </div>
+              </div> */}
               <div>
                 <Text strong className="contact-label"><EnvironmentFilled /> Trụ sở chính:</Text>
-                <Text className="contact-detail">Nhà 10, dãy H, Khu tập thể Công an Đa Sỹ, Phường Kiến Hưng, Quận Hà Đông, Thành phố Hà Nội, Việt Nam</Text>
+                <Text className="contact-detail">Số N10-LK14, khu đất dịch vụ LK20a, LK20b, Phường Dương Nội, TP Hà Nội, Việt Nam
+</Text>
               </div>
               <div>
                 <Text strong className="contact-label"><EnvironmentFilled /> Văn phòng giao dịch:</Text>
-                <Text className="contact-detail">Nhà 2B, 110 Đường Nguyễn Hoàng Tôn, Xuân La, Tây Hồ, Hà Nội</Text>
+                <Text className="contact-detail">Số N10-LK14, khu đất dịch vụ LK20a, LK20b , Phường Dương Nội, Thành phố Hà Nội, Việt Nam
+</Text>
               </div>
-              <div>
-                <Text strong className="contact-label"><EnvironmentFilled /> Xưởng sản xuất:</Text>
-                <Text className="contact-detail">Số 20, Ngõ 408, Xuân Đỉnh, Quận Từ liêm,Thành phố Hà Nội, Việt Nam</Text>
-              </div>
+              
             </Space>
           </Col>
 
@@ -65,7 +65,7 @@ const AppFooter = () => {
             {/* Nhúng iframe từ Google Maps */}
             {/* Thay thế src bằng mã nhúng bản đồ của bạn */}
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3826.1981910875847!2d105.78366786885267!3d20.958258798493727!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ad2c52118147%3A0xe1131005d075626a!2zxJBhIFPhu7ksIEtp4bq_biBIxrBuZywgSMOgIMSQw7RuZywgSGFub2ksIFZpZXRuYW0!5e1!3m2!1sen!2s!4v1746923124633!5m2!1sen!2s" // Thay link này
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.1214208498036!2d105.74402267601486!3d20.987769380651304!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3134539533df56f5%3A0x33242b802bb49891!2zS2h1IMSR4bqldCBk4buLY2ggduG7pSBDTDIxLTI5!5e0!3m2!1svi!2s!4v1759548470146!5m2!1svi!2s" // Thay link này
               width="100%"
               height="350px" // Điều chỉnh chiều cao nếu cần
               style={{ border: 0 }}

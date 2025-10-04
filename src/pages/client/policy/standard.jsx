@@ -214,10 +214,10 @@ const ServiceStandards = () => {
                                 <PhoneOutlined style={styles.contactIcon} />
                                 <Text>Hotline: <Text strong>0973.454.140</Text></Text>
                             </div>
-                            <div style={styles.contactInfoItem}>
+                            {/* <div style={styles.contactInfoItem}>
                                 <MailOutlined style={styles.contactIcon} />
                                 <Text>Email: <Text strong><AntLink href="mailto:ai@idai.vn">ai@idai.vn</AntLink></Text></Text>
-                            </div>
+                            </div> */}
                         </Space>
                     </Paragraph>
 

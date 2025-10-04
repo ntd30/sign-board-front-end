@@ -127,12 +127,10 @@ const Header = () => {
             icon: <LoginOutlined />
         },] : []),
         ...(user?.id ? [{
-            label: <label
-                onClick={handleLogout}
-                style={{ cursor: "pointer" }}
-            >Đăng xuất</label>,
+            label: "Đăng xuất",
             key: 'logout',
-            icon: <LogoutOutlined />
+            icon: <LogoutOutlined />,
+            onClick: handleLogout
         },] : []),
     ]
 
@@ -185,12 +183,10 @@ const Header = () => {
         // },] : []),
 
         ...(!isMobile && user?.id ? [{
-            label: <label
-                onClick={handleLogout}
-                style={{ cursor: "pointer" }}
-            >Đăng xuất</label>,
+            label: "Đăng xuất",
             key: 'logout',
-            icon: <LogoutOutlined />
+            icon: <LogoutOutlined />,
+            onClick: handleLogout
         },] : []),
     ]
 

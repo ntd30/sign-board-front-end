@@ -207,15 +207,15 @@ const Privacy = () => {
                         <Space direction="vertical" size="middle" style={{ marginTop: '15px', display: 'block', width: '100%' }}>
                             <div style={styles.contactInfoItem}>
                                 <PhoneOutlined style={styles.contactIcon} />
-                                <Text>Hotline Hỗ Trợ: <Text strong>0375145998</Text></Text>
+                                <Text>Hotline Hỗ Trợ: <Text strong>0879485678</Text></Text>
                             </div>
-                            <div style={styles.contactInfoItem}>
+                            {/* <div style={styles.contactInfoItem}>
                                 <MailOutlined style={styles.contactIcon} />
                                 <Text>Email: <Text strong><AntLink href="mailto: ai@idai.vn"> ai@idai.vn</AntLink></Text> </Text>
-                            </div>
+                            </div> */}
                             <div style={styles.contactInfoItem}>
                                 <EnvironmentOutlined style={styles.contactIcon} />
-                                <Text>Địa chỉ văn phòng: Số nhà 10, dãy H, Khu tập thể Công an Đa Sỹ, Phường Kiến Hưng, Quận Hà Đông, Hà Nội.</Text>
+                                <Text>Địa chỉ văn phòng: Số N10-LK14, khu đất dịch vụ LK20a, LK20b, Phường Dương Nội, Thành phố Hà Nội, Việt Nam</Text>
                             </div>
                         </Space>
                     </Paragraph>

@@ -35,7 +35,7 @@ console.log("record",dataBanners)
     const handleDeleteBanner = async (idDelete) => {
         try {
             const res = await deleteBannerAPI(idDelete);
-            if (res.data) {
+            if (res.status === 200) {
                 notification.success({
                     message: "Xóa banner",
                     description: "Xóa banner thành công!",
@@ -92,16 +92,16 @@ console.log("record",dataBanners)
             width: 300,
             ellipsis: true,
         },
-        {
-            title: "Trạng thái",
-            dataIndex: "active",
-            render: (isActive) => (
-                <span style={{ color: isActive ? 'green' : 'red' }}>
-                    {isActive ? 'Đang hoạt động' : 'Không hoạt động'}
-                </span>
-            ),
-            width: 150,
-        },
+        // {
+        //     title: "Trạng thái",
+        //     dataIndex: "active",
+        //     render: (isActive) => (
+        //         <span style={{ color: isActive ? 'green' : 'red' }}>
+        //             {isActive === 1 ? 'Đang hoạt động' : 'Không hoạt động'}
+        //         </span>
+        //     ),
+        //     width: 150,
+        // },
         {
             title: "Ngày tạo",
             dataIndex: "createdAt",
@@ -112,7 +112,7 @@ console.log("record",dataBanners)
             title: "Action",
             render: (_, record) => (
                 <Space size="middle" style={{ gap: "20px" }}>
-                    <EyeOutlined 
+                    {/* <EyeOutlined 
                         style={{ color: "blue", cursor: "pointer" }}
                         onClick={() => handleGetDetailBanner(record)}
                     />
@@ -121,7 +121,7 @@ console.log("record",dataBanners)
                             style={{ color: "orange", cursor: "pointer" }}
                             onClick={() => handleEditBanner(record)}
                         />
-                    )}
+                    )} */}
                     {permissionsOfCurrentUser.includes("BANNER_DELETE") && (
                         <Popconfirm
                             title="Xóa banner"

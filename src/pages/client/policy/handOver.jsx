@@ -193,12 +193,12 @@ const HandoverPolicy = () => {
                         <Space direction="vertical" size="small" style={{ marginTop: '15px', display: 'block', width: '100%' }}>
                             <div style={styles.contactInfoItem}>
                                 <PhoneOutlined style={styles.contactIcon} />
-                                <Text>Hotline: <Text strong>0375145998</Text></Text>
+                                <Text>Hotline: <Text strong>0879485678</Text></Text>
                             </div>
-                            <div style={styles.contactInfoItem}>
+                            {/* <div style={styles.contactInfoItem}>
                                 <MailOutlined style={styles.contactIcon} />
                                 <Text>Email: <Text strong><AntLink href="mailto:ai@idai.vn">ai@idai.vn</AntLink></Text></Text>
-                            </div>
+                            </div> */}
                         </Space>
                     </Paragraph>
 
