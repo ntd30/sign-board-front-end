@@ -139,13 +139,16 @@ const DesignTable = (props) => {
         {
             title: 'Ảnh bản thiết kế',
             dataIndex: 'designImage',
-            render: (text, record) => (
-                <img
-                    src={`${import.meta.env.VITE_BACKEND_URL}/images/${text}`}
-                    style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }}
-                    alt="Design"
-                />
-            ),
+            render: (text, record) => {
+                const imageSrc = record.designImageBase64 || `${import.meta.env.VITE_BACKEND_URL}/images/${text}`;
+                return (
+                    <img
+                        src={imageSrc}
+                        style={{ width: '100%', height: 200, objectFit: 'contain', display: 'block' }}
+                        alt="Design"
+                    />
+                );
+            },
             width: 220,
         },
         {

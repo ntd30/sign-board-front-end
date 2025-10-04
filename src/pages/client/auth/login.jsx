@@ -1,7 +1,7 @@
 import { ArrowRightOutlined, GoogleOutlined, LockOutlined, UserOutlined } from "@ant-design/icons"
 import { Button, Card, Col, Divider, Flex, Form, Input, message, Row, Space, Typography } from "antd"
-import { useContext, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { useContext, useEffect, useState } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { loginAPI, loginWithGoogle } from "../../../services/api.service"
 
 const { Title, Text } = Typography
@@ -10,6 +10,14 @@ const LoginPage = () => {
     const [form] = Form.useForm()
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
+    const location = useLocation();
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        if (params.get("error") === "google_login_canceled") {
+            message.error("Bạn đã hủy đăng nhập bằng Google. Vui lòng thử lại.");
+        }
+    }, [location]);
 
     const onFinish = async (values) => {
         setLoading(true);
