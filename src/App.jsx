@@ -14,8 +14,19 @@ function App() {
   }, []);
 
   const loadUserInfo = async () => {
-    const res = await getProfileAPI();
-    setUser(res.data)
+    try {
+      const res = await getProfileAPI();
+      console.log("=== USER PROFILE DEBUG ===");
+      console.log("Full API Response:", res);
+      console.log("User data:", res.data);
+      console.log("User permissions count:", res.data?.permissions?.length || 0);
+      console.log("User permissions:", res.data?.permissions);
+      console.log("User role:", res.data?.roleName);
+      console.log("========================");
+      setUser(res.data)
+    } catch (error) {
+      console.error("Error loading user info:", error);
+    }
   }
 
   return (

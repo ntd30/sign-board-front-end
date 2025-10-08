@@ -13,6 +13,12 @@ const PrivateRouteAdmin = ({ children }) => {
         const loadUserInfo = async () => {
             try {
                 const res = await getProfileAPI();
+                console.log("=== ADMIN ROUTE USER PROFILE DEBUG ===");
+                console.log("Admin route API Response:", res);
+                console.log("Admin route user data:", res.data);
+                console.log("Admin route permissions count:", res.data?.permissions?.length || 0);
+                console.log("Admin route user role:", res.data?.roleName);
+                console.log("=====================================");
 
                 if (res?.data) {
                     setUser(res.data);

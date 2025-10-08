@@ -375,6 +375,67 @@ const updateContactAPI = (id, status) => {
 
 
 
+// Article Category APIs
+const fetchArticleCategoryTreeAPI = () => {
+    const URL_BACKEND = `/api/admin/article-categories/tree`
+    return axios.get(URL_BACKEND)
+}
+
+const fetchAllArticleCategoriesAPI = (current, pageSize) => {
+    const URL_BACKEND = `/api/admin/article-categories?page=${current}&size=${pageSize}`
+    return axios.get(URL_BACKEND)
+}
+
+const fetchArticleCategoryByIdAPI = (id) => {
+    const URL_BACKEND = `/api/admin/article-categories/${id}`
+    return axios.get(URL_BACKEND)
+}
+
+const createArticleCategoryAPI = (name, parentId, description) => {
+    const URL_BACKEND = "/api/admin/article-categories"
+    const data = {
+        name: name,
+        description: description
+    }
+
+    // Only include parentId if it's not null/undefined
+    if (parentId != null && parentId !== undefined) {
+        data.parentId = parentId
+    }
+
+    return axios.post(URL_BACKEND, data)
+}
+
+const updateArticleCategoryAPI = (id, name, parentId, description) => {
+    const URL_BACKEND = `/api/admin/article-categories/${id}`
+    const data = {
+        name: name,
+        description: description
+    }
+
+    // Only include parentId if it's not null/undefined
+    if (parentId != null && parentId !== undefined) {
+        data.parentId = parentId
+    }
+
+    return axios.put(URL_BACKEND, data)
+}
+
+const deleteArticleCategoryAPI = (id) => {
+    const URL_BACKEND = `/api/admin/article-categories/${id}`
+    return axios.delete(URL_BACKEND)
+}
+
+const searchArticleCategoriesAPI = (keyword) => {
+    const URL_BACKEND = `/api/admin/article-categories/search?keyword=${encodeURIComponent(keyword)}`
+    return axios.get(URL_BACKEND)
+}
+
+const fetchArticleCategoriesByLevelAPI = (level) => {
+    const URL_BACKEND = `/api/article-categories/level/${level}`
+    return axios.get(URL_BACKEND)
+}
+
 export {
     fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI,
     fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI, loginWithGoogle, getAuthCode,
@@ -383,5 +444,7 @@ export {
     createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI, fetchAllDesignsAPI,
     loadProductsByCategoryAPI, createContactAPI, deleteDesignAPI, deleteRoleAPI, fetchAllArticlesAPI, fetchAllContactAPI,
     deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro, updateDesignAPI, updateContactAPI,
-    getProfileAPI,GetProductById,GetNewById,fetchAllBannersAPI,updateBannerAPI ,createBannerAPI,deleteBannerAPI
+    getProfileAPI,GetProductById,GetNewById,fetchAllBannersAPI,updateBannerAPI ,createBannerAPI,deleteBannerAPI,
+    fetchArticleCategoryTreeAPI, fetchAllArticleCategoriesAPI, fetchArticleCategoryByIdAPI, createArticleCategoryAPI,
+    updateArticleCategoryAPI, deleteArticleCategoryAPI, searchArticleCategoriesAPI, fetchArticleCategoriesByLevelAPI
 }

@@ -39,6 +39,21 @@ const LayoutAdmin = () => {
 
     useEffect(() => {
         if (user?.permissions?.length) {
+            console.log("=== LAYOUT ADMIN DEBUG ===");
+            console.log("User permissions count:", user.permissions.length);
+            console.log("User permissions:", user.permissions);
+            console.log("User role:", user.roleName);
+            
+            // List all permission names for easier analysis
+            const permissionNames = user.permissions.map(p => p.name).sort();
+            console.log("Permission names (sorted):", permissionNames);
+            
+            // Check for duplicates
+            const duplicates = permissionNames.filter((item, index) => permissionNames.indexOf(item) !== index);
+            if (duplicates.length > 0) {
+                console.warn("Duplicate permissions found:", duplicates);
+            }
+            console.log("========================");
 
             const viewCategory = user?.permissions?.find(item =>
                 item.apiPath === ALL_PERMISSIONS?.CATEGORY?.GET_PAGINATE?.apiPath
@@ -85,6 +100,11 @@ const LayoutAdmin = () => {
                 && item.method === ALL_PERMISSIONS?.BANNER?.GET_PAGINATE?.method
             )
 
+            const viewArticleCategory = user?.permissions?.find(item =>
+                item.name === 'ARTICLE_CATEGORY_LIST' ||
+                item.apiPath === ALL_PERMISSIONS?.ARTICLE_CATEGORY?.GET_PAGINATE?.apiPath
+            ) || user.roleName === "ADMIN"
+
             const full = [
                 {
                     label: <Link to='/admin'>Dashboard</Link>,
@@ -125,6 +145,18 @@ const LayoutAdmin = () => {
                     label: <Link to='/admin/articles'>Tin tức / Dự án</Link>,
                     key: '/admin/articles',
                     icon: <GlobalOutlined />
+                }] : []),
+                // Temporarily always show article categories for testing
+                {
+                    label: <Link to='/admin/article-categories'>Danh mục bài viết</Link>,
+                    key: '/admin/article-categories',
+                    icon: <UnorderedListOutlined />
+                },
+                // Debug permissions page - always show for admin
+                ...(user.roleName === "ADMIN" ? [{
+                    label: <Link to='/admin/debug-permissions'>🐛 Debug Permissions</Link>,
+                    key: '/admin/debug-permissions',
+                    icon: <BugOutlined />
                 }] : []),
                 ...(viewContact ? [{
                     label: <Link to='/admin/contact'>Liên hệ</Link>,

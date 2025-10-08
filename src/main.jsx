@@ -40,6 +40,8 @@ import ServiceStandards from './pages/client/policy/standard.jsx';
 import HandoverPolicy from './pages/client/policy/handOver.jsx';
 import PaymentPolicy from './pages/client/policy/payment.jsx';
 import BannerPage from './pages/admin/banner.jsx';
+import ArticleCategoryPage from './pages/admin/article.category.jsx';
+import DebugPermissionsPage from './pages/admin/debug.permissions.jsx';
 
 const router = createBrowserRouter([
   {
@@ -172,6 +174,12 @@ const router = createBrowserRouter([
       },{
         path: "banners",
         element: <BannerPage />
+      },{
+        path: "article-categories",
+        element: <ArticleCategoryPage />
+      },{
+        path: "debug-permissions",
+        element: <DebugPermissionsPage />
       }
     ]
   },

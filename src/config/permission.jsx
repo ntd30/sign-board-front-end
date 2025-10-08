@@ -52,6 +52,14 @@ export const ALL_PERMISSIONS = {
         CREATE: { method: "POST", apiPath: '/api/admin/banners', module: "BANNER" },
         UPDATE: { method: "PUT", apiPath: '/api/admin/banners/{id}', module: "BANNER" },
         DELETE: { method: "DELETE", apiPath: '/api/admin/banners/{id}', module: "BANNER" },
+    },
+    ARTICLE_CATEGORY: {
+        GET_PAGINATE: { method: "GET", apiPath: '/api/article-categories', module: "ARTICLE_CATEGORY" },
+        CREATE: { method: "POST", apiPath: '/api/article-categories', module: "ARTICLE_CATEGORY" },
+        UPDATE: { method: "PUT", apiPath: '/api/article-categories/{id}', module: "ARTICLE_CATEGORY" },
+        DELETE: { method: "DELETE", apiPath: '/api/article-categories/{id}', module: "ARTICLE_CATEGORY" },
+        TREE: { method: "GET", apiPath: '/api/article-categories/tree', module: "ARTICLE_CATEGORY" },
+        SEARCH: { method: "GET", apiPath: '/api/article-categories/search', module: "ARTICLE_CATEGORY" },
     }
 }
 
@@ -61,6 +69,7 @@ export const ALL_MODULES = [
     { value: 'USER', label: 'USER' },
     { value: 'BANNER', label: 'BANNER' },
     { value: 'CATEGORY', label: 'CATEGORY' },
+    { value: 'ARTICLE_CATEGORY', label: 'ARTICLE_CATEGORY' },
     { value: 'INQUIRY', label: 'INQUIRY' },
     { value: 'PERMISSION', label: 'PERMISSION' },
     { value: 'ROLE', label: 'ROLE' },

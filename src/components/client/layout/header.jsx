@@ -32,7 +32,7 @@ const Header = () => {
 
     useEffect(() => {
         if (location && location.pathname) {
-            const allRoutes = ["product", "manufacture", "news", "design"]
+            const allRoutes = ["services", "beautiful-signs", "letters", "projects", "about", "contact"]
             const currentRoute = allRoutes.find(item => `/${item}` === location.pathname)
             if (currentRoute) {
                 setCurrent(currentRoute)
@@ -97,26 +97,39 @@ const Header = () => {
 
     const itemsMobile = [
         {
-            label: <span to={"/"} >SẢN PHẨM{!isMobile && <DownOutlined />}</span>,
-            href: "/",
-            key: 'product',
-            icon: <ProductOutlined />,
-            children: categories,
-        },
-        // {
-        //     label: <Link to={"/manufacture"}>SẢN XUẤT</Link>,
-        //     key: 'manufacture',
-        //     icon: <SettingOutlined />
-        // },
-        {
-            label: <Link to={"/news"}>TIN TỨC</Link>,
-            key: 'news',
-            icon: <AuditOutlined />,
+            label: <Link to={"/"}>Trang chủ</Link>,
+            key: 'home',
+            icon: <HomeOutlined />
         },
         {
-            label: <Link to={"/design"}>THIẾT KẾ</Link>,
-            key: 'design',
-            icon: <AntDesignOutlined />
+            label: <Link to={"/services"}>Dịch vụ</Link>,
+            key: 'services',
+            icon: <SettingOutlined />
+        },
+        {
+            label: <Link to={"/beautiful-signs"}>Mẫu biển đẹp</Link>,
+            key: 'beautiful-signs',
+            icon: <FireOutlined />
+        },
+        {
+            label: <Link to={"/letters"}>Mẫu chữ</Link>,
+            key: 'letters',
+            icon: <ProductOutlined />
+        },
+        {
+            label: <Link to={"/projects"}>Dự án</Link>,
+            key: 'projects',
+            icon: <AuditOutlined />
+        },
+        {
+            label: <Link to={"/about"}>Giới thiệu</Link>,
+            key: 'about',
+            icon: <UserOutlined />
+        },
+        {
+            label: <Link to={"/contact"}>Liên hệ</Link>,
+            key: 'contact',
+            icon: <LoginOutlined />
         },
         ...(!user?.id ? [{
             label: <Link
@@ -136,27 +149,40 @@ const Header = () => {
 
     const items = [
         {
-            label: <span to={"/"} >SẢN PHẨM{!isMobile && <DownOutlined />}</span>,
-            href: "/",
-            key: 'product',
-            icon: <ProductOutlined />,
-            children: categories
+            label: <Link to={"/"}>Trang chủ</Link>,
+            key: 'home',
+            icon: <HomeOutlined />
         },
         {
-            label: <Link to={"/news"}>TIN TỨC</Link>,
-            key: 'news',
-            icon: <AuditOutlined />,
+            label: <Link to={"/services"}>Dịch vụ</Link>,
+            key: 'services',
+            icon: <SettingOutlined />
         },
-        // {
-        //     label: <Link to={"/projects"}>DỰ ÁN</Link>,
-        //     key: 'projects',
-        //     icon: <SettingOutlined />
-        // },
         {
-            label: <Link to={"/design"}>THIẾT KẾ</Link>,
-            key: 'design',
-            icon: <AntDesignOutlined />
+            label: <Link to={"/beautiful-signs"}>Mẫu biển đẹp</Link>,
+            key: 'beautiful-signs',
+            icon: <FireOutlined />
         },
+        {
+            label: <Link to={"/letters"}>Mẫu chữ</Link>,
+            key: 'letters',
+            icon: <ProductOutlined />
+        },
+        {
+            label: <Link to={"/projects"}>Dự án</Link>,
+            key: 'projects',
+            icon: <AuditOutlined />
+        },
+        {
+            label: <Link to={"/about"}>Giới thiệu</Link>,
+            key: 'about',
+            icon: <UserOutlined />
+        },
+        {
+            label: <Link to={"/contact"}>Liên hệ</Link>,
+            key: 'contact',
+            icon: <LoginOutlined />
+        }
     ]
 
     const showDrawer = () => {
@@ -205,7 +231,7 @@ const Header = () => {
 
                 {/* Logo */}
                 <Col xs={10} sm={10} md={4} lg={4} style={{ flex: 1 }}>
-                    <Link onClick={handleMenuClick} to={"/"}><img src="/img/logo_robot.jpg" alt="Logo" style={{ height: 80, borderRadius: "50%" }} /></Link>
+                    <Link onClick={handleMenuClick} to={"/"}><img src="/img/NV logo.png" alt="Logo" style={{ height: 80, }} /></Link>
                 </Col>
 
                 {/* Menu */}
