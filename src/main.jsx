@@ -25,7 +25,7 @@ import ProductPage from './pages/admin/product.jsx';
 import CategoryPage from './pages/admin/category.jsx';
 import DesignAdminPage from './pages/admin/design.jsx';
 import ArticlesPage from './pages/admin/article.jsx';
-import ContactPage from './pages/admin/contact.jsx';
+import ContactPageClient from './pages/client/contact.jsx';
 import { HomePage } from './pages/client/home.jsx';
 import NewsPage from './pages/client/news.jsx';
 import { NewsDetail } from './pages/client/news.detail.jsx';
@@ -59,6 +59,10 @@ const router = createBrowserRouter([
       },
       {
         path: "news/detail/:id",
+        element: <NewsDetail />,
+      },
+      {
+        path: "news/:slug",
         element: <NewsDetail />,
       },
       {
@@ -104,6 +108,10 @@ const router = createBrowserRouter([
       {
         path: "policy/payment",
         element: <PaymentPolicy />
+      },
+      {
+        path: "contact",
+        element: <ContactPageClient />
       },
     ]
   },
@@ -170,7 +178,7 @@ const router = createBrowserRouter([
       },
       {
         path: "contact",
-        element: <ContactPage />
+        element: <ContactPageClient />
       },{
         path: "banners",
         element: <BannerPage />

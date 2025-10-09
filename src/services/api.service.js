@@ -163,6 +163,10 @@ const GetNewById = (id) => {
     return axios.get(URL_BACKEND)
 }
 
+const GetArticleBySlug = (slug) => {
+    const URL_BACKEND = `/api/cms/slug/${slug}`
+    return axios.get(URL_BACKEND)
+}
 
 const fetchAllProjectsAPI = () => {
     const URL_BACKEND = "/api/cms/featured-projects"
@@ -444,7 +448,7 @@ export {
     createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI, fetchAllDesignsAPI,
     loadProductsByCategoryAPI, createContactAPI, deleteDesignAPI, deleteRoleAPI, fetchAllArticlesAPI, fetchAllContactAPI,
     deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro, updateDesignAPI, updateContactAPI,
-    getProfileAPI,GetProductById,GetNewById,fetchAllBannersAPI,updateBannerAPI ,createBannerAPI,deleteBannerAPI,
+    getProfileAPI,GetProductById,GetNewById,GetArticleBySlug,fetchAllBannersAPI,updateBannerAPI ,createBannerAPI,deleteBannerAPI,
     fetchArticleCategoryTreeAPI, fetchAllArticleCategoriesAPI, fetchArticleCategoryByIdAPI, createArticleCategoryAPI,
     updateArticleCategoryAPI, deleteArticleCategoryAPI, searchArticleCategoriesAPI, fetchArticleCategoriesByLevelAPI
 }

@@ -90,8 +90,12 @@ const NewsPage = () => {
     setPageSize(pageSize);
   };
 
-  const handleGetNewsDetail = (newsId) => {
-    navigate(`/news/detail/${newsId}`);
+  const handleGetNewsDetail = (newsItem) => {
+    // Tạo URL với slug nếu có, nếu không thì dùng ID
+    const url = newsItem.slug
+      ? `/news/${newsItem.slug}`
+      : `/news/detail/${newsItem.id}`;
+    navigate(url);
   };
 
   return (
@@ -126,7 +130,7 @@ const NewsPage = () => {
                 />
               }
               bodyStyle={cardBodyStyle}
-              onClick={() => handleGetNewsDetail(product.id)}
+              onClick={() => handleGetNewsDetail(product)}
               actions={[
                 <Button
                   type="primary"

@@ -2,22 +2,34 @@ import React, { useEffect, useState } from 'react';
 import { Layout, Row, Col, Typography, Image, Breadcrumb, Divider, Tag, Space, Avatar, Spin } from 'antd';
 import { HomeOutlined, UserOutlined, CalendarOutlined, TagOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
-import { GetNewById } from '../../services/api.service';
+import { GetNewById, GetArticleBySlug } from '../../services/api.service';
 
 const { Content } = Layout;
 const { Title, Paragraph, Text } = Typography;
 
 export const NewsDetail = () => {
-    const { id } = useParams();
+    const { id, slug } = useParams();
     const [newsItem, setNewsItem] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    console.log("NewsDetail - ID:", id);
+    console.log("NewsDetail - ID:", id, "Slug:", slug);
     console.log("NewsDetail - News Item:", newsItem);
     useEffect(() => {
         const fetchNewsDetail = async () => {
             try {
-                const response = await GetNewById(id);
+                let response;
+                // Kiểm tra xem URL có slug hay id
+                if (slug && !id) {
+                    // Nếu có slug, gọi API theo slug
+                    response = await GetArticleBySlug(slug);
+                } else if (id) {
+                    // Nếu có id, gọi API theo id (để tương thích ngược)
+                    response = await GetNewById(id);
+                } else {
+                    setError("Không tìm thấy bài viết");
+                    return;
+                }
+
                 if (response.data) {
                     setNewsItem(response.data);
                 } else {
@@ -32,7 +44,7 @@ export const NewsDetail = () => {
         };
 
         fetchNewsDetail();
-    }, [id]);
+    }, [id, slug]);
 
     const articleContentStyle = `
         .news-article-content p {
@@ -105,7 +117,7 @@ export const NewsDetail = () => {
         );
     }
 
-    const { title, featuredImageUrl, category, createdAt, author, authorAvatar, content, type, slug } = newsItem;
+    const { title, featuredImageUrl, category, createdAt, author, authorAvatar, content, type, slug: articleSlug } = newsItem;
 
     return (
         <Layout style={{ minHeight: '100vh', backgroundColor: '#ffffff' }}>
@@ -121,9 +133,9 @@ export const NewsDetail = () => {
                                 <Breadcrumb.Item href="/news">
                                     <span>Tin tức</span>
                                 </Breadcrumb.Item>
-                                {category && (
-                                    <Breadcrumb.Item>
-                                        <span>{category}</span>
+                                {category && category.slug && (
+                                    <Breadcrumb.Item href={`/news/category/${category.slug}`}>
+                                        <span>{category.name || category.slug}</span>
                                     </Breadcrumb.Item>
                                 )}
                             </Breadcrumb>
@@ -169,7 +181,7 @@ export const NewsDetail = () => {
 
                             <div className="news-article-content" dangerouslySetInnerHTML={{ __html: content }} />
 
-                            {slug && (
+                            {articleSlug && (
                                 <>
                                     <Divider style={{ marginTop: '30px' }} />
                                     <Space size={[0, 8]} wrap style={{ marginTop: '16px' }}>
