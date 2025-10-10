@@ -1,42 +1,102 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card, Typography, Space, Divider, Tag, Avatar } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ClockCircleOutlined, EyeOutlined, ArrowRightOutlined } from '@ant-design/icons';
+import { fetchAllArticlesAPI, fetchArticlesByCategorySlugAPI } from '../../../services/api.service';
 
 const { Title, Text, Paragraph } = Typography;
 
 const RelatedArticles = ({ currentArticle, limit = 3 }) => {
     const [relatedArticles, setRelatedArticles] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const navigate = useNavigate();
+
+    const stripHtml = (html) => {
+        const div = document.createElement("div");
+        div.innerHTML = html;
+        return div.textContent || div.innerText || "";
+    };
+
+    const handleArticleClick = (article) => {
+        const url = article.slug ? `/news/${article.slug}` : `/news/detail/${article.id}`;
+        navigate(url);
+        // Cuộn lên đầu trang sau khi chuyển trang
+        setTimeout(() => {
+            window.scrollTo(0, 0);
+        }, 100);
+    };
 
     useEffect(() => {
         const loadRelatedArticles = async () => {
-            if (!currentArticle || !currentArticle.category) {
+            if (!currentArticle) {
+                console.log('RelatedArticles: No current article provided');
                 return;
             }
 
+            console.log('RelatedArticles: Loading for article:', currentArticle.title, 'Category:', currentArticle.category);
+
             setLoading(true);
+            setError(null);
+
             try {
                 let response;
 
                 // Nếu bài viết hiện tại có category với slug, lấy bài viết cùng category
                 if (currentArticle.category && currentArticle.category.slug) {
-                    response = await fetch(`http://localhost:8080/api/articles/category-slug/${currentArticle.category.slug}`).then(res => res.json());
-                } else if (currentArticle.category && currentArticle.category.id) {
-                    // Fallback: lấy theo category ID nếu không có slug
-                    response = await fetch(`http://localhost:8080/api/articles/category/${currentArticle.category.id}`).then(res => res.json());
+                    console.log('RelatedArticles: Fetching by category slug:', currentArticle.category.slug);
+                    response = await fetchArticlesByCategorySlugAPI(currentArticle.category.slug);
+                } else {
+                    console.log('RelatedArticles: Fetching all articles');
+                    // Nếu không có category, lấy tất cả bài viết
+                    response = await fetchAllArticlesAPI(1, limit + 1);
                 }
 
                 if (response && response.data) {
-                    // Lọc bỏ bài viết hiện tại và giới hạn số lượng
-                    const filtered = response.data
-                        .filter(article => article.id !== currentArticle.id)
-                        .slice(0, limit);
+                    let filtered = [];
 
+                    if (currentArticle.category) {
+                        // Lọc bỏ bài viết hiện tại và giới hạn số lượng
+                        filtered = response.data
+                            .filter(article => article.id !== currentArticle.id)
+                            .slice(0, limit);
+                    } else {
+                        // Nếu không có category, lấy bài viết mới nhất (trừ bài hiện tại)
+                        filtered = response.data
+                            .filter(article => article.id !== currentArticle.id)
+                            .slice(0, limit);
+                    }
+
+                    console.log('RelatedArticles: Filtered articles:', filtered.length);
                     setRelatedArticles(filtered);
+
+                    // Nếu không có bài viết liên quan, thử lấy bài viết mới nhất
+                    if (filtered.length === 0) {
+                        console.log('RelatedArticles: No related articles, fetching latest articles');
+                        const latestResponse = await fetchAllArticlesAPI(1, limit);
+
+                        if (latestResponse && latestResponse.data) {
+                            const latestFiltered = latestResponse.data
+                                .filter(article => article.id !== currentArticle.id)
+                                .slice(0, limit);
+                            setRelatedArticles(latestFiltered);
+                        }
+                    }
+                } else {
+                    console.log('RelatedArticles: No data in response, fetching latest articles');
+                    // Nếu không có dữ liệu từ category, lấy bài viết mới nhất
+                    const latestResponse = await fetchAllArticlesAPI(1, limit + 1);
+
+                    if (latestResponse && latestResponse.data) {
+                        const latestFiltered = latestResponse.data
+                            .filter(article => article.id !== currentArticle.id)
+                            .slice(0, limit);
+                        setRelatedArticles(latestFiltered);
+                    }
                 }
             } catch (error) {
-                console.error('Error loading related articles:', error);
+                console.error('RelatedArticles: Error loading related articles:', error);
+                setError(error.message);
             } finally {
                 setLoading(false);
             }
@@ -45,8 +105,109 @@ const RelatedArticles = ({ currentArticle, limit = 3 }) => {
         loadRelatedArticles();
     }, [currentArticle, limit]);
 
-    if (loading || relatedArticles.length === 0) {
-        return null;
+    // Nếu không có bài viết liên quan, hiển thị thông báo hoặc bài viết mới nhất
+    if (relatedArticles.length === 0 && !loading) {
+        return (
+            <div style={{
+                marginTop: '40px',
+                background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                borderRadius: '16px',
+                padding: '32px',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                textAlign: 'center'
+            }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '12px',
+                    marginBottom: '24px'
+                }}>
+                    <div style={{
+                        width: '4px',
+                        height: '32px',
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        borderRadius: '2px'
+                    }}></div>
+                    <Title level={3} style={{
+                        margin: 0,
+                        color: '#262626',
+                        fontSize: '20px',
+                        fontWeight: '600'
+                    }}>
+                        Bài viết mới nhất
+                    </Title>
+                </div>
+
+                <div style={{
+                    background: 'rgba(255, 255, 255, 0.8)',
+                    borderRadius: '12px',
+                    padding: '24px',
+                    border: '1px solid rgba(102, 126, 234, 0.1)'
+                }}>
+                    <p style={{ color: '#666', margin: '0', fontSize: '16px' }}>
+                        Hiện tại chưa có bài viết liên quan. Dưới đây là những bài viết mới nhất:
+                    </p>
+
+                    <div style={{ marginTop: '24px' }}>
+                        <Link
+                            to="/news"
+                            style={{
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '8px',
+                                padding: '12px 24px',
+                                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                color: '#ffffff',
+                                textDecoration: 'none',
+                                borderRadius: '8px',
+                                fontSize: '14px',
+                                fontWeight: '500',
+                                transition: 'all 0.3s ease'
+                            }}
+                        >
+                            Xem tất cả tin tức
+                            <ArrowRightOutlined />
+                        </Link>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (loading) {
+        return (
+            <div style={{
+                marginTop: '40px',
+                background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
+                borderRadius: '16px',
+                padding: '32px',
+                boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
+                textAlign: 'center'
+            }}>
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '12px'
+                }}>
+                    <div style={{
+                        width: '4px',
+                        height: '32px',
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                        borderRadius: '2px'
+                    }}></div>
+                    <Title level={3} style={{
+                        margin: 0,
+                        color: '#262626',
+                        fontSize: '20px',
+                        fontWeight: '600'
+                    }}>
+                        Đang tải bài viết liên quan...
+                    </Title>
+                </div>
+            </div>
+        );
     }
 
     return (
@@ -54,14 +215,14 @@ const RelatedArticles = ({ currentArticle, limit = 3 }) => {
             marginTop: '40px',
             background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)',
             borderRadius: '16px',
-            padding: '32px',
+            padding: '24px',
             boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)'
         }}>
             <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                marginBottom: '32px'
+                marginBottom: '24px'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <div style={{
@@ -93,28 +254,31 @@ const RelatedArticles = ({ currentArticle, limit = 3 }) => {
                 </Tag>
             </div>
 
-            <Row gutter={[20, 20]}>
+            <Row gutter={[24, 24]}>
                 {relatedArticles.map((article, index) => (
-                    <Col xs={24} sm={24} md={8} key={article.id}>
-                        <Link to={article.slug ? `/news/${article.slug}` : `/news/detail/${article.id}`}>
+                    <Col xs={24} sm={12} md={8} key={article.id}>
+                        <div style={{ cursor: 'pointer' }} onClick={() => handleArticleClick(article)}>
                             <Card
                                 hoverable
                                 style={{
-                                    borderRadius: '12px',
+                                    borderRadius: '16px',
                                     overflow: 'hidden',
                                     border: 'none',
-                                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
-                                    transition: 'all 0.3s ease',
+                                    boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+                                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                                    height: '100%',
                                     position: 'relative'
                                 }}
                                 bodyStyle={{
-                                    padding: '20px',
-                                    height: 'auto'
+                                    padding: '24px',
+                                    height: 'auto',
+                                    display: 'flex',
+                                    flexDirection: 'column'
                                 }}
                                 cover={
                                     <div style={{
                                         position: 'relative',
-                                        height: '180px',
+                                        height: '200px',
                                         overflow: 'hidden',
                                         background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)'
                                     }}>
@@ -162,7 +326,7 @@ const RelatedArticles = ({ currentArticle, limit = 3 }) => {
                                             left: 0,
                                             right: 0,
                                             bottom: 0,
-                                            background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.1) 100%)',
+                                            background: 'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.15) 100%)',
                                             pointerEvents: 'none'
                                         }}></div>
 
@@ -176,24 +340,53 @@ const RelatedArticles = ({ currentArticle, limit = 3 }) => {
                                                 <Tag
                                                     color="blue"
                                                     style={{
-                                                        borderRadius: '6px',
-                                                        fontSize: '10px',
-                                                        padding: '2px 8px',
-                                                        margin: 0
+                                                        borderRadius: '8px',
+                                                        fontSize: '11px',
+                                                        padding: '4px 12px',
+                                                        margin: 0,
+                                                        background: 'rgba(255, 255, 255, 0.95)',
+                                                        color: '#667eea',
+                                                        border: 'none',
+                                                        fontWeight: '600'
                                                     }}
                                                 >
                                                     {article.category.name}
                                                 </Tag>
                                             </div>
                                         )}
+
+                                        {/* New indicator */}
+                                        {index < 1 && (
+                                            <div style={{
+                                                position: 'absolute',
+                                                top: '12px',
+                                                right: '12px'
+                                            }}>
+                                                <Tag
+                                                    color="green"
+                                                    style={{
+                                                        borderRadius: '8px',
+                                                        fontSize: '10px',
+                                                        padding: '2px 8px',
+                                                        margin: 0,
+                                                        background: 'linear-gradient(135deg, #52c41a 0%, #389e0d 100%)',
+                                                        color: 'white',
+                                                        border: 'none',
+                                                        fontWeight: '600'
+                                                    }}
+                                                >
+                                                    Mới
+                                                </Tag>
+                                            </div>
+                                        )}
                                     </div>
                                 }
                             >
-                                <div style={{ position: 'relative' }}>
+                                <div style={{ position: 'relative', flex: 1, display: 'flex', flexDirection: 'column' }}>
                                     <Title
                                         level={5}
                                         style={{
-                                            margin: '0 0 8px 0',
+                                            margin: '0 0 12px 0',
                                             fontSize: '16px',
                                             fontWeight: '600',
                                             lineHeight: '1.4',
@@ -218,11 +411,11 @@ const RelatedArticles = ({ currentArticle, limit = 3 }) => {
                                             WebkitLineClamp: 2,
                                             WebkitBoxOrient: 'vertical',
                                             overflow: 'hidden',
-                                            minHeight: '42px'
+                                            flex: 1
                                         }}
                                         ellipsis={{ rows: 2 }}
                                     >
-                                        {article.excerpt || (article.content ? article.content.substring(0, 80) + '...' : 'Không có mô tả')}
+                                        {stripHtml(article.excerpt) || (article.content ? stripHtml(article.content).substring(0, 100) + '...' : 'Không có mô tả')}
                                     </Paragraph>
 
                                     <div style={{
@@ -230,11 +423,15 @@ const RelatedArticles = ({ currentArticle, limit = 3 }) => {
                                         alignItems: 'center',
                                         justifyContent: 'space-between',
                                         fontSize: '12px',
-                                        color: '#bfbfbf'
+                                        color: '#bfbfbf',
+                                        marginTop: 'auto'
                                     }}>
                                         <Space size="small">
                                             <ClockCircleOutlined />
-                                            <span>{new Date(article.createdAt || Date.now()).toLocaleDateString('vi-VN')}</span>
+                                            <span>{new Date(article.createdAt || Date.now()).toLocaleDateString('vi-VN', {
+                                                day: '2-digit',
+                                                month: '2-digit'
+                                            })}</span>
                                         </Space>
                                         <div style={{
                                             display: 'flex',
@@ -242,15 +439,16 @@ const RelatedArticles = ({ currentArticle, limit = 3 }) => {
                                             gap: '4px',
                                             color: '#667eea',
                                             cursor: 'pointer',
-                                            fontWeight: '500'
+                                            fontWeight: '600',
+                                            fontSize: '13px'
                                         }}>
-                                            Đọc thêm
-                                            <ArrowRightOutlined style={{ fontSize: '10px' }} />
+                                            Đọc ngay
+                                            <ArrowRightOutlined style={{ fontSize: '11px' }} />
                                         </div>
                                     </div>
                                 </div>
                             </Card>
-                        </Link>
+                        </div>
                     </Col>
                 ))}
             </Row>
