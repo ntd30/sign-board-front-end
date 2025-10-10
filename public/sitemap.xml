@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+        http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+
+    <!-- Trang chủ -->
+    <url>
+        <loc>https://your-domain.com/</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>1.0</priority>
+    </url>
+
+    <!-- Tin tức -->
+    <url>
+        <loc>https://your-domain.com/news</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.9</priority>
+    </url>
+
+    <!-- Giới thiệu -->
+    <url>
+        <loc>https://your-domain.com/about</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Liên hệ -->
+    <url>
+        <loc>https://your-domain.com/contact</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <!-- Dịch vụ -->
+    <url>
+        <loc>https://your-domain.com/dich-vu</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Mẫu biển đẹp -->
+    <url>
+        <loc>https://your-domain.com/mau-bien-dep</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Dự án -->
+    <url>
+        <loc>https://your-domain.com/du-an</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
+
+    <!-- Các danh mục dịch vụ con -->
+    <url>
+        <loc>https://your-domain.com/lam-bien-quang-cao</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://your-domain.com/bien-hop-den-bien-vay</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://your-domain.com/bien-led-man-hinh-led</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://your-domain.com/backrop-van-phong-khach-san</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://your-domain.com/bien-cong-ty-bien-chuc-danh</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <!-- Các danh mục mẫu biển đẹp con -->
+    <url>
+        <loc>https://your-domain.com/mau-bien-linh-vuc-am-thuc</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://your-domain.com/mau-bien-linh-vuc-spa</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://your-domain.com/mau-bien-linh-vuc-suc-khoe</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+    <url>
+        <loc>https://your-domain.com/mau-bien-linh-vuc-khac</loc>
+        <lastmod>2024-01-01T00:00:00+00:00</lastmod>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+
+</urlset>

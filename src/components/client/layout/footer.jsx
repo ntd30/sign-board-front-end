@@ -37,22 +37,22 @@ const AppFooter = () => {
                 <Text strong className="contact-label"><AppstoreFilled /> CÔNG TY CỔ PHẦN QUẢNG CÁO VÀ TRUYỀN THÔNG NHÂN VIỆT
 </Text>
               </div>
-              <div>
-                <Text strong className="contact-label"><FileFilled /> Mã số thuế: 0111208677</Text>
-              </div>
-              <div>
-                <Text strong className="contact-label"><PhoneFilled /> 0879485678</Text>
-              </div>
               {/* <div>
-                <Text strong className="contact-label"><MailFilled /> ai@idai.vn</Text>
+                <Text strong className="contact-label"><FileFilled /> Mã số thuế: 0111208677</Text>
               </div> */}
+              <div>
+                <Text strong className="contact-label"><PhoneFilled /> 0915935225</Text>
+              </div>
+              <div>
+                <Text strong className="contact-label"><MailFilled /> quangcaonhanviet86@gmail.com </Text>
+              </div>
               <div>
                 <Text strong className="contact-label"><EnvironmentFilled /> Trụ sở chính:</Text>
                 <Text className="contact-detail">Số N10-LK14, khu đất dịch vụ LK20a, LK20b, Phường Dương Nội, TP Hà Nội, Việt Nam
 </Text>
               </div>
               <div>
-                <Text strong className="contact-label"><EnvironmentFilled /> Văn phòng giao dịch:</Text>
+                <Text strong className="contact-label"><EnvironmentFilled /> Xưởng sản xuất:</Text>
                 <Text className="contact-detail">Số N10-LK14, khu đất dịch vụ LK20a, LK20b , Phường Dương Nội, Thành phố Hà Nội, Việt Nam
 </Text>
               </div>

@@ -61,7 +61,7 @@ const newsTypes = [
 
 const ArticleUpdate = (props) => {
     const { isUpdateOpen, setIsUpdateOpen, dataUpdate, setDataUpdate, loadArticles } = props;
-
+    console.log("ArticleUpdate props - dataUpdate:", dataUpdate)
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [fileList, setFileList] = useState([]);
     const [content, setContent] = useState('');
@@ -77,6 +77,7 @@ const ArticleUpdate = (props) => {
     const loadArticleCategories = async () => {
         try {
             const res = await fetchArticleCategoryTreeAPI();
+            console.log("ArticleUpdate loadArticleCategories res:", res);
             if (res?.data) {
                 // Giữ nguyên cấu trúc cây để hiển thị phân cấp
                 setArticleCategories(res.data);

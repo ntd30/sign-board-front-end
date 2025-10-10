@@ -1,0 +1,32 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://your-domain.com/sitemap.xml
+
+# Disallow admin and API routes
+Disallow: /admin/
+Disallow: /api/
+Disallow: /login
+Disallow: /register
+
+# Allow main pages
+Allow: /
+Allow: /news/
+Allow: /about
+Allow: /contact
+Allow: /dich-vu/
+Allow: /mau-bien-dep/
+Allow: /du-an/
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Block access to sensitive files
+Disallow: /package.json
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /*.log
+Disallow: /config/
+Disallow: /env/
+Disallow: /*.env*

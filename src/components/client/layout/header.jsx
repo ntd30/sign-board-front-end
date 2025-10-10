@@ -49,43 +49,94 @@ const Header = () => {
         const style = document.createElement('style');
         style.innerHTML = `
             .header-submenu-popup .ant-menu-submenu-popup {
-                min-width: 200px !important;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
-                border-radius: 8px !important;
+                min-width: 220px !important;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+                border-radius: 12px !important;
                 padding: 8px 0 !important;
+                border: 1px solid #e9ecef !important;
+                margin-top: 8px !important;
             }
 
             .header-submenu-popup .ant-menu-item {
-                padding: 8px 16px !important;
+                padding: 12px 20px !important;
                 margin: 0 !important;
                 font-size: 14px !important;
                 line-height: 1.5 !important;
                 transition: all 0.2s ease !important;
+                border-radius: 8px !important;
+                margin: 4px 8px !important;
             }
 
             .header-submenu-popup .ant-menu-item:hover {
-                background-color: #f5f5f5 !important;
-                color: #1890ff !important;
+                background-color: #f8f9fa !important;
+                color: #007bff !important;
+                transform: translateX(4px) !important;
             }
 
             .header-submenu-popup .ant-menu-item-selected {
-                background-color: #e6f7ff !important;
-                color: #1890ff !important;
+                background-color: #e7f3ff !important;
+                color: #007bff !important;
+                font-weight: 500 !important;
             }
 
             .header-submenu-popup .ant-menu-submenu-arrow {
-                color: #666 !important;
+                color: #6c757d !important;
                 font-size: 12px !important;
+            }
+
+            /* Mobile menu improvements */
+            .ant-drawer-body .ant-menu-item {
+                padding: 16px 20px !important;
+                margin: 8px 0 !important;
+                border-radius: 12px !important;
+                font-size: 16px !important;
+                font-weight: 500 !important;
+                transition: all 0.2s ease !important;
+            }
+
+            .ant-drawer-body .ant-menu-item:hover {
+                background-color: #f8f9fa !important;
+                transform: translateX(8px) !important;
+            }
+
+            .ant-drawer-body .ant-menu-item-selected {
+                background-color: #e7f3ff !important;
+                color: #007bff !important;
+            }
+
+            /* Responsive header adjustments */
+            @media (max-width: 768px) {
+                .header-main {
+                    padding: 12px 16px !important;
+                }
+
+                .ant-menu-horizontal {
+                    font-size: 14px !important;
+                }
+
+                .ant-menu-horizontal .ant-menu-item {
+                    padding: 0 12px !important;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .header-main {
+                    padding: 8px 12px !important;
+                }
+
+                .ant-menu-horizontal {
+                    display: none !important;
+                }
             }
         `;
 
-        if (!document.getElementById('header-submenu-styles')) {
-            style.id = 'header-submenu-styles';
+        if (!document.getElementById('header-responsive-styles')) {
+            style.id = 'header-responsive-styles';
             document.head.appendChild(style);
         }
 
         return () => {
-            const existingStyle = document.getElementById('header-submenu-styles');
+            const existingStyle = document.getElementById('header-responsive-styles');
             if (existingStyle) {
                 document.head.removeChild(existingStyle);
             }
@@ -264,112 +315,339 @@ const Header = () => {
 
     return (
         <>
-            <Row style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '20px',
-                borderBottom: '1px solid #eee',
-                width: isMobile ? "100%" : "80%",
-                margin: "auto",
-                fontSize: 16
-            }}>
-
-                {/* Logo */}
-                <Col xs={10} sm={10} md={4} lg={4} style={{ flex: 1 }}>
-                    <Link onClick={handleMenuClick} to={"/"}><img src="/img/NV logo.png" alt="Logo" style={{ height: 80, }} /></Link>
-                </Col>
-
-                {/* Menu */}
-                {!isMobile && (<Col md={12} lg={14} style={{ textAlign: "center" }}>
-                    <Menu
-                        onClick={handleMenuClick}
-                        selectedKeys={[current]}
-                        mode="horizontal"
-                        items={items}
-                        disabledOverflow
-
+            <Row
+                className="header-main"
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '16px 20px',
+                    borderBottom: '1px solid #eee',
+                    width: '100%',
+                    margin: '0 auto',
+                    backgroundColor: '#fff',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 1000
+                }}
+            >
+                {/* Logo Section */}
+                <Col
+                    xs={8}
+                    sm={8}
+                    md={6}
+                    lg={4}
+                    xl={4}
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'flex-start'
+                    }}
+                >
+                    <Link
+                        to="/"
                         style={{
-                            borderBottom: 'none',
-                            fontWeight: 'bold',
-                            lineHeight: '70px', // Căn giữa với chiều cao header
-                            display: 'inline-block',
-                            backgroundColor: 'transparent'
+                            display: 'flex',
+                            alignItems: 'center',
+                            textDecoration: 'none'
                         }}
-
-                        // Custom styling cho submenu items
-                        submenuItemStyle={{
-                            padding: '8px 16px',
-                            fontSize: '14px',
-                            borderBottom: '1px solid #f0f0f0'
-                        }}
-
-                        // Override default submenu styling
-                        popupClassName="header-submenu-popup"
-                    />
-                </Col>
-                )}
-
-                {/* Search + Cart + Login */}
-                <Col xs={14} sm={14} md={8} lg={6}
-                    style={{ flex: 1, display: 'flex', justifyContent: 'flex-end', gap: 16, alignItems: 'center' }}>
-                    {/* {!isMobile ? ( // Input trên Desktop
-                        <Input
-                            placeholder="Tìm kiếm"
-                            prefix={<SearchOutlined />}
+                    >
+                        <img
+                            src="/img/NV logo.png"
+                            alt="Sign Board Logo - Chuyên gia biển quảng cáo"
                             style={{
-                                width: 160,
-                                borderColor: 'orange',
-                                borderRadius: 4
+                                height: 'clamp(40px, 6vw, 60px)',
+                                width: 'auto',
+                                maxWidth: '180px'
                             }}
                         />
-                    ) : ( // Nút Search Icon trên Mobile
-                        <Button type="text" shape="circle" icon={<SearchOutlined style={{ fontSize: 18 }} />} />
-                    )} */}
+                    </Link>
+                </Col>
 
-                    {!isMobile && token ?
-                        <Dropdown menu={{ items: itemsDropdown }} trigger={['hover']}>
-                            <Space style={{ cursor: "pointer" }}>
-                                <span>Welcome {user?.fullName}</span>
-                                <Avatar> {user?.fullName?.substring(0, 2)?.toUpperCase()} </Avatar>
-                            </Space>
+                {/* Desktop Navigation */}
+                {!isMobile && (
+                    <Col
+                        md={12}
+                        lg={14}
+                        xl={14}
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}
+                    >
+                        <Menu
+                            onClick={handleMenuClick}
+                            selectedKeys={[current]}
+                            mode="horizontal"
+                            items={items}
+                            disabledOverflow
+                            style={{
+                                borderBottom: 'none',
+                                fontWeight: '500',
+                                fontSize: '15px',
+                                lineHeight: '64px',
+                                backgroundColor: 'transparent',
+                                minWidth: '100%',
+                                justifyContent: 'center'
+                            }}
+                            popupClassName="header-submenu-popup"
+                        />
+                    </Col>
+                )}
+
+                {/* Right Section - Search & User */}
+                <Col
+                    xs={14}
+                    sm={14}
+                    md={6}
+                    lg={6}
+                    xl={6}
+                    style={{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        alignItems: 'center',
+                        gap: '16px'
+                    }}
+                >
+                    {/* Desktop User Menu */}
+                    {!isMobile && token ? (
+                        <Dropdown menu={{ items: itemsDropdown }} trigger={['hover', 'click']}>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px',
+                                    cursor: 'pointer',
+                                    padding: '8px 12px',
+                                    borderRadius: '20px',
+                                    backgroundColor: '#f8f9fa',
+                                    transition: 'all 0.2s ease'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.target.style.backgroundColor = '#e9ecef';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.target.style.backgroundColor = '#f8f9fa';
+                                }}
+                            >
+                                <Avatar
+                                    size="small"
+                                    src={user?.avatar}
+                                    icon={!user?.avatar && <UserOutlined />}
+                                />
+                                <span style={{
+                                    fontSize: '14px',
+                                    fontWeight: '500',
+                                    color: '#495057',
+                                    maxWidth: '120px',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    whiteSpace: 'nowrap'
+                                }}>
+                                    {user?.fullName || 'User'}
+                                </span>
+                                <DownOutlined style={{ fontSize: '12px', color: '#6c757d' }} />
+                            </div>
                         </Dropdown>
-                        :
-                        !isMobile && <Link to="/login" style={{ fontWeight: 'bold', whiteSpace: 'nowrap' }}>ĐĂNG NHẬP</Link>
-                    }
+                    ) : !isMobile ? (
+                        <Link
+                            to="/login"
+                            style={{
+                                fontWeight: '600',
+                                fontSize: '14px',
+                                color: '#007bff',
+                                textDecoration: 'none',
+                                padding: '8px 16px',
+                                borderRadius: '20px',
+                                border: '1px solid #007bff',
+                                transition: 'all 0.2s ease',
+                                whiteSpace: 'nowrap'
+                            }}
+                            onMouseEnter={(e) => {
+                                e.target.style.backgroundColor = '#007bff';
+                                e.target.style.color = '#fff';
+                            }}
+                            onMouseLeave={(e) => {
+                                e.target.style.backgroundColor = 'transparent';
+                                e.target.style.color = '#007bff';
+                            }}
+                        >
+                            ĐĂNG NHẬP
+                        </Link>
+                    ) : null}
 
-                    {/* --- Nút Hamburger (Mobile) --- */}
+                    {/* Mobile Hamburger Menu */}
                     {isMobile && (
                         <Button
                             type="text"
                             onClick={showDrawer}
-                            icon={<MenuOutlined style={{ fontSize: 20 }} />}
+                            icon={<MenuOutlined style={{ fontSize: '20px', color: '#495057' }} />}
+                            style={{
+                                border: 'none',
+                                boxShadow: 'none',
+                                width: '44px',
+                                height: '44px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center'
+                            }}
                         />
                     )}
                 </Col>
             </Row>
 
-            {/* Drawer cho Mobile Menu */}
-            {/* Chỉ render Drawer khi isMobile là true */}
+            {/* Mobile Drawer */}
             <Drawer
-                title="Menu"
+                title={
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '8px 0'
+                    }}>
+                        <img
+                            src="/img/NV logo.png"
+                            alt="Sign Board Logo"
+                            style={{
+                                height: '32px',
+                                width: 'auto'
+                            }}
+                        />
+                        <span style={{
+                            fontSize: '16px',
+                            fontWeight: '600',
+                            color: '#2c3e50'
+                        }}>
+                            Menu
+                        </span>
+                    </div>
+                }
                 placement="right"
                 onClose={closeDrawer}
-                open={isMobile && drawerVisible} // Chỉ open khi là mobile và state là true
-                width={280} // Chiều rộng của Drawer
-                zIndex={1050} // Đảm bảo cao hơn các element khác nếu cần
-                destroyOnClose // Xóa khỏi DOM khi đóng để tối ưu
+                open={isMobile && drawerVisible}
+                width={Math.min(280, window.innerWidth * 0.8)}
+                zIndex={1050}
+                destroyOnClose
+                bodyStyle={{
+                    padding: '20px 0',
+                    backgroundColor: '#fafbfc'
+                }}
+                headerStyle={{
+                    backgroundColor: '#fff',
+                    borderBottom: '1px solid #e9ecef',
+                    padding: '16px 20px'
+                }}
             >
-                <Menu
-                    onClick={handleMenuClick} // Dùng chung handle click
-                    selectedKeys={[current]} // Đồng bộ selected key
-                    mode="inline" // Menu dọc
-                    items={itemsMobile} // Dùng chung cấu trúc items
-                // defaultOpenKeys={['product', 'sub_bienquangcao']} // Mở sẵn submenu nếu muốn
-                />
+                <div style={{ padding: '0 20px' }}>
+                    <Menu
+                        onClick={handleMenuClick}
+                        selectedKeys={[current]}
+                        mode="inline"
+                        items={itemsMobile}
+                        style={{
+                            backgroundColor: 'transparent',
+                            border: 'none'
+                        }}
+                        itemStyle={{
+                            margin: '8px 0',
+                            borderRadius: '12px',
+                            padding: '12px 16px',
+                            fontSize: '15px'
+                        }}
+                    />
+
+                    {/* Mobile User Section */}
+                    {token && user && (
+                        <div style={{
+                            marginTop: '24px',
+                            padding: '16px',
+                            backgroundColor: '#fff',
+                            borderRadius: '12px',
+                            border: '1px solid #e9ecef'
+                        }}>
+                            <div style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '12px',
+                                marginBottom: '16px'
+                            }}>
+                                <Avatar
+                                    size="large"
+                                    src={user.avatar}
+                                    icon={!user.avatar && <UserOutlined />}
+                                />
+                                <div>
+                                    <div style={{
+                                        fontSize: '16px',
+                                        fontWeight: '600',
+                                        color: '#2c3e50'
+                                    }}>
+                                        {user.fullName}
+                                    </div>
+                                    <div style={{
+                                        fontSize: '12px',
+                                        color: '#6c757d'
+                                    }}>
+                                        {user.email}
+                                    </div>
+                                </div>
+                            </div>
+                            <Button
+                                type="primary"
+                                danger
+                                block
+                                onClick={handleLogout}
+                                style={{
+                                    borderRadius: '8px',
+                                    fontWeight: '500'
+                                }}
+                            >
+                                Đăng xuất
+                            </Button>
+                        </div>
+                    )}
+
+                    {!token && (
+                        <div style={{
+                            marginTop: '24px',
+                            padding: '16px',
+                            backgroundColor: '#fff',
+                            borderRadius: '12px',
+                            border: '1px solid #e9ecef',
+                            textAlign: 'center'
+                        }}>
+                            <Link to="/login">
+                                <Button
+                                    type="primary"
+                                    block
+                                    style={{
+                                        borderRadius: '8px',
+                                        fontWeight: '500',
+                                        marginBottom: '12px'
+                                    }}
+                                >
+                                    Đăng nhập
+                                </Button>
+                            </Link>
+                            <Link to="/register">
+                                <Button
+                                    block
+                                    style={{
+                                        borderRadius: '8px',
+                                        fontWeight: '500'
+                                    }}
+                                >
+                                    Đăng ký
+                                </Button>
+                            </Link>
+                        </div>
+                    )}
+                </div>
             </Drawer>
         </>
-    )
+    );
 }
 
 export default Header

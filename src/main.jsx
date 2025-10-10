@@ -45,6 +45,9 @@ import ArticleCategoryPage from './pages/admin/article.category.jsx';
 import DebugPermissionsPage from './pages/admin/debug.permissions.jsx';
 import ArticleCategoryClientPage from './pages/client/article.category.jsx';
 
+// Import global responsive styles
+import './styles/responsive.css';
+
 const router = createBrowserRouter([
   {
     path: "/",

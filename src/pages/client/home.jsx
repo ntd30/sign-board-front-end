@@ -4,7 +4,8 @@ import {
     TeamOutlined, CustomerServiceOutlined, ProjectOutlined, LeftOutlined, RightOutlined,
     BulbOutlined, ShopOutlined, ApartmentOutlined, FontSizeOutlined
 } from '@ant-design/icons';
-
+import {fetchArticlesByCategorySlugAPI} from "../../../src/services/api.service"
+import SEO from '../../components/common/SEO';
 const { Title, Text, Paragraph } = Typography;
 
 // Component Trang Chủ chính với thứ tự đúng
@@ -45,6 +46,12 @@ export const HomePage = () => {
 
     return (
         <>
+            <SEO
+                title="Trang chủ - Sign Board"
+                description="Sign Board - Công ty chuyên sản xuất và thi công biển quảng cáo, bảng hiệu chất lượng cao tại Việt Nam. Đội ngũ kỹ thuật viên giàu kinh nghiệm, công nghệ hiện đại."
+                keywords="biển quảng cáo, bảng hiệu, sign board, biển hộp đèn, biển led, thi công quảng cáo, Quảng Cáo Nhân Việt"
+                url={window.location.href}
+            />
             {/* Custom CSS for better styling */}
             <style jsx global>{`
                 .hero-slide {
@@ -403,99 +410,6 @@ export const HomePage = () => {
                 </div>
             </div>
 
-            {/* 3. Đối tác – khách hàng với hiệu ứng cuộn đẹp */}
-            <div style={{
-                padding: '100px 20px',
-                background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                position: 'relative',
-                overflow: 'hidden'
-            }}>
-                <div style={{
-                    maxWidth: '1200px',
-                    margin: '0 auto',
-                    position: 'relative'
-                }}>
-                    <div style={{ textAlign: 'center', marginBottom: '80px' }}>
-                        <Title level={2} style={{
-                            fontSize: '3rem',
-                            fontWeight: '700',
-                            color: '#004D40',
-                            marginBottom: '20px'
-                        }}>
-                            Đối Tác & Khách Hàng
-                            <div style={{
-                                width: '80px',
-                                height: '4px',
-                                background: 'linear-gradient(90deg, #004D40, #26A69A)',
-                                margin: '20px auto 0',
-                                borderRadius: '2px'
-                            }}></div>
-                        </Title>
-                    </div>
-
-                    <div style={{
-                        overflow: 'hidden',
-                        position: 'relative',
-                        background: 'rgba(255, 255, 255, 0.8)',
-                        borderRadius: '20px',
-                        padding: '40px 0',
-                        backdropFilter: 'blur(10px)'
-                    }}>
-                        <div className="partners-scroll" style={{
-                            display: 'flex',
-                            gap: '60px',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            flexWrap: 'wrap'
-                        }}>
-                            {[
-                                { name: 'Đối tác Samsung', logo: 'https://placehold.co/200x100/f0f0f0/333333?text=Samsung' },
-                                { name: 'Đối tác LG', logo: 'https://placehold.co/200x100/e0e0e0/333333?text=LG' },
-                                { name: 'Đối tác Sony', logo: 'https://placehold.co/200x100/d0d0d0/333333?text=Sony' },
-                                { name: 'Đối tác Apple', logo: 'https://placehold.co/200x100/c0c0c0/333333?text=Apple' },
-                                { name: 'Đối tác Google', logo: 'https://placehold.co/200x100/b0b0b0/333333?text=Google' },
-                                { name: 'Đối tác Microsoft', logo: 'https://placehold.co/200x100/a0a0a0/333333?text=Microsoft' }
-                            ].map((partner, index) => (
-                                <div key={`${partner.name}-${index}`} style={{
-                                    flex: '0 0 auto',
-                                    opacity: 0.7,
-                                    transition: 'all 0.3s ease',
-                                    padding: '20px',
-                                    borderRadius: '15px',
-                                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                                    boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-                                    transform: 'scale(0.9)'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.opacity = '1';
-                                    e.currentTarget.style.transform = 'scale(1)';
-                                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.opacity = '0.7';
-                                    e.currentTarget.style.transform = 'scale(0.9)';
-                                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
-                                }}>
-                                    <img
-                                        src={partner.logo}
-                                        alt={partner.name}
-                                        style={{
-                                            height: '60px',
-                                            width: 'auto',
-                                            maxWidth: '150px',
-                                            filter: 'grayscale(100%)',
-                                            transition: 'filter 0.3s ease'
-                                        }}
-                                        onMouseEnter={(e) => e.currentTarget.style.filter = 'grayscale(0%)'}
-                                        onMouseLeave={(e) => e.currentTarget.style.filter = 'grayscale(100%)'}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             {/* 4. Dự án tiêu biểu với layout hiện đại */}
             <div style={{
                 maxWidth: "1400px",
@@ -623,8 +537,10 @@ export const HomePage = () => {
                 </Row>
             </div>
 
-            {/* 5. Mẫu chữ với thiết kế hiện đại */}
-            <div style={{
+
+
+{/* 5. Mẫu chữ với thiết kế hiện đại */}
+<div style={{
                 padding: '100px 20px',
                 background: 'linear-gradient(135deg, #f8f9fa 0%, #e8f5e8 100%)'
             }}>
@@ -756,6 +672,103 @@ export const HomePage = () => {
                     </Row>
                 </div>
             </div>
+
+            {/* 3. Đối tác – khách hàng với hiệu ứng cuộn đẹp */}
+            <div style={{
+                padding: '100px 20px',
+                background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                position: 'relative',
+                overflow: 'hidden'
+            }}>
+                <div style={{
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    position: 'relative'
+                }}>
+                    <div style={{ textAlign: 'center', marginBottom: '80px' }}>
+                        <Title level={2} style={{
+                            fontSize: '3rem',
+                            fontWeight: '700',
+                            color: '#004D40',
+                            marginBottom: '20px'
+                        }}>
+                            Đối Tác & Khách Hàng
+                            <div style={{
+                                width: '80px',
+                                height: '4px',
+                                background: 'linear-gradient(90deg, #004D40, #26A69A)',
+                                margin: '20px auto 0',
+                                borderRadius: '2px'
+                            }}></div>
+                        </Title>
+                    </div>
+
+                    <div style={{
+                        overflow: 'hidden',
+                        position: 'relative',
+                        background: 'rgba(255, 255, 255, 0.8)',
+                        borderRadius: '20px',
+                        padding: '40px 0',
+                        backdropFilter: 'blur(10px)'
+                    }}>
+                        <div className="partners-scroll" style={{
+                            display: 'flex',
+                            gap: '60px',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexWrap: 'wrap'
+                        }}>
+                            {[
+                                { name: 'Đối tác Samsung', logo: 'https://placehold.co/200x100/f0f0f0/333333?text=Samsung' },
+                                { name: 'Đối tác LG', logo: 'https://placehold.co/200x100/e0e0e0/333333?text=LG' },
+                                { name: 'Đối tác Sony', logo: 'https://placehold.co/200x100/d0d0d0/333333?text=Sony' },
+                                { name: 'Đối tác Apple', logo: 'https://placehold.co/200x100/c0c0c0/333333?text=Apple' },
+                                { name: 'Đối tác Google', logo: 'https://placehold.co/200x100/b0b0b0/333333?text=Google' },
+                                { name: 'Đối tác Microsoft', logo: 'https://placehold.co/200x100/a0a0a0/333333?text=Microsoft' }
+                            ].map((partner, index) => (
+                                <div key={`${partner.name}-${index}`} style={{
+                                    flex: '0 0 auto',
+                                    opacity: 0.7,
+                                    transition: 'all 0.3s ease',
+                                    padding: '20px',
+                                    borderRadius: '15px',
+                                    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                                    boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
+                                    transform: 'scale(0.9)'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.opacity = '1';
+                                    e.currentTarget.style.transform = 'scale(1)';
+                                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.opacity = '0.7';
+                                    e.currentTarget.style.transform = 'scale(0.9)';
+                                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
+                                }}>
+                                    <img
+                                        src={partner.logo}
+                                        alt={partner.name}
+                                        style={{
+                                            height: '60px',
+                                            width: 'auto',
+                                            maxWidth: '150px',
+                                            filter: 'grayscale(100%)',
+                                            transition: 'filter 0.3s ease'
+                                        }}
+                                        onMouseEnter={(e) => e.currentTarget.style.filter = 'grayscale(0%)'}
+                                        onMouseLeave={(e) => e.currentTarget.style.filter = 'grayscale(100%)'}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+
+            
 
             {/* 6. Các con số với hiệu ứng đếm số và thiết kế hiện đại */}
             <div className="stats-gradient" style={{

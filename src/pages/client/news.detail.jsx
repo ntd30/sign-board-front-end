@@ -1,42 +1,45 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Layout, Row, Col, Typography, Image, Breadcrumb, Divider, Tag, Space, Avatar, Spin } from 'antd';
+import { Layout, Row, Col, Typography, Image, Breadcrumb, Divider, Tag, Space, Avatar, Spin, Alert } from 'antd';
 import { HomeOutlined, UserOutlined, CalendarOutlined, TagOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import { GetNewById, GetArticleBySlug } from '../../services/api.service';
+import LazyImage from '../../components/common/LazyImage';
+import SEO from '../../components/common/SEO';
 import TableOfContents from '../../components/client/news/TableOfContents';
 import RelatedArticles from '../../components/client/news/RelatedArticles';
-
-const { Content } = Layout;
-const { Title, Paragraph, Text } = Typography;
-
 export const NewsDetail = () => {
     const { id, slug } = useParams();
     const [newsItem, setNewsItem] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const { Content } = Layout;
+const { Title, Paragraph, Text } = Typography;
     const contentRef = useRef(null);
-    console.log("NewsDetail - ID:", id, "Slug:", slug);
-    console.log("NewsDetail - News Item:", newsItem);
+
+    // Helper function to generate alt text for images
+    const generateImageAlt = (src) => {
+        // Extract filename or generate a generic alt text
+        const filename = src.split('/').pop().split('.')[0];
+        return `Hình ảnh: ${filename.replace(/[-_]/g, ' ')}`;
+    };
+
     useEffect(() => {
         const fetchNewsDetail = async () => {
             try {
                 let response;
-                // Kiểm tra xem URL có slug hay id
                 if (slug && !id) {
-                    // Nếu có slug, gọi API theo slug
                     response = await GetArticleBySlug(slug);
                 } else if (id) {
-                    // Nếu có id, gọi API theo id (để tương thích ngược)
                     response = await GetNewById(id);
                 } else {
                     setError("Không tìm thấy bài viết");
                     return;
                 }
 
-                if (response.data) {
+                if (response && response.data) {
                     setNewsItem(response.data);
                 } else {
-                    setError("Bài viết không tồn tại");
+                    setError("Không tìm thấy bài viết");
                 }
             } catch (err) {
                 console.error("Error fetching news detail:", err);
@@ -49,205 +52,197 @@ export const NewsDetail = () => {
         fetchNewsDetail();
     }, [id, slug]);
 
-    const articleContentStyle = `
-        .news-article-content p {
-            font-size: 16px;
-            line-height: 1.8;
-            margin-bottom: 20px;
-            color: #333;
-        }
-        .news-article-content h3 {
-            font-size: 22px;
-            margin-top: 30px;
-            margin-bottom: 15px;
-            color: #1890ff;
-        }
-        .news-article-content ul {
-            list-style-type: disc;
-            margin-left: 20px;
-            margin-bottom: 20px;
-        }
-        .news-article-content li {
-            font-size: 16px;
-            line-height: 1.7;
-            margin-bottom: 8px;
-        }
-        .news-article-content img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 4px;
-            margin: 15px 0;
-        }
-    `;
-
+    // useEffect để xử lý nội dung bài viết
     useEffect(() => {
-        const styleSheet = document.createElement("style");
-        styleSheet.id = "news-article-styles";
-        styleSheet.innerText = articleContentStyle;
-        document.head.appendChild(styleSheet);
+        if (newsItem?.content && contentRef?.current) {
+            let processedContent = newsItem.content;
 
-        return () => {
-            document.head.removeChild(styleSheet);
-        };
-    }, [articleContentStyle]);
+            // Decode HTML entities nếu cần
+            processedContent = processedContent
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&amp;/g, '&')
+                .replace(/&quot;/g, '"')
+                .replace(/&#39;/g, "'")
+                .replace(/&nbsp;/g, ' ');
+
+            // Đảm bảo các thẻ HTML được đóng đúng cách và thêm lazy loading cho hình ảnh
+            processedContent = processedContent
+                .replace(/<br>/g, '<br/>')
+                .replace(/<img([^>]+)>/g, (match, attrs) => {
+                    // Thêm loading="lazy" và alt text tốt hơn cho hình ảnh
+                    let newAttrs = attrs;
+                    if (!newAttrs.includes('loading=')) {
+                        newAttrs += ' loading="lazy"';
+                    }
+                    if (!newAttrs.includes('alt=')) {
+                        const srcMatch = newAttrs.match(/src=["']([^"']+)["']/);
+                        const altText = srcMatch ? generateImageAlt(srcMatch[1]) : 'Hình ảnh biển quảng cáo';
+                        newAttrs += ` alt="${altText}"`;
+                    }
+                    return `<img${newAttrs}/>`;
+                });
+
+            contentRef.current.innerHTML = processedContent;
+        }
+    }, [newsItem?.content, contentRef]);
+
+    const { title, featuredImageUrl, category, createdAt, author, authorAvatar, content, type, slug: articleSlug } = newsItem || {};
 
     if (loading) {
         return (
             <Layout style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
-                <Content style={{ padding: '20px 0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Spin size="large" />
+                <Content style={{ padding: '20px 0' }}>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
+                        <Spin size="large" tip="Đang tải bài viết..." />
+                    </div>
                 </Content>
             </Layout>
         );
     }
 
-    if (error || !newsItem) {
+    if (error) {
         return (
             <Layout style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
                 <Content style={{ padding: '20px 0' }}>
-                    <Row justify="center">
-                        <Col xs={24} sm={24} md={24} lg={18} xl={14}>
-                            <div style={{
-                                padding: '48px',
-                                background: '#fff',
-                                borderRadius: '12px',
-                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                                textAlign: 'center'
-                            }}>
-                                <Title level={2} style={{ color: '#262626', marginBottom: '16px' }}>
-                                    {error || 'Không tìm thấy bài viết'}
-                                </Title>
-                                <Paragraph style={{ fontSize: '16px', color: '#8c8c8c' }}>
-                                    {error ? 'Đã xảy ra lỗi khi tải bài viết' : 'Bài viết bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.'}
-                                </Paragraph>
-                            </div>
-                        </Col>
-                    </Row>
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '400px' }}>
+                        <Text type="danger">{error}</Text>
+                    </div>
                 </Content>
             </Layout>
         );
     }
 
-    const { title, featuredImageUrl, category, createdAt, author, authorAvatar, content, type, slug: articleSlug } = newsItem;
-
     return (
         <Layout style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
+            <SEO
+                title={newsItem?.title || 'Bài viết - Sign Board'}
+                description={newsItem?.excerpt || newsItem?.content?.substring(0, 160) + '...' || 'Đọc bài viết chi tiết về biển quảng cáo, bảng hiệu tại Sign Board'}
+                keywords={`${newsItem?.title || ''}, biển quảng cáo, bảng hiệu, sign board, ${newsItem?.category?.name || ''}`}
+                image={newsItem?.featuredImageUrl ? `${import.meta.env.VITE_BACKEND_URL}${newsItem.featuredImageUrl}` : '/img/og-default.jpg'}
+                url={window.location.href}
+                type="article"
+                author={newsItem?.author || 'Sign Board'}
+                publishedTime={newsItem?.createdAt}
+                section={newsItem?.category?.name}
+                tags={[newsItem?.type]}
+            />
             <Content style={{ padding: '20px 0' }}>
-                <Row justify="center" gutter={24}>
-                    {/* Table of Contents - Left Sidebar */}
-                    <Col xs={0} sm={0} md={0} lg={6} xl={5}>
-                        <TableOfContents content={content} contentRef={contentRef} />
-                    </Col>
+                <div className="news-detail-container">
+                    <Row justify="center" gutter={24}>
+                        {/* Table of Contents - Left Sidebar */}
+                        <Col xs={0} sm={0} md={0} lg={6} xl={5} className="desktop-toc">
+                            <div style={{ position: 'sticky', top: '120px' }}>
+                                <TableOfContents content={content} contentRef={contentRef} />
+                            </div>
+                        </Col>
 
-                    {/* Main Content */}
-                    <Col xs={24} sm={24} md={24} lg={18} xl={14}>
-                        <div style={{
-                            padding: '32px 40px',
-                            background: '#fff',
-                            borderRadius: '12px',
-                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                            marginBottom: '24px'
-                        }}>
-                            <Breadcrumb style={{ marginBottom: '24px', fontSize: '14px' }}>
-                                <Breadcrumb.Item href="/">
-                                    <HomeOutlined />
-                                    <span>Trang chủ</span>
-                                </Breadcrumb.Item>
-                                <Breadcrumb.Item href="/news">
-                                    <span>Tin tức</span>
-                                </Breadcrumb.Item>
-                                {category && category.slug && (
-                                    <Breadcrumb.Item href={`/news/category/${category.slug}`}>
-                                        <span>{category.name || category.slug}</span>
+                        {/* Main Content */}
+                        <Col xs={24} sm={24} md={24} lg={18} xl={14}>
+                            <div className="article-container">
+                                <Breadcrumb className="article-breadcrumb">
+                                    <Breadcrumb.Item href="/">
+                                        <HomeOutlined />
+                                        <span>Trang chủ</span>
                                     </Breadcrumb.Item>
+                                    <Breadcrumb.Item href="/news">
+                                        <span>Tin tức</span>
+                                    </Breadcrumb.Item>
+                                    {category && category.slug && (
+                                        <Breadcrumb.Item href={`/news/category/${category.slug}`}>
+                                            <span>{category.name || category.slug}</span>
+                                        </Breadcrumb.Item>
+                                    )}
+                                </Breadcrumb>
+
+                                <div className="article-header">
+                                    <Title level={1} className="article-title">
+                                        {title}
+                                    </Title>
+
+                                    <div className="article-meta">
+                                        <Space size="large" wrap className="meta-space">
+                                            {type && (
+                                                <div className="meta-item">
+                                                    <TagOutlined className="meta-icon" />
+                                                    <Tag color="blue" className="meta-tag">
+                                                        {type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                                    </Tag>
+                                                </div>
+                                            )}
+                                            {createdAt && (
+                                                <div className="meta-item">
+                                                    <CalendarOutlined className="meta-icon" />
+                                                    <Text className="meta-text">
+                                                        {new Date(createdAt).toLocaleDateString('vi-VN', {
+                                                            year: 'numeric',
+                                                            month: 'long',
+                                                            day: 'numeric'
+                                                        })}
+                                                    </Text>
+                                                </div>
+                                            )}
+                                            {author && (
+                                                <div className="meta-item">
+                                                    {authorAvatar ?
+                                                        <Avatar size="small" src={authorAvatar} className="meta-avatar" /> :
+                                                        <UserOutlined className="meta-icon" />
+                                                    }
+                                                    <Text className="meta-text">{author}</Text>
+                                                </div>
+                                            )}
+                                        </Space>
+                                    </div>
+                                </div>
+
+                                {featuredImageUrl && (
+                                    <div className="article-image-container">
+                                        <LazyImage
+                                            src={
+                                                newsItem.imageBase64
+                                                    ? `data:image/jpeg;base64,${newsItem.imageBase64}`
+                                                    : newsItem.featuredImageUrl
+                                                        ? `${import.meta.env.VITE_BACKEND_URL}${newsItem.featuredImageUrl}`
+                                                        : "/default-image.jpg"}
+                                            alt={`Ảnh minh họa cho bài viết: ${title} - Biển quảng cáo chuyên nghiệp từ Sign Board`}
+                                            className="article-image"
+                                            onClick={() => {
+                                                console.log('Image clicked for preview');
+                                            }}
+                                        />
+                                    </div>
                                 )}
-                            </Breadcrumb>
 
-                            <Title level={1} style={{
-                                marginBottom: '16px',
-                                fontSize: '36px',
-                                color: '#262626',
-                                fontWeight: '600',
-                                lineHeight: '1.3'
-                            }}>
-                                {title}
-                            </Title>
+                                <div className="article-content">
+                                    <div
+                                        ref={contentRef}
+                                        className="news-article-content"
+                                        dangerouslySetInnerHTML={{ __html: content }}
+                                    />
+                                </div>
 
-                            <Space size="large" wrap style={{ marginBottom: '32px', color: '#8c8c8c' }}>
-                                {type && (
-                                    <Tag color="blue" icon={<TagOutlined />} style={{ fontSize: '14px', padding: '6px 12px' }}>
-                                        {type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                    </Tag>
+                                {articleSlug && (
+                                    <div className="article-tags">
+                                        <Space size={[0, 8]} wrap>
+                                            <Text strong className="tags-label">🏷️ Tags:</Text>
+                                            <Tag key={type} color="geekblue" className="article-tag">
+                                                {type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                            </Tag>
+                                        </Space>
+                                    </div>
                                 )}
-                                {createdAt && (
-                                    <Space align="center">
-                                        <CalendarOutlined />
-                                        <Text type="secondary" style={{ fontSize: '14px' }}>
-                                            {new Date(createdAt).toLocaleDateString('vi-VN')}
-                                        </Text>
-                                    </Space>
-                                )}
-                                {author && (
-                                    <Space align="center">
-                                        {authorAvatar ? <Avatar size="small" src={authorAvatar} /> : <UserOutlined />}
-                                        <Text type="secondary" style={{ fontSize: '14px' }}>{author}</Text>
-                                    </Space>
-                                )}
-                            </Space>
+                            </div>
 
-                            {featuredImageUrl && (
-                                <Image
-                                    width="100%"
-                                    src={
-                                        newsItem.imageBase64
-                                            ? `data:image/jpeg;base64,${newsItem.imageBase64}`
-                                            : newsItem.featuredImageUrl
-                                                ? `${import.meta.env.VITE_BACKEND_URL}${newsItem.featuredImageUrl}`
-                                                : "/default-image.jpg"}
-                                    alt={`Ảnh minh họa cho bài viết: ${title}`}
-                                    style={{
-                                        borderRadius: '12px',
-                                        marginBottom: '32px',
-                                        maxHeight: '500px',
-                                        objectFit: 'cover',
-                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
-                                    }}
-                                    preview={true}
-                                />
-                            )}
-
-                            <Divider style={{ margin: '32px 0' }} />
-
-                            <div
-                                ref={contentRef}
-                                className="news-article-content"
-                                dangerouslySetInnerHTML={{ __html: content }}
-                                style={{
-                                    fontSize: '16px',
-                                    lineHeight: '1.8',
-                                    color: '#333',
-                                    textAlign: 'justify'
-                                }}
-                            />
-
-                            {articleSlug && (
-                                <>
-                                    <Divider style={{ margin: '32px 0' }} />
-                                    <Space size={[0, 8]} wrap style={{ marginTop: '16px' }}>
-                                        <Text strong style={{ marginRight: '8px', color: '#595959', fontSize: '14px' }}>Tags:</Text>
-                                        <Tag key={type} color="geekblue" style={{ fontSize: '14px' }}>
-                                            {type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                        </Tag>
-                                    </Space>
-                                </>
-                            )}
-                        </div>
-
-                        {/* Related Articles */}
-                        <RelatedArticles currentArticle={newsItem} limit={3} />
-                    </Col>
-                </Row>
+                            {/* Related Articles */}
+                            <div className="related-articles-container">
+                                <RelatedArticles currentArticle={newsItem} limit={3} />
+                            </div>
+                        </Col>
+                    </Row>
+                </div>
             </Content>
         </Layout>
     );
 };
+
+export default NewsDetail;

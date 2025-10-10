@@ -20,34 +20,55 @@ const TableOfContents = ({ content, contentRef }) => {
             const headingsData = Array.from(headingElements).map((heading, index) => {
                 const level = parseInt(heading.tagName.charAt(1));
                 const text = heading.textContent.trim();
+                const originalHTML = heading.outerHTML;
 
-                // Tạo ID từ text của heading
-                const id = `toc-${index}-${text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')}`;
+                // Tạo ID từ text của heading - đảm bảo unique
+                let baseSlug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                let id = `toc-${level}-${index}-${baseSlug}`;
 
                 return {
                     id,
                     text,
                     level,
                     index,
+                    originalHTML,
                     element: heading
                 };
+            });
+
+            // Đảm bảo ID unique nếu có nhiều heading giống nhau
+            const existingIds = new Set();
+            headingsData.forEach(headingData => {
+                let counter = 1;
+                let originalId = headingData.id;
+                while (existingIds.has(headingData.id)) {
+                    headingData.id = `${originalId}-${counter}`;
+                    counter++;
+                }
+                existingIds.add(headingData.id);
             });
 
             setHeadings(headingsData);
 
             // Cập nhật nội dung thật với ID cho các heading
             if (headingsData.length > 0) {
-                const updatedContent = content.replace(
-                    /<(h[1-6])>(.*?)<\/\1>/gi,
-                    (match, tag, content, offset) => {
-                        const headingIndex = headingsData.findIndex(h => h.text === content.trim());
-                        if (headingIndex !== -1) {
-                            return `<${tag} id="${headingsData[headingIndex].id}">${content}</${tag}>`;
-                        }
-                        return match;
-                    }
-                );
+                // Tạo một bản sao của content để thay thế
+                const tempDiv = document.createElement('div');
+                tempDiv.innerHTML = content;
 
+                // Cập nhật các heading elements trực tiếp
+                const contentHeadings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
+
+                Array.from(contentHeadings).forEach((heading, index) => {
+                    if (index < headingsData.length) {
+                        const headingData = headingsData[index];
+                        if (heading.textContent.trim() === headingData.text) {
+                            heading.id = headingData.id;
+                        }
+                    }
+                });
+
+                const updatedContent = tempDiv.innerHTML;
                 setProcessedContent(updatedContent);
                 contentRef.current.innerHTML = updatedContent;
             }
@@ -56,20 +77,29 @@ const TableOfContents = ({ content, contentRef }) => {
 
     // Scroll spy để track heading đang active
     useEffect(() => {
-        const handleScroll = () => {
-            const headingElements = headings.map(h => document.getElementById(h.id)).filter(Boolean);
-            const scrollPosition = window.scrollY + 150; // Offset cho fixed header
+        let ticking = false;
 
-            for (let i = headingElements.length - 1; i >= 0; i--) {
-                const element = headingElements[i];
-                if (element.offsetTop <= scrollPosition) {
-                    setActiveHeading(element.id);
-                    break;
-                }
+        const handleScroll = () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const headingElements = headings.map(h => document.getElementById(h.id)).filter(Boolean);
+                    const scrollPosition = window.scrollY + 120;
+
+                    for (let i = headingElements.length - 1; i >= 0; i--) {
+                        const element = headingElements[i];
+                        if (element.offsetTop <= scrollPosition) {
+                            setActiveHeading(element.id);
+                            break;
+                        }
+                    }
+                    ticking = false;
+                });
+                ticking = true;
             }
         };
 
-        window.addEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll(); // Gọi ngay để set active heading ban đầu
         return () => window.removeEventListener('scroll', handleScroll);
     }, [headings]);
 

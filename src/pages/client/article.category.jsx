@@ -3,6 +3,8 @@ import { useParams } from 'react-router-dom';
 import { fetchArticleCategoryTreeAPI, fetchArticlesByCategorySlugAPI } from '../../services/api.service';
 import { Row, Col, Card, Typography, Spin, Alert, Breadcrumb } from 'antd';
 import { Link } from 'react-router-dom';
+import SEO from '../../components/common/SEO';
+import LazyImage from '../../components/common/LazyImage';
 
 const { Title, Text } = Typography;
 
@@ -37,6 +39,45 @@ const ArticleCategoryClientPage = () => {
             loadCategoryData();
         }
     }, [currentSlug, parentSlug]);
+
+    useEffect(() => {
+        // Thêm CSS để style nội dung bài viết trong danh sách
+        const style = document.createElement('style');
+        style.innerHTML = `
+            .article-card-description {
+                color: #666 !important;
+                font-size: 14px !important;
+                line-height: 1.5 !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+
+            .article-card-description * {
+                display: none !important;
+            }
+
+            .article-card-description::before {
+                content: attr(data-text);
+                display: block !important;
+                color: #666 !important;
+                font-size: 14px !important;
+                line-height: 1.5 !important;
+                white-space: pre-wrap !important;
+            }
+        `;
+
+        if (!document.getElementById('article-category-styles')) {
+            style.id = 'article-category-styles';
+            document.head.appendChild(style);
+        }
+
+        return () => {
+            const existingStyle = document.getElementById('article-category-styles');
+            if (existingStyle) {
+                document.head.removeChild(existingStyle);
+            }
+        };
+    }, []);
 
     const loadCategoryData = async () => {
         try {
@@ -128,6 +169,19 @@ const ArticleCategoryClientPage = () => {
         }
     };
 
+    // Hàm xử lý nội dung để hiển thị đẹp trong danh sách bài viết
+    const processArticleContent = (content) => {
+        if (!content) return '';
+
+        // Loại bỏ các thẻ HTML và chỉ lấy text thuần túy
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = content;
+        const plainText = tempDiv.textContent || tempDiv.innerText || '';
+
+        // Giới hạn độ dài và thêm dấu "..." nếu cần
+        return plainText.length > 120 ? plainText.substring(0, 120) + '...' : plainText;
+    };
+
     if (loading) {
         return (
             <div style={{ padding: '50px', textAlign: 'center' }}>
@@ -146,6 +200,12 @@ const ArticleCategoryClientPage = () => {
 
     return (
         <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
+            <SEO
+                title={`${category?.name || 'Danh mục'} - Sign Board`}
+                description={category?.description || `Khám phá các bài viết về ${category?.name || 'biển quảng cáo'} từ Sign Board - chuyên gia biển quảng cáo hàng đầu Việt Nam.`}
+                keywords={`${category?.name || ''}, biển quảng cáo, bảng hiệu, sign board, ${category?.slug || ''}`}
+                url={window.location.href}
+            />
             {/* Breadcrumb */}
             <Breadcrumb style={{ marginBottom: '20px' }}>
                 <Breadcrumb.Item>
@@ -213,9 +273,9 @@ const ArticleCategoryClientPage = () => {
                                     hoverable
                                     cover={
                                         article.imageBase64 ? (
-                                            <img
-                                                alt={article.title}
+                                            <LazyImage
                                                 src={`data:image/jpeg;base64,${article.imageBase64}`}
+                                                alt={`Hình ảnh bài viết: ${article.title} - Biển quảng cáo từ Sign Board`}
                                                 style={{ height: '200px', objectFit: 'cover' }}
                                                 onError={(e) => {
                                                     console.error('Failed to load base64 image');
@@ -223,9 +283,9 @@ const ArticleCategoryClientPage = () => {
                                                 }}
                                             />
                                         ) : article.featuredImageUrl ? (
-                                            <img
-                                                alt={article.title}
+                                            <LazyImage
                                                 src={`${import.meta.env.VITE_BACKEND_URL}${article.featuredImageUrl}`}
+                                                alt={`Hình ảnh bài viết: ${article.title} - Biển quảng cáo từ Sign Board`}
                                                 style={{ height: '200px', objectFit: 'cover' }}
                                                 onError={(e) => {
                                                     console.error('Failed to load image:', article.featuredImageUrl);
@@ -238,7 +298,12 @@ const ArticleCategoryClientPage = () => {
                                     <Card.Meta
                                         title={article.title}
                                         description={
-                                            article.excerpt || article.content?.substring(0, 100) + '...'
+                                            <div
+                                                className="article-card-description"
+                                                data-text={processArticleContent(article.content)}
+                                            >
+                                                {processArticleContent(article.content)}
+                                            </div>
                                         }
                                     />
                                     <div style={{ marginTop: '10px' }}>

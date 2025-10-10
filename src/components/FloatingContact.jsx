@@ -4,13 +4,13 @@ import '../styles/FloatingContact.css';
 import zaloIcon from '../../public/img/contact/zalo.png'; // Đảm bảo ảnh đúng đường dẫn
 
 const FloatingContact = () => {
-  const hotline = '0879485678';
+  const hotline = '0915935225';
 
   return (
     <div className="floating-contact">
       {/* Nút Zalo */}
       <a
-        href="https://zalo.me/0879485678"
+        href="https://zalo.me/0915935225"
         target="_blank"
         rel="noopener noreferrer"
         className="circle-btn zalo-btn"

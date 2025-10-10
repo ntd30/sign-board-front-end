@@ -129,14 +129,14 @@ const ArticleTable = (props) => {
             render: (_, record, index) => index + 1 + pageSize * (current - 1),
             width: 60,
         },
-        {
-            title: "Id",
-            dataIndex: "id",
-            render: (text, record) => (
-                <a onClick={() => handleGetDetailArticle(record)}>{text}</a>
-            ),
-            width: 80
-        },
+        // {
+        //     title: "Id",
+        //     dataIndex: "id",
+        //     render: (text, record) => (
+        //         <a onClick={() => handleGetDetailArticle(record)}>{text}</a>
+        //     ),
+        //     width: 80
+        // },
         {
             title: 'Ảnh',
             dataIndex: 'featuredImageUrl',

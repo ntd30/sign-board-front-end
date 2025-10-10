@@ -1,9 +1,6 @@
 import { Breadcrumb, Button, Card, Col, Grid, Pagination, Row, Typography } from "antd";
 import { useEffect, useState } from "react";
-import { fetchAllArticlesAPI } from "../../services/api.service";
-import { useNavigate } from "react-router-dom";
-
-const { Title, Text } = Typography;
+import LazyImage from '../../components/common/LazyImage';
 
 const NewsPage = () => {
   const productCardStyle = {
@@ -11,7 +8,6 @@ const NewsPage = () => {
     borderRadius: '12px',
     overflow: 'hidden',
     background: '#FFFFFF',
-    display: 'flex',
     flexDirection: 'column',
     height: '100%',
   };
@@ -100,6 +96,12 @@ const NewsPage = () => {
 
   return (
     <div style={{ maxWidth: isMobile ? '90%' : '70%', margin: '80px auto' }}>
+      <SEO
+        title="Tin tức - Sign Board"
+        description="Cập nhật tin tức mới nhất về biển quảng cáo, bảng hiệu, xu hướng thiết kế và công nghệ quảng cáo từ Sign Board - chuyên gia biển quảng cáo hàng đầu Việt Nam."
+        keywords="tin tức biển quảng cáo, tin tức bảng hiệu, tin tức sign board, xu hướng quảng cáo, công nghệ biển quảng cáo"
+        url={window.location.href}
+      />
       <h1>TIN TỨC</h1>
       <Breadcrumb style={{ fontSize: 20, marginBottom: 50 }}>
         <Breadcrumb.Item>
@@ -117,8 +119,7 @@ const NewsPage = () => {
               onMouseEnter={() => setHoveredCard(product.id)}
               onMouseLeave={() => setHoveredCard(null)}
               cover={
-                <img
-                  alt={product.name}
+                <LazyImage
                   src={
                     product.imageBase64
                       ? `data:image/jpeg;base64,${product.imageBase64}`
@@ -126,7 +127,12 @@ const NewsPage = () => {
                         ? `${import.meta.env.VITE_BACKEND_URL}${product.featuredImageUrl}`
                         : "/default-image.jpg"
                   }
+                  alt={`Hình ảnh bài viết: ${product.title} - Biển quảng cáo từ Sign Board`}
                   style={{ height: '220px', objectFit: 'cover' }}
+                  onError={(e) => {
+                    console.error('Failed to load image');
+                    e.target.style.display = 'none';
+                  }}
                 />
               }
               bodyStyle={cardBodyStyle}

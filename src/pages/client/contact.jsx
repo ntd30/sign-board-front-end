@@ -204,7 +204,7 @@ const ContactInfo = () => {
         {
             icon: <PhoneOutlined />,
             title: 'Điện thoại',
-            content: ['0915935225', '0879485678'],
+            content: ['0915935225', '0915935225'],
             description: 'Liên hệ với chúng tôi 24/7'
         },
         {
