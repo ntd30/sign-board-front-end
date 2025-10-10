@@ -1,0 +1,293 @@
+/* === Main Header Container === */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    width: 100%;
+    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.header-row {
+    padding: 0 24px;
+    height: 72px;
+}
+
+/* === Logo === */
+.header-logo a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.header-logo img {
+    height: clamp(40px, 5vw, 55px); /* Responsive height */
+    width: auto;
+    transition: transform 0.3s ease;
+}
+
+.header-logo img:hover {
+    transform: scale(1.05);
+}
+
+/* === Desktop Navigation === */
+.desktop-nav {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+}
+
+.desktop-nav .ant-menu-horizontal {
+    border-bottom: none;
+    background-color: transparent;
+    font-weight: 600;
+    font-size: 16px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.desktop-nav .ant-menu-item,
+.desktop-nav .ant-menu-submenu {
+    padding: 0 20px;
+    margin: 0 4px;
+    top: 0;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.desktop-nav .ant-menu-item a,
+.desktop-nav .ant-menu-submenu-title .ant-menu-title-content {
+    color: #2c3e50;
+    transition: color 0.3s ease;
+}
+
+.desktop-nav .ant-menu-item:hover,
+.desktop-nav .ant-menu-submenu:hover > .ant-menu-submenu-title {
+    color: #667eea;
+}
+
+.desktop-nav .ant-menu-item:hover a,
+.desktop-nav .ant-menu-submenu:hover > .ant-menu-submenu-title .ant-menu-title-content,
+.desktop-nav .ant-menu-submenu:hover > .ant-menu-submenu-title .menu-item-arrow {
+    color: #667eea;
+}
+
+.desktop-nav .ant-menu-item-selected,
+.desktop-nav .ant-menu-submenu-selected {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+}
+
+.desktop-nav .ant-menu-item-selected a,
+.desktop-nav .ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-title-content {
+    color: #2c3e50 !important;
+}
+
+.menu-item-label-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.menu-item-arrow {
+    font-size: 10px;
+    opacity: 0.7;
+    transition: color 0.3s ease;
+}
+
+.desktop-nav .ant-menu-item::after,
+.desktop-nav .ant-menu-submenu::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.desktop-nav .ant-menu-item-selected::after,
+.desktop-nav .ant-menu-submenu-selected::after {
+    width: 60%;
+}
+
+/* === Submenu Popup Styling === */
+.header-submenu-popup .ant-menu {
+    padding: 8px;
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.header-submenu-popup .ant-menu-item {
+    padding: 10px 16px !important;
+    margin: 4px !important;
+    border-radius: 8px !important;
+    font-size: 15px !important;
+    font-weight: 500;
+    transition: all 0.25s ease;
+}
+
+.header-submenu-popup .ant-menu-item:hover {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+    color: #667eea !important;
+    transform: translateX(3px);
+}
+
+.header-submenu-popup .ant-menu-item-selected {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+
+/* === Header Right Section (User menu, buttons) === */
+.header-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 16px;
+}
+
+.user-menu-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 6px 12px;
+    border-radius: 20px;
+    background-color: #f8f9fa;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.user-menu-trigger:hover {
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+}
+
+.user-menu-trigger .user-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #495057;
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.login-button {
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    border-radius: 20px !important;
+    border-width: 2px !important;
+    padding: 8px 20px !important;
+    height: auto !important;
+    transition: all 0.3s ease !important;
+}
+
+.login-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+}
+
+/* === Mobile Navigation === */
+.mobile-menu-button {
+    font-size: 22px;
+    color: #333;
+    border: none;
+    background: transparent;
+}
+
+.mobile-drawer .ant-drawer-header {
+    border-bottom: 1px solid #e9ecef;
+}
+
+.mobile-drawer .ant-drawer-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.mobile-drawer .drawer-logo {
+    height: 32px;
+}
+
+.mobile-drawer .drawer-title-text {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.mobile-drawer .ant-drawer-body {
+    padding: 16px;
+    background-color: #f9fafb;
+}
+
+.mobile-drawer .ant-menu {
+    background: transparent;
+    border: none;
+}
+
+.mobile-drawer .ant-menu-item,
+.mobile-drawer .ant-menu-submenu-title {
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 16px !important;
+    font-weight: 500;
+}
+
+.mobile-drawer .ant-menu-item-selected {
+    background-color: rgba(102, 126, 234, 0.15);
+    color: #667eea;
+    font-weight: 600;
+}
+
+.mobile-user-section {
+    margin-top: 24px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+}
+
+.mobile-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.mobile-user-details .user-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.mobile-user-details .user-email {
+    font-size: 13px;
+    color: #6c757d;
+}
+
+.mobile-auth-buttons {
+    margin-top: 24px;
+    padding: 16px;
+    background-color: #fff;
+    border-radius: 12px;
+    border: 1px solid #e9ecef;
+    text-align: center;
+}
+
+.mobile-auth-buttons .ant-btn {
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.mobile-auth-buttons .ant-btn-primary {
+    margin-bottom: 12px;
+}
