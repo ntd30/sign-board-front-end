@@ -1,9 +1,9 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { notification, Popconfirm, Space, Table, Input } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import moment from "moment";
 import ArticleDetail from "./article.detail";
-import { deleteArticleAPI } from "../../../services/api.service";
+import { deleteArticleAPI, fetchArticleCategoryTreeAPI } from "../../../services/api.service";
 import ArticleUpdate from "./article.update";
 
 const { Search } = Input;
@@ -11,10 +11,72 @@ const { Search } = Input;
 const ArticleTable = (props) => {
     const { dataArticles, loadArticles, current, setCurrent, pageSize, setPageSize, total, loadingTable, permissionsOfCurrentUser, searchTerm, setSearchTerm } = props;
 
+    console.log("ArticleTable props - dataArticles:", dataArticles);
+    if (dataArticles && dataArticles.length > 0) {
+        console.log("First article type:", dataArticles[0].type);
+        console.log("First article full data:", dataArticles[0]);
+    }
+
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
-console.log("dataupdate", dataUpdate);
+    const [articleCategories, setArticleCategories] = useState([]);
+    const [categoryMap, setCategoryMap] = useState({});
+    const [categoriesLoaded, setCategoriesLoaded] = useState(false);
+
+    // Load danh mục bài viết từ API
+    useEffect(() => {
+        loadArticleCategories();
+    }, []);
+
+    const loadArticleCategories = async () => {
+        // Tạo category map cố định dựa trên dữ liệu mẫu từ database
+        const map = {
+            // Danh mục cha
+            'dich-vu': 'Dịch vụ',
+            'mau-bien-dep': 'Mẫu biển đẹp',
+            'mau-chu': 'Mẫu chữ',
+            'du-an': 'Dự án',
+
+            // Danh mục con - Dịch vụ
+            'lam-bien-quang-cao': 'Làm biển quảng cáo',
+            'bien-hop-den-bien-vay': 'Biển hộp đèn – Biển vẫy',
+            'bien-led-man-hinh-led': 'Biển Led – màn hình Led',
+            'backrop-van-phong-khach-san': 'Backrop Văn Phòng – Khách sạn',
+            'bien-cong-ty-bien-chuc-danh': 'Biển công ty – biển chức danh',
+
+            // Danh mục con - Mẫu biển đẹp
+            'mau-bien-linh-vuc-am-thuc': 'Mẫu biển lĩnh vực ẩm thực',
+            'mau-bien-linh-vuc-spa': 'Mẫu biển lĩnh vực Spa',
+            'mau-bien-linh-vuc-suc-khoe': 'Mẫu biển lĩnh vực Sức khỏe',
+            'mau-bien-linh-vuc-khac': 'Mẫu biển lĩnh vực Khác',
+        };
+
+        console.log("Setting category map:", map);
+        setCategoryMap(map);
+        setCategoriesLoaded(true);
+    };
+
+    // Hàm để lấy tên danh mục từ slug hoặc enum cố định
+    const getCategoryName = (type) => {
+        if (!type) return '-';
+
+        // Ánh xạ các giá trị enum cố định với tên hiển thị
+        const typeMapping = {
+            'news': 'Tin tức',
+            'project': 'Dự án',
+            'production_info': 'Thông tin sản xuất',
+            'policy': 'Chính sách'
+        };
+
+        // Nếu là giá trị enum cố định, trả về tên hiển thị
+        if (typeMapping[type]) {
+            return typeMapping[type];
+        }
+
+        // Nếu không phải enum cố định, thử tìm trong category map
+        return categoryMap[type] || type || '-';
+    };
     const onChange = (pagination) => {
         if (+pagination.current !== +current) {
             setCurrent(+pagination.current);
@@ -73,7 +135,7 @@ console.log("dataupdate", dataUpdate);
             render: (text, record) => (
                 <a onClick={() => handleGetDetailArticle(record)}>{text}</a>
             ),
-            hidden: true
+            width: 80
         },
         {
             title: 'Ảnh',
@@ -108,9 +170,23 @@ console.log("dataupdate", dataUpdate);
             width: 250
         },
         {
-            title: "Loại bài viết",
-            dataIndex: "type",
-            width: 100
+            title: "Danh mục bài viết",
+            dataIndex: "category",
+            render: (category, record) => {
+                // Ưu tiên hiển thị tên category từ dữ liệu thực tế
+                if (category && category.name) {
+                    return category.name;
+                }
+
+                // Nếu không có category, hiển thị type (tên danh mục đã được format)
+                if (record.type) {
+                    // Convert enum style back to readable name
+                    return record.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+                }
+
+                return '-';
+            },
+            width: 150
         },
         {
             title: "Tiêu đề",
@@ -171,7 +247,7 @@ console.log("dataupdate", dataUpdate);
         <>
             <div style={{ marginBottom: 16 }}>
                 <Search
-                    placeholder="Tìm kiếm theo tiêu đề, loại bài viết, ngày tạo hoặc ngày cập nhật"
+                    placeholder="Tìm kiếm theo tiêu đề, danh mục bài viết, ngày tạo hoặc ngày cập nhật"
                     allowClear
                     enterButton="Tìm kiếm"
                     size="large"

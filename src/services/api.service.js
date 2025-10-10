@@ -435,8 +435,11 @@ const searchArticleCategoriesAPI = (keyword) => {
     return axios.get(URL_BACKEND)
 }
 
-const fetchArticleCategoriesByLevelAPI = (level) => {
-    const URL_BACKEND = `/api/article-categories/level/${level}`
+const fetchArticlesByCategorySlugAPI = (categorySlug, subcategorySlug = null) => {
+    let URL_BACKEND = `/api/cms/category/${categorySlug}`
+    if (subcategorySlug) {
+        URL_BACKEND = `/api/cms/category/${categorySlug}/${subcategorySlug}`
+    }
     return axios.get(URL_BACKEND)
 }
 
@@ -450,5 +453,5 @@ export {
     deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro, updateDesignAPI, updateContactAPI,
     getProfileAPI,GetProductById,GetNewById,GetArticleBySlug,fetchAllBannersAPI,updateBannerAPI ,createBannerAPI,deleteBannerAPI,
     fetchArticleCategoryTreeAPI, fetchAllArticleCategoriesAPI, fetchArticleCategoryByIdAPI, createArticleCategoryAPI,
-    updateArticleCategoryAPI, deleteArticleCategoryAPI, searchArticleCategoriesAPI, fetchArticleCategoriesByLevelAPI
+    updateArticleCategoryAPI, deleteArticleCategoryAPI, searchArticleCategoriesAPI, fetchArticlesByCategorySlugAPI
 }

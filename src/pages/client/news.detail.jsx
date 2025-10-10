@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Layout, Row, Col, Typography, Image, Breadcrumb, Divider, Tag, Space, Avatar, Spin } from 'antd';
 import { HomeOutlined, UserOutlined, CalendarOutlined, TagOutlined } from '@ant-design/icons';
 import { useParams } from 'react-router-dom';
 import { GetNewById, GetArticleBySlug } from '../../services/api.service';
+import TableOfContents from '../../components/client/news/TableOfContents';
+import RelatedArticles from '../../components/client/news/RelatedArticles';
 
 const { Content } = Layout;
 const { Title, Paragraph, Text } = Typography;
@@ -12,6 +14,7 @@ export const NewsDetail = () => {
     const [newsItem, setNewsItem] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const contentRef = useRef(null);
     console.log("NewsDetail - ID:", id, "Slug:", slug);
     console.log("NewsDetail - News Item:", newsItem);
     useEffect(() => {
@@ -90,7 +93,7 @@ export const NewsDetail = () => {
 
     if (loading) {
         return (
-            <Layout style={{ minHeight: '100vh', backgroundColor: '#ffffff' }}>
+            <Layout style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
                 <Content style={{ padding: '20px 0', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Spin size="large" />
                 </Content>
@@ -100,13 +103,21 @@ export const NewsDetail = () => {
 
     if (error || !newsItem) {
         return (
-            <Layout style={{ minHeight: '100vh', backgroundColor: '#ffffff' }}>
+            <Layout style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
                 <Content style={{ padding: '20px 0' }}>
                     <Row justify="center">
-                        <Col xs={23} sm={22} md={20} lg={18} xl={16}>
-                            <div style={{ padding: '24px', background: '#fff', borderRadius: '8px', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)' }}>
-                                <Title level={2} style={{ textAlign: 'center' }}>{error || 'Không tìm thấy bài viết'}</Title>
-                                <Paragraph style={{ textAlign: 'center' }}>
+                        <Col xs={24} sm={24} md={24} lg={18} xl={14}>
+                            <div style={{
+                                padding: '48px',
+                                background: '#fff',
+                                borderRadius: '12px',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                                textAlign: 'center'
+                            }}>
+                                <Title level={2} style={{ color: '#262626', marginBottom: '16px' }}>
+                                    {error || 'Không tìm thấy bài viết'}
+                                </Title>
+                                <Paragraph style={{ fontSize: '16px', color: '#8c8c8c' }}>
                                     {error ? 'Đã xảy ra lỗi khi tải bài viết' : 'Bài viết bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.'}
                                 </Paragraph>
                             </div>
@@ -120,12 +131,24 @@ export const NewsDetail = () => {
     const { title, featuredImageUrl, category, createdAt, author, authorAvatar, content, type, slug: articleSlug } = newsItem;
 
     return (
-        <Layout style={{ minHeight: '100vh', backgroundColor: '#ffffff' }}>
+        <Layout style={{ minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
             <Content style={{ padding: '20px 0' }}>
-                <Row justify="center">
-                    <Col xs={23} sm={22} md={20} lg={18} xl={16}>
-                        <div style={{ padding: '24px 32px', background: '#fff', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)' }}>
-                            <Breadcrumb style={{ marginBottom: '20px' }}>
+                <Row justify="center" gutter={24}>
+                    {/* Table of Contents - Left Sidebar */}
+                    <Col xs={0} sm={0} md={0} lg={6} xl={5}>
+                        <TableOfContents content={content} contentRef={contentRef} />
+                    </Col>
+
+                    {/* Main Content */}
+                    <Col xs={24} sm={24} md={24} lg={18} xl={14}>
+                        <div style={{
+                            padding: '32px 40px',
+                            background: '#fff',
+                            borderRadius: '12px',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                            marginBottom: '24px'
+                        }}>
+                            <Breadcrumb style={{ marginBottom: '24px', fontSize: '14px' }}>
                                 <Breadcrumb.Item href="/">
                                     <HomeOutlined />
                                     <span>Trang chủ</span>
@@ -140,24 +163,34 @@ export const NewsDetail = () => {
                                 )}
                             </Breadcrumb>
 
-                            <Title level={1} style={{ marginBottom: '12px', fontSize: '32px', color: '#262626' }}>{title}</Title>
+                            <Title level={1} style={{
+                                marginBottom: '16px',
+                                fontSize: '36px',
+                                color: '#262626',
+                                fontWeight: '600',
+                                lineHeight: '1.3'
+                            }}>
+                                {title}
+                            </Title>
 
-                            <Space size="middle" wrap style={{ marginBottom: '24px', color: '#8c8c8c' }}>
+                            <Space size="large" wrap style={{ marginBottom: '32px', color: '#8c8c8c' }}>
                                 {type && (
-                                    <Tag color="blue" icon={<TagOutlined />}>
-                                        {type}
+                                    <Tag color="blue" icon={<TagOutlined />} style={{ fontSize: '14px', padding: '6px 12px' }}>
+                                        {type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                     </Tag>
                                 )}
                                 {createdAt && (
                                     <Space align="center">
                                         <CalendarOutlined />
-                                        <Text type="secondary">{new Date(createdAt).toLocaleDateString()}</Text>
+                                        <Text type="secondary" style={{ fontSize: '14px' }}>
+                                            {new Date(createdAt).toLocaleDateString('vi-VN')}
+                                        </Text>
                                     </Space>
                                 )}
                                 {author && (
                                     <Space align="center">
                                         {authorAvatar ? <Avatar size="small" src={authorAvatar} /> : <UserOutlined />}
-                                        <Text type="secondary">{author}</Text>
+                                        <Text type="secondary" style={{ fontSize: '14px' }}>{author}</Text>
                                     </Space>
                                 )}
                             </Space>
@@ -172,27 +205,46 @@ export const NewsDetail = () => {
                                                 ? `${import.meta.env.VITE_BACKEND_URL}${newsItem.featuredImageUrl}`
                                                 : "/default-image.jpg"}
                                     alt={`Ảnh minh họa cho bài viết: ${title}`}
-                                    style={{ borderRadius: '8px', marginBottom: '24px', maxHeight: '500px', objectFit: 'cover' }}
+                                    style={{
+                                        borderRadius: '12px',
+                                        marginBottom: '32px',
+                                        maxHeight: '500px',
+                                        objectFit: 'cover',
+                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                                    }}
                                     preview={true}
                                 />
                             )}
 
-                            <Divider />
+                            <Divider style={{ margin: '32px 0' }} />
 
-                            <div className="news-article-content" dangerouslySetInnerHTML={{ __html: content }} />
+                            <div
+                                ref={contentRef}
+                                className="news-article-content"
+                                dangerouslySetInnerHTML={{ __html: content }}
+                                style={{
+                                    fontSize: '16px',
+                                    lineHeight: '1.8',
+                                    color: '#333',
+                                    textAlign: 'justify'
+                                }}
+                            />
 
                             {articleSlug && (
                                 <>
-                                    <Divider style={{ marginTop: '30px' }} />
+                                    <Divider style={{ margin: '32px 0' }} />
                                     <Space size={[0, 8]} wrap style={{ marginTop: '16px' }}>
-                                        <Text strong style={{ marginRight: '8px', color: '#595959' }}>Tags:</Text>
-                                        <Tag key={type} color="geekblue">
-                                            {type}
+                                        <Text strong style={{ marginRight: '8px', color: '#595959', fontSize: '14px' }}>Tags:</Text>
+                                        <Tag key={type} color="geekblue" style={{ fontSize: '14px' }}>
+                                            {type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                                         </Tag>
                                     </Space>
                                 </>
                             )}
                         </div>
+
+                        {/* Related Articles */}
+                        <RelatedArticles currentArticle={newsItem} limit={3} />
                     </Col>
                 </Row>
             </Content>

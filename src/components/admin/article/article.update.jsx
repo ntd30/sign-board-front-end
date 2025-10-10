@@ -16,7 +16,7 @@ import {
     Tooltip,
 } from 'antd';
 import { UploadOutlined, FileAddOutlined, EyeOutlined } from '@ant-design/icons';
-import { updateArticleAPI } from "../../../services/api.service";
+import { updateArticleAPI, fetchArticleCategoryTreeAPI } from "../../../services/api.service";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
@@ -65,18 +65,95 @@ const ArticleUpdate = (props) => {
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [fileList, setFileList] = useState([]);
     const [content, setContent] = useState('');
+    const [articleCategories, setArticleCategories] = useState([]);
+    const [selectedParentCategory, setSelectedParentCategory] = useState(null);
     const [form] = Form.useForm();
+
+    // Load danh mục bài viết từ API
+    useEffect(() => {
+        loadArticleCategories();
+    }, []);
+
+    const loadArticleCategories = async () => {
+        try {
+            const res = await fetchArticleCategoryTreeAPI();
+            if (res?.data) {
+                // Giữ nguyên cấu trúc cây để hiển thị phân cấp
+                setArticleCategories(res.data);
+            }
+        } catch (error) {
+            console.error("Error loading article categories:", error);
+            // Fallback to default categories if API fails
+            setArticleCategories([
+                { id: 1, name: 'Dịch vụ', slug: 'dich-vu', level: 0, children: [] },
+                { id: 2, name: 'Mẫu biển đẹp', slug: 'mau-bien-dep', level: 0, children: [] },
+                { id: 3, name: 'Mẫu chữ', slug: 'mau-chu', level: 0, children: [] },
+                { id: 4, name: 'Dự án', slug: 'du-an', level: 0, children: [] },
+            ]);
+        }
+    };
+
+    // Hàm để lấy danh mục cấp 1 (cha)
+    const getParentCategories = () => {
+        return articleCategories.filter(cat => cat.level === 0);
+    };
+
+    // Hàm để lấy danh mục con của danh mục cha được chọn
+    const getChildCategories = (parentSlug) => {
+        const parentCategory = articleCategories.find(cat => cat.slug === parentSlug);
+        return parentCategory ? parentCategory.children || [] : [];
+    };
+
+    // Hàm xử lý khi chọn danh mục cha
+    const handleParentCategoryChange = (value) => {
+        setSelectedParentCategory(value);
+        // Reset danh mục con khi chọn danh mục cha khác
+        form.setFieldsValue({ childCategory: undefined });
+    };
 
     useEffect(() => {
         if (dataUpdate && dataUpdate.id) {
             const initialContent = dataUpdate.content || '<p></p>';
             console.log("dataUpdate:", dataUpdate);
+
+            // Tìm danh mục cha và con từ slug hiện tại
+            let parentSlug = null;
+            let childSlug = null;
+
+            // Duyệt qua tất cả danh mục để tìm slug phù hợp
+            const findCategoryPath = (categories, targetSlug) => {
+                for (const category of categories) {
+                    if (category.slug === targetSlug) {
+                        return { parent: null, child: category.slug };
+                    }
+                    if (category.children && category.children.length > 0) {
+                        for (const child of category.children) {
+                            if (child.slug === targetSlug) {
+                                return { parent: category.slug, child: child.slug };
+                            }
+                        }
+                    }
+                }
+                return { parent: null, child: null };
+            };
+
+            const { parent, child } = findCategoryPath(articleCategories, dataUpdate.type);
+            parentSlug = parent;
+            childSlug = child;
+
             form.setFieldsValue({
                 title: dataUpdate.title,
                 excerpt: dataUpdate.excerpt || '',
-                type: dataUpdate.type,
+                parentCategory: parentSlug,
+                childCategory: childSlug,
                 isFeatured: dataUpdate.isFeatured || false,
             });
+
+            // Set selected parent category để hiển thị danh mục con phù hợp
+            if (parentSlug) {
+                setSelectedParentCategory(parentSlug);
+            }
+
             setContent(initialContent);
 
             let initialFiles = [];
@@ -108,7 +185,13 @@ const ArticleUpdate = (props) => {
     const onFinish = async (values) => {
         setLoadingBtn(true);
 
-        const { title, excerpt, type, isFeatured } = values;
+        // Combine parent and child category slugs
+        let finalCategorySlug = values.parentCategory;
+        if (values.childCategory) {
+            finalCategorySlug = values.childCategory;
+        }
+
+        const { title, excerpt, isFeatured } = values;
         const slug = title
             .toLowerCase()
             .replace(/[^a-z0-9]+/g, '-')
@@ -120,7 +203,7 @@ const ArticleUpdate = (props) => {
         formData.append("content", content);
         formData.append("excerpt", excerpt || content.slice(0, 200));
         formData.append("isFeatured", isFeatured || false);
-        formData.append("type", type);
+        formData.append("type", finalCategorySlug);
 
         if (fileList.length === 0) {
             console.log("No image, requesting to delete existing image");
@@ -168,6 +251,7 @@ const ArticleUpdate = (props) => {
         setFileList([]);
         setContent('');
         setDataUpdate(null);
+        setSelectedParentCategory(null);
     };
 
     const onFinishFailed = (errorInfo) => {
@@ -306,16 +390,39 @@ const ArticleUpdate = (props) => {
                         </Col>
                         <Col xs={24} md={8}>
                             <Form.Item
-                                name="type"
-                                label="Loại bài viết"
-                                rules={[{ required: true, message: 'Vui lòng chọn loại tin tức!' }]}
+                                name="parentCategory"
+                                label="Danh mục cha"
+                                rules={[{ required: true, message: 'Vui lòng chọn danh mục cha!' }]}
                             >
-                                <Select placeholder="Chọn loại tin tức">
-                                    {newsTypes.map(type => (
-                                        <Option key={type.id} value={type.id}>{type.name}</Option>
+                                <Select
+                                    placeholder="Chọn danh mục cha"
+                                    onChange={handleParentCategoryChange}
+                                >
+                                    {getParentCategories().map(category => (
+                                        <Option key={category.slug} value={category.slug}>
+                                            {category.name}
+                                        </Option>
                                     ))}
                                 </Select>
                             </Form.Item>
+
+                            <Form.Item
+                                name="childCategory"
+                                label="Danh mục con (tùy chọn)"
+                                rules={[]}
+                            >
+                                <Select
+                                    placeholder="Chọn danh mục con (nếu có)"
+                                    disabled={!selectedParentCategory}
+                                >
+                                    {getChildCategories(selectedParentCategory).map(category => (
+                                        <Option key={category.slug} value={category.slug}>
+                                            {category.name}
+                                        </Option>
+                                    ))}
+                                </Select>
+                            </Form.Item>
+
                             <Form.Item
                                 name="isFeatured"
                                 label="Nổi bật"

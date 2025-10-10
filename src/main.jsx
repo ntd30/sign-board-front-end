@@ -4,6 +4,8 @@ import {
   createBrowserRouter,
   RouterProvider,
 } from "react-router-dom";
+import { HomePage } from './pages/client/home.jsx';
+import NewsPage from './pages/client/news.jsx';
 import ManufacturePage from './pages/client/manufacture.jsx';
 import DesignPage from './pages/client/design.jsx';
 import RegisterPage from './pages/client/auth/register.jsx';
@@ -27,8 +29,6 @@ import DesignAdminPage from './pages/admin/design.jsx';
 import ArticlesPage from './pages/admin/article.jsx';
 import ContactPageClient from './pages/client/contact.jsx';
 import AboutPage from './pages/client/about.jsx';
-import { HomePage } from './pages/client/home.jsx';
-import NewsPage from './pages/client/news.jsx';
 import { NewsDetail } from './pages/client/news.detail.jsx';
 import ProductContact from './components/client/product/product.contact.jsx';
 import { DashboardPage } from './pages/admin/dashboard.jsx';
@@ -43,6 +43,7 @@ import PaymentPolicy from './pages/client/policy/payment.jsx';
 import BannerPage from './pages/admin/banner.jsx';
 import ArticleCategoryPage from './pages/admin/article.category.jsx';
 import DebugPermissionsPage from './pages/admin/debug.permissions.jsx';
+import ArticleCategoryClientPage from './pages/client/article.category.jsx';
 
 const router = createBrowserRouter([
   {
@@ -117,6 +118,14 @@ const router = createBrowserRouter([
       {
         path: "contact",
         element: <ContactPageClient />
+      },
+      {
+        path: ":parentSlug/:childSlug",
+        element: <ArticleCategoryClientPage />
+      },
+      {
+        path: ":slug",
+        element: <ArticleCategoryClientPage />
       },
     ]
   },

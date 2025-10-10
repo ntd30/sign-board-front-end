@@ -1,10 +1,66 @@
 import { Drawer, Descriptions, Empty, Typography, Image } from "antd";
+import { useState, useEffect } from "react";
 import moment from "moment";
+import { fetchArticleCategoryTreeAPI } from "../../../services/api.service";
 
 const { Title, Paragraph } = Typography;
 
 const ArticleDetail = (props) => {
     const { isDetailOpen, setIsDetailOpen, dataUpdate } = props;
+    const [categoryMap, setCategoryMap] = useState({});
+
+    // Load danh mục bài viết từ API
+    useEffect(() => {
+        loadArticleCategories();
+    }, []);
+
+    const loadArticleCategories = async () => {
+        // Tạo category map cố định dựa trên dữ liệu mẫu từ database
+        const map = {
+            // Danh mục cha
+            'dich-vu': 'Dịch vụ',
+            'mau-bien-dep': 'Mẫu biển đẹp',
+            'mau-chu': 'Mẫu chữ',
+            'du-an': 'Dự án',
+
+            // Danh mục con - Dịch vụ
+            'lam-bien-quang-cao': 'Làm biển quảng cáo',
+            'bien-hop-den-bien-vay': 'Biển hộp đèn – Biển vẫy',
+            'bien-led-man-hinh-led': 'Biển Led – màn hình Led',
+            'backrop-van-phong-khach-san': 'Backrop Văn Phòng – Khách sạn',
+            'bien-cong-ty-bien-chuc-danh': 'Biển công ty – biển chức danh',
+
+            // Danh mục con - Mẫu biển đẹp
+            'mau-bien-linh-vuc-am-thuc': 'Mẫu biển lĩnh vực ẩm thực',
+            'mau-bien-linh-vuc-spa': 'Mẫu biển lĩnh vực Spa',
+            'mau-bien-linh-vuc-suc-khoe': 'Mẫu biển lĩnh vực Sức khỏe',
+            'mau-bien-linh-vuc-khac': 'Mẫu biển lĩnh vực Khác',
+        };
+
+        console.log("Setting category map in detail:", map);
+        setCategoryMap(map);
+    };
+
+    // Hàm để lấy tên danh mục từ slug hoặc enum cố định
+    const getCategoryName = (type) => {
+        if (!type) return '-';
+
+        // Ánh xạ các giá trị enum cố định với tên hiển thị
+        const typeMapping = {
+            'news': 'Tin tức',
+            'project': 'Dự án',
+            'production_info': 'Thông tin sản xuất',
+            'policy': 'Chính sách'
+        };
+
+        // Nếu là giá trị enum cố định, trả về tên hiển thị
+        if (typeMapping[type]) {
+            return typeMapping[type];
+        }
+
+        // Nếu không phải enum cố định, thử tìm trong category map
+        return categoryMap[type] || type || '-';
+    };
 
     return (
         <Drawer
@@ -21,8 +77,10 @@ const ArticleDetail = (props) => {
                     </Title>
                     <Descriptions bordered column={1} size="small">
                         <Descriptions.Item label="ID">{dataUpdate.id || "-"}</Descriptions.Item>
-                        <Descriptions.Item label="Loại bài viết">
-                            {dataUpdate.type || "-"}
+                        <Descriptions.Item label="Danh mục bài viết">
+                            {dataUpdate.category && dataUpdate.category.name
+                                ? dataUpdate.category.name
+                                : (dataUpdate.type ? dataUpdate.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : '-')}
                         </Descriptions.Item>
                         <Descriptions.Item label="Tiêu đề">
                             {dataUpdate.title || "-"}
