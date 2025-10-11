@@ -49,15 +49,24 @@
     align-items: center;
 }
 
-.desktop-nav .ant-menu-item,
-.desktop-nav .ant-menu-submenu {
-    padding: 0 20px;
-    margin: 0 4px;
+.desktop-nav .ant-menu-item::before,
+.desktop-nav .ant-menu-submenu::before {
+    content: '';
+    position: absolute;
     top: 0;
-    display: flex;
-    align-items: center;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(9, 76, 45, 0.05), rgba(10, 90, 53, 0.05));
+    opacity: 0;
+    transition: opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border-radius: 8px;
-    transition: color 0.3s ease, background-color 0.3s ease;
+    z-index: -1;
+}
+
+.desktop-nav .ant-menu-item:hover::before,
+.desktop-nav .ant-menu-submenu:hover::before {
+    opacity: 1;
 }
 
 .desktop-nav .ant-menu-item a,
@@ -68,23 +77,30 @@
 
 .desktop-nav .ant-menu-item:hover,
 .desktop-nav .ant-menu-submenu:hover > .ant-menu-submenu-title {
-    color: #667eea;
+    background-color: rgba(9, 76, 45, 0.05);
+    color: #094C2D;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(9, 76, 45, 0.15);
 }
 
 .desktop-nav .ant-menu-item:hover a,
 .desktop-nav .ant-menu-submenu:hover > .ant-menu-submenu-title .ant-menu-title-content,
 .desktop-nav .ant-menu-submenu:hover > .ant-menu-submenu-title .menu-item-arrow {
-    color: #667eea;
+    color: #094C2D;
 }
 
 .desktop-nav .ant-menu-item-selected,
 .desktop-nav .ant-menu-submenu-selected {
-    background-color: rgba(102, 126, 234, 0.1) !important;
+    background: linear-gradient(135deg, rgba(9, 76, 45, 0.15), rgba(10, 90, 53, 0.1)) !important;
+    color: #094C2D !important;
+    font-weight: 600;
+    position: relative;
 }
 
 .desktop-nav .ant-menu-item-selected a,
 .desktop-nav .ant-menu-submenu-selected > .ant-menu-submenu-title .ant-menu-title-content {
-    color: #2c3e50 !important;
+    color: #094C2D !important;
+    font-weight: 600;
 }
 
 .menu-item-label-wrapper {
@@ -96,7 +112,25 @@
 .menu-item-arrow {
     font-size: 10px;
     opacity: 0.7;
-    transition: color 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform: rotate(0deg);
+}
+.desktop-nav .ant-menu-submenu:hover .menu-item-arrow {
+    opacity: 1;
+    transform: rotate(180deg);
+}
+
+.desktop-nav .ant-menu-item,
+.desktop-nav .ant-menu-submenu {
+    padding: 0 20px;
+    margin: 0 4px;
+    top: 0;
+    display: flex;
+    align-items: center;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
 
 .desktop-nav .ant-menu-item::after,
@@ -104,18 +138,23 @@
     content: '';
     position: absolute;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    right: 0;
     width: 0;
     height: 3px;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: linear-gradient(135deg, #094C2D 0%, #0A5A35 100%);
     border-radius: 2px;
     transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.desktop-nav .ant-menu-item:hover::after,
+.desktop-nav .ant-menu-submenu:hover::after {
+    width: 80%;
+}
+
 .desktop-nav .ant-menu-item-selected::after,
 .desktop-nav .ant-menu-submenu-selected::after {
-    width: 60%;
+    width: 100%;
 }
 
 /* === Submenu Popup Styling === */
@@ -136,13 +175,13 @@
 }
 
 .header-submenu-popup .ant-menu-item:hover {
-    background-color: rgba(102, 126, 234, 0.1) !important;
-    color: #667eea !important;
+    background-color: rgba(9, 76, 45, 0.1) !important;
+    color: #094C2D !important;
     transform: translateX(3px);
 }
 
 .header-submenu-popup .ant-menu-item-selected {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    background: linear-gradient(135deg, #094C2D 0%, #0A5A35 100%) !important;
     color: white !important;
     font-weight: 600 !important;
 }
@@ -194,7 +233,7 @@
 
 .login-button:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    box-shadow: 0 4px 10px rgba(9, 76, 45, 0.3);
 }
 
 /* === Mobile Navigation === */
@@ -243,8 +282,8 @@
 }
 
 .mobile-drawer .ant-menu-item-selected {
-    background-color: rgba(102, 126, 234, 0.15);
-    color: #667eea;
+    background-color: rgba(9, 76, 45, 0.15);
+    color: #094C2D;
     font-weight: 600;
 }
 

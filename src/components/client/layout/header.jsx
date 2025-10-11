@@ -44,8 +44,8 @@ const Header = () => {
                         ),
                         children: category.children?.length > 0 ?
                             category.children.map(child => ({
-                                key: child.slug,
-                                label: <Link to={`/${child.slug}`}>{child.name}</Link>
+                                key: `${category.slug}/${child.slug}`, // Sửa key để unique
+                                label: <Link to={`/${category.slug}/${child.slug}`}>{child.name}</Link> // Sửa đường dẫn
                             })) : null
                     }));
                     setCategories(menuItems);

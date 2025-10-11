@@ -22,7 +22,7 @@
 .product-title {
   font-size: 28px;
   font-weight: 700;
-  color: #1890ff;
+  color: #094C2D;
   margin-bottom: 15px;
   line-height: 1.3;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -52,14 +52,14 @@
 
 /* Buttons */
 .product-actions .ant-btn-primary {
-  background-color: #1890ff;
-  border-color: #1890ff;
+  background-color: #094C2D;
+  border-color: #094C2D;
   transition: all 0.3s ease;
 }
 
 .product-actions .ant-btn-primary:hover {
-  background-color: #40a9ff;
-  box-shadow: 0 4px 10px rgba(24, 144, 255, 0.3);
+  background-color: #0A5A35;
+  box-shadow: 0 4px 10px rgba(9, 76, 45, 0.3);
   transform: translateY(-2px);
 }
 
@@ -69,7 +69,7 @@
   padding: 20px;
   border-radius: 10px;
   margin-top: 20px;
-  border-left: 4px solid #1890ff;
+  border-left: 4px solid #094C2D;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -84,7 +84,7 @@
 
 .promotion-title-icon {
   margin-right: 8px;
-  color: #1890ff;
+  color: #094C2D;
   font-size: 18px;
 }
 
@@ -147,8 +147,8 @@
 }
 
 .thumbnail-list .selected-thumbnail {
-  border-color: #1890ff;
-  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  border-color: #094C2D;
+  box-shadow: 0 0 0 2px rgba(9, 76, 45, 0.1);
 }
 
 .thumbnail-list .ant-image-img {
@@ -236,7 +236,7 @@
   display: block;
   width: 80px;
   height: 3px;
-  background: #1890ff;
+  background: #094C2D;
   margin: 10px auto 0;
 }
 

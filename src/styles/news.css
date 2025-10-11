@@ -50,7 +50,7 @@
 }
 
 .gradient-background {
-    background: linear-gradient(to bottom, #FFEB99, #FFFFFF);
+    background: linear-gradient(to bottom, #E8F5E8, #FFFFFF);
     margin-top: -5px;
     padding: 20px 0 0 20px;
 }

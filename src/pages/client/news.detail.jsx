@@ -1,24 +1,26 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Layout, Row, Col, Typography, Image, Breadcrumb, Divider, Tag, Space, Avatar, Spin, Alert } from 'antd';
-import { HomeOutlined, UserOutlined, CalendarOutlined, TagOutlined } from '@ant-design/icons';
+import { Layout, Row, Col, Typography, Image, Breadcrumb, Divider, Tag, Space, Avatar, Spin, Alert, Button, Drawer } from 'antd'; // Thêm Drawer
+import { HomeOutlined, UserOutlined, CalendarOutlined, TagOutlined, MenuOutlined, ArrowUpOutlined } from '@ant-design/icons'; // Thêm một vài icon tiện dụng
 import { useParams } from 'react-router-dom';
 import { GetNewById, GetArticleBySlug } from '../../services/api.service';
 import LazyImage from '../../components/common/LazyImage';
 import SEO from '../../components/common/SEO';
 import TableOfContents from '../../components/client/news/TableOfContents';
 import RelatedArticles from '../../components/client/news/RelatedArticles';
-export const NewsDetail = () => {
+
+const NewsDetail = () => {
     const { id, slug } = useParams();
     const [newsItem, setNewsItem] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showMobileTOC, setShowMobileTOC] = useState(false); // Dùng cho Drawer
+    const [showScrollTop, setShowScrollTop] = useState(false); // Thêm state để kiểm soát nút cuộn
     const { Content } = Layout;
-const { Title, Paragraph, Text } = Typography;
+    const { Title, Paragraph, Text } = Typography;
     const contentRef = useRef(null);
 
     // Helper function to generate alt text for images
     const generateImageAlt = (src) => {
-        // Extract filename or generate a generic alt text
         const filename = src.split('/').pop().split('.')[0];
         return `Hình ảnh: ${filename.replace(/[-_]/g, ' ')}`;
     };
@@ -116,8 +118,30 @@ const { Title, Paragraph, Text } = Typography;
             setTimeout(checkContentReady, 50);
         }
     }, [processedContent, contentRef]);
+    
+    // Logic cho nút cuộn lên đầu trang (Scroll to Top)
+    useEffect(() => {
+        const checkScrollTop = () => {
+            if (window.pageYOffset > 300) {
+                setShowScrollTop(true);
+            } else {
+                setShowScrollTop(false);
+            }
+        };
 
-    const { title, featuredImageUrl, category, createdAt, author, authorAvatar, content, type, slug: articleSlug } = newsItem || {};
+        window.addEventListener('scroll', checkScrollTop);
+        return () => window.removeEventListener('scroll', checkScrollTop);
+    }, []);
+
+    const handleScrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleTOCClose = () => {
+        setShowMobileTOC(false);
+    };
+    
+    const { title, featuredImageUrl, category, createdAt, author, authorAvatar, content, type } = newsItem || {};
 
     if (loading) {
         return (
@@ -144,7 +168,7 @@ const { Title, Paragraph, Text } = Typography;
     }
 
     return (
-        <Layout style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
+        <Layout style={{ minHeight: '100vh', background: '#f8f9fa' }}>
             <SEO
                 title={newsItem?.title || 'Bài viết - Sign Board'}
                 description={newsItem?.excerpt || newsItem?.content?.substring(0, 160) + '...' || 'Đọc bài viết chi tiết về biển quảng cáo, bảng hiệu tại Sign Board'}
@@ -157,75 +181,208 @@ const { Title, Paragraph, Text } = Typography;
                 section={newsItem?.category?.name}
                 tags={[newsItem?.type]}
             />
-            <Content style={{ padding: '40px 0', background: 'linear-gradient(135deg, #f5f7ff 0%, #c3cfe2 100%)', minHeight: '100vh' }}>
+            <Content style={{
+                padding: '16px 0',
+                background: '#f8f9fa',
+                minHeight: '100vh'
+            }}>
                 <div className="news-detail-container" style={{
-                    maxWidth: '1400px',
+                    maxWidth: '100%',
                     margin: '0 auto',
-                    padding: '0 24px'
+                    padding: '0 12px',
+                    width: '100%',
+                    boxSizing: 'border-box'
                 }}>
-                    <Row justify="center" gutter={32}>
-                        {/* Table of Contents - Left Sidebar */}
-                        <Col xs={0} sm={0} md={0} lg={6} xl={5} className="desktop-toc">
-                            <div style={{ position: 'sticky', top: '120px' }}>
+                    <Row justify="center" gutter={[12, 16]}>
+                        {/* 1. Mobile TOC Toggle Button & Scroll to Top (Chỉ hiển thị trên Mobile) */}
+                        <Col xs={24} sm={24} md={0} lg={0} xl={0} xxl={0}>
+                            <div style={{
+                                position: 'fixed',
+                                bottom: '20px',
+                                // THAY ĐỔI: Đặt ở góc trái dưới
+                                left: '20px', 
+                                right: 'auto', 
+                                zIndex: 1000,
+                                display: 'flex',
+                                // THAY ĐỔI: Đặt các phần tử ở bên trái
+                                justifyContent: 'flex-start',
+                                alignItems: 'flex-start',
+                                gap: '12px',
+                                flexDirection: 'column', // Đặt nút chồng lên nhau
+                            }}>
+                                {/* Scroll to Top Button */}
+                                {showScrollTop && (
+                                    <Button
+                                        type="default"
+                                        shape="circle"
+                                        size="large"
+                                        onClick={handleScrollToTop}
+                                        icon={<ArrowUpOutlined />}
+                                        style={{
+                                            width: '48px',
+                                            height: '48px',
+                                            borderRadius: '50%',
+                                            background: '#ffffff',
+                                            border: '2px solid #667eea',
+                                            color: '#667eea',
+                                            boxShadow: '0 4px 16px rgba(102, 126, 234, 0.3)',
+                                            transition: 'all 0.3s ease',
+                                        }}
+                                    />
+                                )}
+
+                                {/* Mobile TOC Toggle Button */}
+                                <Button
+                                    type="primary"
+                                    shape="circle"
+                                    size="large"
+                                    onClick={() => setShowMobileTOC(true)} // Luôn bật Drawer
+                                    icon={<MenuOutlined />}
+                                    style={{
+                                        width: '56px',
+                                        height: '56px',
+                                        borderRadius: '50%',
+                                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                        border: 'none',
+                                        boxShadow: '0 8px 24px rgba(102, 126, 234, 0.4)',
+                                        transition: 'all 0.3s ease',
+                                    }}
+                                />
+                            </div>
+                        </Col>
+
+                        {/* 2. Mobile TOC Drawer (Khung mục lục di động) */}
+                        <Drawer
+                            title={
+                                <span style={{
+                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                    WebkitBackgroundClip: 'text',
+                                    WebkitTextFillColor: 'transparent',
+                                    fontWeight: '700'
+                                }}>
+                                    📚 Mục lục bài viết
+                                </span>
+                            }
+                            placement="left" // Vẫn giữ placement="left" để khung mục lục trượt ra từ bên trái
+                            closable={true}
+                            onClose={handleTOCClose}
+                            open={showMobileTOC}
+                            key="mobile-toc-drawer"
+                            width="80%"
+                            bodyStyle={{ padding: '16px' }}
+                        >
+                            <div
+                                onClick={handleTOCClose} // Đóng Drawer khi click vào mục lục
+                                style={{
+                                    fontSize: '14px',
+                                    lineHeight: '1.6',
+                                    color: '#4a5568'
+                                }}>
                                 <TableOfContents content={processedContent} contentRef={contentRef} />
+                            </div>
+                        </Drawer>
+
+                        {/* Table of Contents - Desktop Sidebar */}
+                        <Col xs={0} sm={0} md={7} lg={6} xl={5} xxl={4} className="toc-container">
+                            <div style={{
+                                position: 'sticky',
+                                top: '120px',
+                                background: 'linear-gradient(135deg, #ffffff 0%, #f8faff 100%)',
+                                borderRadius: '16px',
+                                padding: '24px',
+                                boxShadow: '0 8px 32px rgba(102, 126, 234, 0.12)',
+                                border: '1px solid rgba(102, 126, 234, 0.15)',
+                                marginBottom: '0',
+                                maxWidth: '100%',
+                                overflow: 'hidden',
+                                height: 'fit-content',
+                                maxHeight: 'calc(100vh - 140px)',
+                                overflowY: 'auto'
+                            }}>
+                                <div style={{
+                                    fontSize: '15px',
+                                    color: '#2d3748',
+                                    fontWeight: '700',
+                                    marginBottom: '20px',
+                                    textAlign: 'center',
+                                    position: 'relative'
+                                }}>
+                                    <span style={{
+                                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                        WebkitBackgroundClip: 'text',
+                                        WebkitTextFillColor: 'transparent',
+                                        backgroundClip: 'text',
+                                        display: 'inline-block'
+                                    }}>
+                                        📚 Mục lục bài viết
+                                    </span>
+                                    <div style={{
+                                        position: 'absolute',
+                                        bottom: '-8px',
+                                        left: '50%',
+                                        transform: 'translateX(-50%)',
+                                        width: '60px',
+                                        height: '3px',
+                                        background: 'linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%)',
+                                        borderRadius: '2px'
+                                    }}></div>
+                                </div>
+                                <div style={{
+                                    fontSize: '14px',
+                                    lineHeight: '1.6',
+                                    color: '#4a5568'
+                                }}>
+                                    <TableOfContents content={processedContent} contentRef={contentRef} />
+                                </div>
                             </div>
                         </Col>
 
                         {/* Main Content */}
-                        <Col xs={24} sm={24} md={24} lg={18} xl={14}>
-                            <div className="article-container">
+                        <Col xs={24} sm={24} md={17} lg={18} xl={19} xxl={20}>
+                            <div className="article-container" style={{
+                                background: '#ffffff',
+                                borderRadius: '12px',
+                                boxShadow: '0 4px 16px rgba(0, 0, 0, 0.08)',
+                                border: '1px solid #e9ecef',
+                                overflow: 'hidden',
+                                marginBottom: '20px',
+                                width: '100%',
+                                boxSizing: 'border-box'
+                            }}>
                                 <Breadcrumb className="article-breadcrumb" style={{
-                                    marginBottom: '32px',
-                                    padding: '16px 24px',
-                                    background: 'linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%)',
-                                    borderRadius: '12px',
-                                    border: '1px solid rgba(102, 126, 234, 0.1)',
-                                    boxShadow: '0 2px 8px rgba(102, 126, 234, 0.08)'
+                                    margin: '0',
+                                    padding: '16px 20px 12px',
+                                    background: '#f8f9fa',
+                                    borderBottom: '1px solid #e9ecef'
                                 }}>
                                     <Breadcrumb.Item href="/">
                                         <HomeOutlined />
-                                        <span style={{ fontWeight: '600', color: '#667eea' }}>Trang chủ</span>
+                                        <span style={{ fontWeight: '500', color: '#495057', marginLeft: '4px' }}>Trang chủ</span>
                                     </Breadcrumb.Item>
                                     <Breadcrumb.Item href="/news">
-                                        <span style={{ fontWeight: '600', color: '#667eea' }}>Tin tức</span>
+                                        <span style={{ fontWeight: '500', color: '#495057' }}>Tin tức</span>
                                     </Breadcrumb.Item>
                                     {category && category.slug && (
                                         <Breadcrumb.Item href={`/news/category/${category.slug}`}>
-                                            <span style={{ fontWeight: '600', color: '#667eea' }}>{category.name || category.slug}</span>
+                                            <span style={{ fontWeight: '500', color: '#495057' }}>{category.name || category.slug}</span>
                                         </Breadcrumb.Item>
                                     )}
                                 </Breadcrumb>
 
                                 <div className="article-header" style={{
                                     textAlign: 'center',
-                                    marginBottom: '40px',
-                                    padding: '40px 32px',
-                                    background: 'linear-gradient(135deg, #ffffff 0%, #f8faff 100%)',
-                                    borderRadius: '20px',
-                                    border: '1px solid rgba(102, 126, 234, 0.1)',
-                                    boxShadow: '0 8px 32px rgba(102, 126, 234, 0.1)',
-                                    position: 'relative',
-                                    overflow: 'hidden'
+                                    padding: '24px 16px 20px',
+                                    background: '#ffffff',
+                                    borderBottom: '1px solid #e9ecef'
                                 }}>
-                                    <div style={{
-                                        position: 'absolute',
-                                        top: '0',
-                                        left: '0',
-                                        right: '0',
-                                        height: '4px',
-                                        background: 'linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%)'
-                                    }}></div>
-
                                     <Title level={1} className="article-title" style={{
-                                        fontSize: '2.5rem',
-                                        fontWeight: '800',
-                                        margin: '0 0 24px 0',
-                                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                        WebkitBackgroundClip: 'text',
-                                        WebkitTextFillColor: 'transparent',
-                                        backgroundClip: 'text',
-                                        lineHeight: '1.2',
-                                        textAlign: 'center'
+                                        fontSize: '2.2rem',
+                                        fontWeight: '700',
+                                        margin: '0 0 16px 0',
+                                        color: '#212529',
+                                        lineHeight: '1.3',
+                                        wordWrap: 'break-word',
+                                        overflowWrap: 'break-word'
                                     }}>
                                         {title}
                                     </Title>
@@ -235,80 +392,80 @@ const { Title, Paragraph, Text } = Typography;
                                         justifyContent: 'center',
                                         alignItems: 'center',
                                         flexWrap: 'wrap',
-                                        gap: '32px',
-                                        padding: '24px 0',
-                                        borderTop: '1px solid rgba(102, 126, 234, 0.1)'
+                                        gap: '12px',
+                                        padding: '16px 0 0'
                                     }}>
-                                        <Space size="large" wrap className="meta-space">
-                                            {type && (
-                                                <div className="meta-item" style={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '8px',
-                                                    padding: '12px 20px',
-                                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                                    borderRadius: '25px',
-                                                    color: 'white',
-                                                    fontWeight: '600',
-                                                    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)'
-                                                }}>
-                                                    <TagOutlined className="meta-icon" />
-                                                    <Tag color="white" className="meta-tag">
-                                                        {type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                                    </Tag>
-                                                </div>
-                                            )}
-                                            {createdAt && (
-                                                <div className="meta-item" style={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '8px',
-                                                    padding: '12px 20px',
-                                                    background: 'rgba(102, 126, 234, 0.1)',
-                                                    borderRadius: '25px',
-                                                    color: '#667eea',
-                                                    fontWeight: '600'
-                                                }}>
-                                                    <CalendarOutlined className="meta-icon" />
-                                                    <Text className="meta-text">
-                                                        {new Date(createdAt).toLocaleDateString('vi-VN', {
-                                                            year: 'numeric',
-                                                            month: 'long',
-                                                            day: 'numeric'
-                                                        })}
-                                                    </Text>
-                                                </div>
-                                            )}
-                                            {author && (
-                                                <div className="meta-item" style={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    gap: '8px',
-                                                    padding: '12px 20px',
-                                                    background: 'rgba(102, 126, 234, 0.05)',
-                                                    borderRadius: '25px',
-                                                    color: '#667eea',
-                                                    fontWeight: '600'
-                                                }}>
-                                                    {authorAvatar ?
-                                                        <Avatar size="small" src={authorAvatar} className="meta-avatar" /> :
-                                                        <UserOutlined className="meta-icon" />
-                                                    }
-                                                    <Text className="meta-text">{author}</Text>
-                                                </div>
-                                            )}
-                                        </Space>
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '6px',
+                                            padding: '6px 12px',
+                                            background: '#e9ecef',
+                                            borderRadius: '16px',
+                                            color: '#495057',
+                                            fontSize: '12px',
+                                            fontWeight: '500',
+                                            whiteSpace: 'nowrap'
+                                        }}>
+                                            <TagOutlined style={{ fontSize: '12px' }} />
+                                            <span>
+                                                {type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                                            </span>
+                                        </div>
+
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '6px',
+                                            padding: '6px 12px',
+                                            background: '#e9ecef',
+                                            borderRadius: '16px',
+                                            color: '#495057',
+                                            fontSize: '12px',
+                                            fontWeight: '500',
+                                            whiteSpace: 'nowrap'
+                                        }}>
+                                            <CalendarOutlined style={{ fontSize: '12px' }} />
+                                            <span>
+                                                {new Date(createdAt).toLocaleDateString('vi-VN', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                })}
+                                            </span>
+                                        </div>
+
+                                        <div style={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            gap: '6px',
+                                            padding: '6px 12px',
+                                            background: '#e9ecef',
+                                            borderRadius: '16px',
+                                            color: '#495057',
+                                            fontSize: '12px',
+                                            fontWeight: '500',
+                                            whiteSpace: 'nowrap'
+                                        }}>
+                                            {authorAvatar ?
+                                                <Avatar size="small" src={authorAvatar} /> :
+                                                <UserOutlined style={{ fontSize: '12px' }} />
+                                            }
+                                            <span>{author}</span>
+                                        </div>
                                     </div>
                                 </div>
 
                                 {featuredImageUrl && (
                                     <div className="article-image-container" style={{
-                                        marginBottom: '40px',
+                                        margin: '0 16px 24px',
                                         position: 'relative',
-                                        borderRadius: '16px',
+                                        borderRadius: '8px',
                                         overflow: 'hidden',
-                                        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.15)',
-                                        border: '1px solid rgba(102, 126, 234, 0.1)'
+                                        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                                        border: '1px solid #e9ecef',
+                                        width: 'calc(100% - 32px)',
+                                        maxWidth: '100%'
                                     }}>
                                         <LazyImage
                                             src={
@@ -321,141 +478,58 @@ const { Title, Paragraph, Text } = Typography;
                                             className="article-image"
                                             style={{
                                                 width: '100%',
-                                                height: '400px',
+                                                height: '280px',
                                                 objectFit: 'cover',
-                                                transition: 'transform 0.3s ease',
-                                                cursor: 'pointer'
-                                            }}
-                                            onClick={() => {
-                                                console.log('Image clicked for preview');
+                                                display: 'block'
                                             }}
                                         />
-                                        <div style={{
-                                            position: 'absolute',
-                                            bottom: '0',
-                                            left: '0',
-                                            right: '0',
-                                            background: 'linear-gradient(transparent, rgba(0, 0, 0, 0.7))',
-                                            padding: '32px 24px 24px',
-                                            color: 'white'
-                                        }}>
-                                            <p style={{
-                                                margin: '0',
-                                                fontSize: '14px',
-                                                opacity: '0.9',
-                                                fontStyle: 'italic'
-                                            }}>
-                                                🖼️ Nhấn vào hình để xem chi tiết
-                                            </p>
-                                        </div>
                                     </div>
                                 )}
 
                                 <div className="article-content" style={{
                                     background: '#ffffff',
-                                    padding: '48px 40px',
-                                    borderRadius: '16px',
-                                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
-                                    border: '1px solid rgba(102, 126, 234, 0.1)',
-                                    lineHeight: '1.8',
-                                    fontSize: '17px',
-                                    color: '#2d3748',
-                                    marginBottom: '40px'
+                                    padding: '24px 20px',
+                                    margin: '0 16px',
+                                    borderRadius: '8px',
+                                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
+                                    border: '1px solid #e9ecef',
+                                    lineHeight: '1.7',
+                                    fontSize: '15px',
+                                    color: '#495057',
+                                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+                                    width: 'calc(100% - 32px)',
+                                    boxSizing: 'border-box',
+                                    wordWrap: 'break-word',
+                                    overflowWrap: 'break-word'
                                 }}>
                                     <div
                                         ref={contentRef}
                                         className="news-article-content"
                                         dangerouslySetInnerHTML={{ __html: processedContent || content }}
                                         style={{
-                                            '& h1, & h2, & h3, & h4, & h5, & h6': {
-                                                color: '#667eea',
-                                                marginTop: '32px',
-                                                marginBottom: '16px',
-                                                fontWeight: '700',
-                                                scrollMarginTop: '150px' // Đảm bảo scroll offset đúng
-                                            },
-                                            '& p': {
-                                                marginBottom: '20px',
-                                                textAlign: 'justify'
-                                            },
-                                            '& img': {
-                                                borderRadius: '12px',
-                                                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.1)',
-                                                margin: '24px 0',
-                                                maxWidth: '100%',
-                                                height: 'auto'
-                                            },
-                                            '& blockquote': {
-                                                borderLeft: '4px solid #667eea',
-                                                paddingLeft: '24px',
-                                                margin: '32px 0',
-                                                fontStyle: 'italic',
-                                                background: 'rgba(102, 126, 234, 0.05)',
-                                                padding: '24px',
-                                                borderRadius: '0 12px 12px 0'
-                                            }
+                                            color: '#495057',
+                                            fontSize: '15px',
+                                            lineHeight: '1.7',
+                                            wordWrap: 'break-word',
+                                            overflowWrap: 'break-word'
                                         }}
                                     />
                                 </div>
 
-                                {articleSlug && (
-                                    <div className="article-tags" style={{
-                                        display: 'flex',
-                                        justifyContent: 'center',
-                                        alignItems: 'center',
-                                        gap: '16px',
-                                        padding: '32px 40px',
-                                        background: 'linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%)',
-                                        borderRadius: '16px',
-                                        border: '1px solid rgba(102, 126, 234, 0.1)',
-                                        boxShadow: '0 4px 16px rgba(102, 126, 234, 0.08)',
-                                        flexWrap: 'wrap'
-                                    }}>
-                                        <Text strong className="tags-label" style={{
-                                            fontSize: '16px',
-                                            color: '#667eea',
-                                            marginRight: '16px',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            gap: '8px'
-                                        }}>
-                                            🏷️ Tags:
-                                        </Text>
-                                        <Space size={[12, 8]} wrap>
-                                            <Tag
-                                                key={type}
-                                                color="blue"
-                                                className="article-tag"
-                                                style={{
-                                                    padding: '8px 20px',
-                                                    borderRadius: '25px',
-                                                    fontSize: '14px',
-                                                    fontWeight: '600',
-                                                    border: 'none',
-                                                    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                                                    color: 'white',
-                                                    boxShadow: '0 4px 12px rgba(102, 126, 234, 0.3)',
-                                                    cursor: 'pointer',
-                                                    transition: 'all 0.3s ease'
-                                                }}
-                                            >
-                                                {type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                                            </Tag>
-                                        </Space>
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Related Articles */}
-                            <div className="related-articles-container" style={{
-                                marginTop: '60px',
-                                background: 'linear-gradient(135deg, #f8f9ff 0%, #e8f2ff 100%)',
-                                borderRadius: '20px',
-                                padding: '32px 24px',
-                                border: '1px solid rgba(102, 126, 234, 0.1)',
-                                boxShadow: '0 8px 32px rgba(102, 126, 234, 0.08)'
-                            }}>
-                                <RelatedArticles currentArticle={newsItem} limit={3} />
+                                {/* Related Articles */}
+                                <div className="related-articles-container" style={{
+                                    marginTop: '32px',
+                                    margin: '32px 16px 0',
+                                    background: '#f8f9fa',
+                                    borderRadius: '12px',
+                                    padding: '24px 20px',
+                                    border: '1px solid #e9ecef',
+                                    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.06)',
+                                    width: 'calc(100% - 32px)',
+                                    boxSizing: 'border-box'
+                                }}>
+                                    <RelatedArticles currentArticle={newsItem} limit={3} />
+                                </div>
                             </div>
                         </Col>
                     </Row>

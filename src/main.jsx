@@ -29,7 +29,7 @@ import DesignAdminPage from './pages/admin/design.jsx';
 import ArticlesPage from './pages/admin/article.jsx';
 import ContactPageClient from './pages/client/contact.jsx';
 import AboutPage from './pages/client/about.jsx';
-import { NewsDetail } from './pages/client/news.detail.jsx';
+import NewsDetail from './pages/client/news.detail.jsx';
 import ProductContact from './components/client/product/product.contact.jsx';
 import { DashboardPage } from './pages/admin/dashboard.jsx';
 import GoogleAuthCallback from './components/google.auth.callback.jsx';

@@ -371,19 +371,7 @@ const ArticleCategoryClientPage = () => {
     return (
         <div style={{ padding: '20px', maxWidth: '1400px', margin: '0 auto' }}>
             {/* Debug Toggle Button */}
-            {process.env.NODE_ENV === 'development' && (
-                <div style={{ textAlign: 'right', marginBottom: '10px' }}>
-                    <Button
-                        type={showDebug ? "primary" : "default"}
-                        size="small"
-                        onClick={() => setShowDebug(!showDebug)}
-                        icon="🔍"
-                    >
-                        {showDebug ? 'Hide Debug' : 'Show Debug'}
-                    </Button>
-                </div>
-            )}
-
+            
             {/* Debug Panel - Chỉ hiển thị trong development */}
             {process.env.NODE_ENV === 'development' && showDebug && (
                 <div style={{

@@ -28,12 +28,12 @@
 
 /* Màu nền Zalo */
 .zalo-btn {
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  background: linear-gradient(135deg, #094C2D, #0A5A35);
 }
 
 /* Màu nền nút điện thoại */
 .phone-btn {
-  background: linear-gradient(135deg, #ff7e5f, #feb47b);
+  background: linear-gradient(135deg, #094C2D, #056B2F);
 }
 
 /* Hiệu ứng hover */

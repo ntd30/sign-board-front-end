@@ -10,7 +10,7 @@ const TableOfContents = ({ content, contentRef }) => {
 
     useEffect(() => {
         if (content && contentRef?.current) {
-            console.log('TOC - Processing content:', content.substring(0, 200) + '...');
+            console.log('TOC - Processing content for SEO optimization:', content.substring(0, 200) + '...');
 
             // Tạo một div tạm thời để parse HTML
             const tempDiv = document.createElement('div');
@@ -31,11 +31,15 @@ const TableOfContents = ({ content, contentRef }) => {
                 const text = heading.textContent.trim();
                 const originalHTML = heading.outerHTML;
 
-                // Tạo ID từ text của heading
-                let baseSlug = text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
-                let id = `toc-${level}-${index}-${baseSlug}`;
+                // Tạo ID từ text của heading - chuẩn SEO
+                let baseSlug = text.toLowerCase()
+                    .replace(/[^\w\s-]/g, '') // Loại bỏ ký tự đặc biệt
+                    .replace(/\s+/g, '-') // Thay thế khoảng trắng bằng dấu gạch ngang
+                    .replace(/^-+|-+$/g, ''); // Loại bỏ dấu gạch ngang ở đầu và cuối
 
-                console.log(`TOC - Created ID: ${id} for heading: ${text}`);
+                let id = `heading-${level}-${index}-${baseSlug}`;
+
+                console.log(`TOC - SEO Optimized ID: ${id} for heading: ${text} (level: ${level})`);
 
                 return {
                     id,
@@ -47,12 +51,35 @@ const TableOfContents = ({ content, contentRef }) => {
                 };
             });
 
-            setHeadings(headingsData);
+            // SEO Validation: Kiểm tra cấu trúc heading
+            const h1Count = headingsData.filter(h => h.level === 1).length;
+            const hasValidStructure = headingsData.every((heading, index) => {
+                if (index === 0) return heading.level <= 2; // Heading đầu tiên nên là H1 hoặc H2
+                const prevLevel = headingsData[index - 1].level;
+                return heading.level <= prevLevel + 1; // Không được nhảy cóc quá 1 level
+            });
+
+            console.log(`TOC - SEO Validation: ${h1Count} H1 tags, structure valid: ${hasValidStructure}`);
+
+            if (h1Count > 1) {
+                console.warn('TOC - SEO Warning: Multiple H1 tags detected. Only first H1 will be used.');
+            }
+
+            if (!hasValidStructure) {
+                console.warn('TOC - SEO Warning: Invalid heading structure detected.');
+            }
+
+            // SEO Best Practice: Chỉ hiển thị H2-H6 trong mục lục (H1 là title chính)
+            const filteredHeadings = headingsData.filter(heading => heading.level >= 2);
+
+            console.log(`TOC - Filtered for TOC: ${filteredHeadings.length}/${headingsData.length} headings (H2+)`);
+
+            setHeadings(filteredHeadings);
 
             // Đợi một chút để đảm bảo content đã được hiển thị trong DOM
             setTimeout(() => {
-                if (headingsData.length > 0 && contentRef.current) {
-                    console.log('TOC - Updating content with IDs');
+                if (filteredHeadings.length > 0 && contentRef.current) {
+                    console.log('TOC - Updating content with SEO-optimized IDs');
 
                     const tempDiv = document.createElement('div');
                     tempDiv.innerHTML = content;
@@ -64,14 +91,18 @@ const TableOfContents = ({ content, contentRef }) => {
                             const headingData = headingsData[index];
                             if (heading.textContent.trim() === headingData.text) {
                                 heading.id = headingData.id;
-                                console.log(`TOC - Set ID ${headingData.id} for heading: ${heading.textContent.trim()}`);
+                                console.log(`TOC - Set SEO ID ${headingData.id} for heading: ${heading.textContent.trim()}`);
                             }
                         }
                     });
 
+                    // Chỉ cập nhật nội dung nếu cần thiết
+                    const currentContent = contentRef.current.innerHTML;
                     const updatedContent = tempDiv.innerHTML;
-                    setProcessedContent(updatedContent);
-                    contentRef.current.innerHTML = updatedContent;
+
+                    if (currentContent !== updatedContent) {
+                        contentRef.current.innerHTML = updatedContent;
+                    }
                 }
             }, 100);
         }
@@ -138,14 +169,16 @@ const TableOfContents = ({ content, contentRef }) => {
 
         console.log('TOC Click - Target ID:', targetId); // Debug log
 
+        // Tìm element với ID trong toàn bộ document
         const targetElement = document.getElementById(targetId);
 
         if (targetElement) {
             console.log('TOC Click - Element found:', targetElement); // Debug log
 
-            const headerHeight = 150; // Điều chỉnh offset để tránh header che
+            const headerHeight = 120; // Điều chỉnh offset để tránh header che
             const targetPosition = targetElement.offsetTop - headerHeight;
 
+            // Cuộn đến vị trí mục tiêu
             window.scrollTo({
                 top: targetPosition,
                 behavior: 'smooth'
@@ -159,6 +192,20 @@ const TableOfContents = ({ content, contentRef }) => {
         } else {
             console.log('TOC Click - Element NOT found for ID:', targetId); // Debug log
             console.log('Available IDs:', Array.from(document.querySelectorAll('[id]')).map(el => el.id)); // Debug log
+
+            // Thử tìm lại sau một khoảng thời gian ngắn
+            setTimeout(() => {
+                const retryElement = document.getElementById(targetId);
+                if (retryElement) {
+                    const headerHeight = 120;
+                    const targetPosition = retryElement.offsetTop - headerHeight;
+                    window.scrollTo({
+                        top: targetPosition,
+                        behavior: 'smooth'
+                    });
+                    setActiveHeading(targetId);
+                }
+            }, 200);
         }
     };
 
@@ -200,7 +247,7 @@ const TableOfContents = ({ content, contentRef }) => {
                         textShadow: '0 2px 4px rgba(0, 0, 0, 0.3)'
                     }}>
                         <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+                            <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z" />
                         </svg>
                         Mục lục bài viết
                     </h3>
@@ -264,24 +311,17 @@ const TableOfContents = ({ content, contentRef }) => {
                                 }}>
                                     {/* Icon cho level khác nhau */}
                                     <span style={{
-                                        width: '24px',
-                                        height: '24px',
+                                        width: '8px',
+                                        height: '8px',
                                         borderRadius: '50%',
                                         background: activeHeading === heading.id
                                             ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
                                             : 'rgba(255, 255, 255, 0.25)',
-                                        color: activeHeading === heading.id ? '#ffffff' : '#ffffff',
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        justifyContent: 'center',
-                                        fontSize: '11px',
-                                        fontWeight: 'bold',
                                         flexShrink: 0,
                                         boxShadow: activeHeading === heading.id
                                             ? '0 2px 8px rgba(102, 126, 234, 0.3)'
                                             : 'none'
                                     }}>
-                                        {heading.level}
                                     </span>
 
                                     <span style={{
