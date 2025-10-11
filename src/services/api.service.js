@@ -443,6 +443,12 @@ const fetchArticlesByCategorySlugAPI = (categorySlug, subcategorySlug = null) =>
     return axios.get(URL_BACKEND)
 }
 
+// Hàm lấy thống kê cho category (số bài viết, số danh mục con)
+const fetchCategoryStatsAPI = (categorySlug) => {
+    const URL_BACKEND = `/api/cms/category/${categorySlug}/stats`
+    return axios.get(URL_BACKEND)
+}
+
 export {
     fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI,
     fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI, loginWithGoogle, getAuthCode,
@@ -453,5 +459,5 @@ export {
     deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro, updateDesignAPI, updateContactAPI,
     getProfileAPI,GetProductById,GetNewById,GetArticleBySlug,fetchAllBannersAPI,updateBannerAPI ,createBannerAPI,deleteBannerAPI,
     fetchArticleCategoryTreeAPI, fetchAllArticleCategoriesAPI, fetchArticleCategoryByIdAPI, createArticleCategoryAPI,
-    updateArticleCategoryAPI, deleteArticleCategoryAPI, searchArticleCategoriesAPI, fetchArticlesByCategorySlugAPI
+    updateArticleCategoryAPI, deleteArticleCategoryAPI, searchArticleCategoriesAPI, fetchArticlesByCategorySlugAPI, fetchCategoryStatsAPI
 }
