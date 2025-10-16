@@ -15,6 +15,12 @@ const NewsDetail = () => {
     const [error, setError] = useState(null);
     const [showMobileTOC, setShowMobileTOC] = useState(false); // Dùng cho Drawer
     const [showScrollTop, setShowScrollTop] = useState(false); // Thêm state để kiểm soát nút cuộn
+    const [imageStats, setImageStats] = useState({
+        totalImages: 0,
+        base64Images: 0,
+        externalImages: 0,
+        localImages: 0
+    });
     const { Content } = Layout;
     const { Title, Paragraph, Text } = Typography;
     const contentRef = useRef(null);
@@ -23,6 +29,72 @@ const NewsDetail = () => {
     const generateImageAlt = (src) => {
         const filename = src.split('/').pop().split('.')[0];
         return `Hình ảnh: ${filename.replace(/[-_]/g, ' ')}`;
+    };
+
+    // Helper function to detect and process images in content
+    const processImagesInContent = (content) => {
+        // Check if content contains images
+        const hasImages = /<img[^>]*>/i.test(content);
+        
+        if (!hasImages) {
+            return content;
+        }
+
+        // Process each image with responsive styling
+        return content
+            .replace(/<img([^>]+)>/g, (match, attrs) => {
+                let newAttrs = attrs;
+                
+                // Add lazy loading
+                if (!newAttrs.includes('loading=')) {
+                    newAttrs += ' loading="lazy"';
+                }
+                
+                // Add alt text if missing
+                if (!newAttrs.includes('alt=')) {
+                    const srcMatch = newAttrs.match(/src=["']([^"']+)["']/);
+                    const altText = srcMatch ? generateImageAlt(srcMatch[1]) : 'Hình ảnh biển quảng cáo';
+                    newAttrs += ` alt="${altText}"`;
+                }
+                
+                // Detect image type and apply appropriate styling
+                const srcMatch = newAttrs.match(/src=["']([^"']+)["']/);
+                if (srcMatch && srcMatch[1]) {
+                    const src = srcMatch[1];
+                    
+                    // Check if it's a base64 image
+                    const isBase64 = src.includes('data:image');
+                    const isExternalUrl = src.startsWith('http') && !src.includes(window.location.hostname);
+                    
+                    // Apply responsive styling based on image type
+                    if (isBase64 || isExternalUrl) {
+                        // For base64 and external images, apply responsive styling
+                        newAttrs += ' style="max-width: 100%; height: auto; display: block; margin: 0 auto; object-fit: contain;"';
+                    } else {
+                        // For local images, apply standard responsive styling
+                        newAttrs += ' style="max-width: 100%; height: auto; display: block;"';
+                    }
+                }
+                
+                return `<img${newAttrs}/>`;
+            });
+    };
+
+    // Helper function to get image statistics
+    const getImageStats = (content) => {
+        const imgTags = content.match(/<img[^>]*>/g) || [];
+        const base64Images = imgTags.filter(img => img.includes('data:image')).length;
+        const externalImages = imgTags.filter(img =>
+            img.includes('http') && !img.includes(window.location.hostname)
+        ).length;
+        const localImages = imgTags.length - base64Images - externalImages;
+        
+        return {
+            totalImages: imgTags.length,
+            base64Images,
+            externalImages,
+            localImages
+        };
     };
 
     useEffect(() => {
@@ -84,6 +156,13 @@ const NewsDetail = () => {
                         const altText = srcMatch ? generateImageAlt(srcMatch[1]) : 'Hình ảnh biển quảng cáo';
                         newAttrs += ` alt="${altText}"`;
                     }
+                    
+                    // Thêm responsive styles cho base64 images
+                    if (newAttrs.includes('data:image')) {
+                        // Thêm CSS inline cho base64 images để đảm bảo responsive
+                        newAttrs += ' style="max-width: 100%; height: auto; display: block; margin: 0 auto;"';
+                    }
+                    
                     return `<img${newAttrs}/>`;
                 });
 
@@ -142,6 +221,9 @@ const NewsDetail = () => {
     };
     
     const { title, featuredImageUrl, category, createdAt, author, authorAvatar, content, type } = newsItem || {};
+    
+    // Debug information for image processing
+    console.log('Image Statistics:', imageStats);
 
     if (loading) {
         return (
@@ -458,14 +540,15 @@ const NewsDetail = () => {
 
                                 {featuredImageUrl && (
                                     <div className="article-image-container" style={{
-                                        margin: '0 16px 24px',
+                                        margin: '0 8px 24px',
                                         position: 'relative',
                                         borderRadius: '8px',
                                         overflow: 'hidden',
                                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
                                         border: '1px solid #e9ecef',
-                                        width: 'calc(100% - 32px)',
-                                        maxWidth: '100%'
+                                        width: '100%',
+                                        maxWidth: '100%',
+                                        boxSizing: 'border-box'
                                     }}>
                                         <LazyImage
                                             src={
@@ -478,7 +561,9 @@ const NewsDetail = () => {
                                             className="article-image"
                                             style={{
                                                 width: '100%',
-                                                height: '280px',
+                                                height: 'auto',
+                                                minHeight: '200px',
+                                                maxHeight: '400px',
                                                 objectFit: 'cover',
                                                 display: 'block'
                                             }}
@@ -488,8 +573,8 @@ const NewsDetail = () => {
 
                                 <div className="article-content" style={{
                                     background: '#ffffff',
-                                    padding: '24px 20px',
-                                    margin: '0 16px',
+                                    padding: '16px 12px',
+                                    margin: '0 8px',
                                     borderRadius: '8px',
                                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.06)',
                                     border: '1px solid #e9ecef',
@@ -497,7 +582,7 @@ const NewsDetail = () => {
                                     fontSize: '15px',
                                     color: '#495057',
                                     fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-                                    width: 'calc(100% - 32px)',
+                                    width: '100%',
                                     boxSizing: 'border-box',
                                     wordWrap: 'break-word',
                                     overflowWrap: 'break-word'
@@ -511,7 +596,8 @@ const NewsDetail = () => {
                                             fontSize: '15px',
                                             lineHeight: '1.7',
                                             wordWrap: 'break-word',
-                                            overflowWrap: 'break-word'
+                                            overflowWrap: 'break-word',
+                                            overflowX: 'hidden', // Ngăn ngang overflow cho toàn bộ content
                                         }}
                                     />
                                 </div>
@@ -519,13 +605,13 @@ const NewsDetail = () => {
                                 {/* Related Articles */}
                                 <div className="related-articles-container" style={{
                                     marginTop: '32px',
-                                    margin: '32px 16px 0',
+                                    margin: '32px 8px 0',
                                     background: '#f8f9fa',
                                     borderRadius: '12px',
-                                    padding: '24px 20px',
+                                    padding: '16px 12px',
                                     border: '1px solid #e9ecef',
                                     boxShadow: '0 4px 12px rgba(0, 0, 0, 0.06)',
-                                    width: 'calc(100% - 32px)',
+                                    width: '100%',
                                     boxSizing: 'border-box'
                                 }}>
                                     <RelatedArticles currentArticle={newsItem} limit={3} />

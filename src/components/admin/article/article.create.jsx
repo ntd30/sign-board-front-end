@@ -262,11 +262,11 @@ const ArticleCreate = (props) => {
                             <Form.Item
                                 name="excerpt"
                                 label="Tóm tắt"
-                                rules={[{ max: 200, message: 'Tóm tắt không được vượt quá 200 ký tự!' }]}
+                                rules={[{ max: 500, message: 'Tóm tắt không được vượt quá 500 ký tự!' }]}
                             >
                                 <Input.TextArea
                                     rows={3}
-                                    placeholder="Nhập tóm tắt bài viết (tối đa 200 ký tự)"
+                                    placeholder="Nhập tóm tắt bài viết (tối đa 500 ký tự)"
                                 />
                             </Form.Item>
                             <Form.Item
@@ -300,7 +300,7 @@ const ArticleCreate = (props) => {
                                         'link',
                                         'image',
                                     ]}
-                                    style={{ height: '400px', marginBottom: '50px' }}
+                                    style={{ height: '600px', marginBottom: '50px' }}
                                 />
                             </Form.Item>
                         </Col>
@@ -354,11 +354,11 @@ const ArticleCreate = (props) => {
                                         if (!isJpgOrPng) {
                                             message.error('Bạn chỉ có thể tải lên file JPG/PNG!');
                                         }
-                                        const isLt2M = file.size / 1024 / 1024 < 2;
-                                        if (!isLt2M) {
-                                            message.error('Ảnh phải nhỏ hơn 2MB!');
+                                        const isLt5M = file.size / 1024 / 1024 < 5;
+                                        if (!isLt5M) {
+                                            message.error('Ảnh phải nhỏ hơn 5MB!');
                                         }
-                                        if (isJpgOrPng && isLt2M && fileList.length < 1) {
+                                        if (isJpgOrPng && isLt5M && fileList.length < 1) {
                                             return true;
                                         }
                                         if (fileList.length >= 1) {

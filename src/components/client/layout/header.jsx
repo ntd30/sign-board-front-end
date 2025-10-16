@@ -31,22 +31,31 @@ const Header = () => {
         const loadCategories = async () => {
             try {
                 const res = await fetchArticleCategoryTreeAPI();
+                console.log('📋 Categories loaded from API:', res?.data);
+
                 if (res?.data) {
-                    const menuItems = res.data.map(category => ({
+                    // Lọc ra các categories có bài viết hoặc có children có bài viết
+                    const validCategories = res.data.filter(category => {
+                        const hasArticles = category.articleCount && category.articleCount > 0;
+                        const hasChildrenArticles = category.totalChildrenArticlesCount && category.totalChildrenArticlesCount > 0;
+                        const hasChildren = category.children && category.children.length > 0;
+
+                        console.log(`📁 Category "${category.name}" (${category.slug}):`);
+                        console.log(`  - Direct articles: ${category.articleCount || 0}`);
+                        console.log(`  - Total children articles: ${category.totalChildrenArticlesCount || 0}`);
+                        console.log(`  - Children count: ${category.childrenCount || 0}`);
+                        console.log(`  - Valid: ${hasArticles || hasChildrenArticles || hasChildren}`);
+
+                        return hasArticles || hasChildrenArticles || hasChildren;
+                    });
+
+                    console.log(`✅ Valid categories: ${validCategories.length}/${res.data.length}`);
+
+                    const menuItems = validCategories.map(category => ({
                         key: category.slug,
                         label: (
-                            <div className="menu-item-label-wrapper">
                                 <Link to={`/${category.slug}`}>{category.name}</Link>
-                                {category.children?.length > 0 && (
-                                    <DownOutlined className="menu-item-arrow" />
-                                )}
-                            </div>
                         ),
-                        children: category.children?.length > 0 ?
-                            category.children.map(child => ({
-                                key: `${category.slug}/${child.slug}`, // Sửa key để unique
-                                label: <Link to={`/${category.slug}/${child.slug}`}>{child.name}</Link> // Sửa đường dẫn
-                            })) : null
                     }));
                     setCategories(menuItems);
                 }
@@ -134,7 +143,7 @@ const Header = () => {
         <Drawer
             title={
                 <div className="drawer-title">
-                    <img src="/img/NV logo.png" alt="Logo" className="drawer-logo" />
+                    <img src="/img/nhanvietadv-logo.png" alt="Logo" className="drawer-logo" />
                     <span className="drawer-title-text">Menu</span>
                 </div>
             }
@@ -183,7 +192,7 @@ const Header = () => {
                 <Row align="middle" justify="space-between" className="header-row">
                     <Col xs={12} sm={8} md={5} lg={4} className="header-logo">
                         <Link to="/">
-                            <img src="/img/NV logo.png" alt="Sign Board Logo" />
+                            <img src="/img/nhanvietadv-logo.png" alt="Sign Board Logo" />
                         </Link>
                     </Col>
 

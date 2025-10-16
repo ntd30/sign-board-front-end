@@ -24,23 +24,18 @@ const AboutPage = () => {
                 color: 'white'
             }}>
                 <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                    <Title level={1} style={{
-                        fontSize: '3.5rem',
-                        fontWeight: '700',
-                        marginBottom: '20px',
-                        color: '#ffffff',
-                        fontFamily: 'Montserrat, sans-serif'
-                    }}>
-                        Về Chúng Tôi
-                    </Title>
-                    <Text style={{
-                        fontSize: '1.3rem',
-                        opacity: 0.9,
-                        display: 'block',
-                        marginBottom: '30px'
-                    }}>
-                        Quảng Cáo Nhân Việt - Đồng hành cùng thương hiệu của bạn
-                    </Text>
+                    <img
+                        src="https://placehold.co/1200x400/004D40/ffffff?text=1200x400"
+                        alt="Hero Banner"
+                        style={{
+                            width: '100%',
+                            maxWidth: '1200px',
+                            height: '400px',
+                            objectFit: 'cover',
+                            borderRadius: '12px',
+                            boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
+                        }}
+                    />
                 </div>
             </div>
 
@@ -51,7 +46,7 @@ const AboutPage = () => {
                     <Row gutter={[40, 40]}>
                         <Col xs={24} md={12}>
                             <img
-                                src="https://placehold.co/600x400/004D40/ffffff?text=Quảng+Cáo+Nhân+Việt"
+                                src="https://placehold.co/600x400/004D40/ffffff?text=600x400"
                                 alt="Quảng Cáo Nhân Việt"
                                 style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: '8px' }}
                             />
@@ -61,17 +56,17 @@ const AboutPage = () => {
                                 Quảng Cáo Nhân Việt
                             </Title>
                             <Paragraph style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#555' }}>
-                                <Text strong>Quảng Cáo Nhân Việt</Text> là đơn vị chuyên <Text strong>làm biển hiệu quảng cáo</Text> chuyên nghiệp,
+                                <Text strong style={{ fontSize: '1.2rem' }}>Quảng Cáo Nhân Việt</Text> là đơn vị chuyên <Text strong style={{ fontSize: '1.2rem' }}>làm biển hiệu quảng cáo</Text> chuyên nghiệp,
                                 cung cấp các giải pháp thiết kế, sản xuất và thi công biển bảng, hộp đèn, chữ nổi, in UV,…
                                 dành cho doanh nghiệp, cửa hàng và tổ chức trên toàn quốc.
                             </Paragraph>
                             <Paragraph style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#555' }}>
-                                Mặc dù là <Text strong>công ty mới thành lập</Text>, nhưng đội ngũ nhân sự của chúng tôi đều có
-                                <Text strong>hơn 10 năm kinh nghiệm</Text> trong nghề quảng cáo – từng trực tiếp thực hiện hàng trăm dự án lớn nhỏ cho các thương hiệu trong nước.
+                                Mặc dù là <Text strong style={{ fontSize: '1.2rem' }}>công ty mới thành lập</Text>, nhưng đội ngũ nhân sự của chúng tôi đều có
+                                <Text strong style={{ fontSize: '1.2rem' }}> hơn 10 năm kinh nghiệm</Text> trong nghề quảng cáo – từng trực tiếp thực hiện hàng trăm dự án lớn nhỏ cho các thương hiệu trong nước.
                             </Paragraph>
                             <Paragraph style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#555' }}>
-                                Với tinh thần <Text strong>Sáng tạo – Uy tín – Chất lượng</Text>, chúng tôi cam kết mang đến cho khách hàng
-                                sản phẩm <Text strong>Thẩm mỹ – Bền Vững – Hiệu quả quảng bá cao</Text>.
+                                Với tinh thần <Text strong style={{ fontSize: '1.2rem' }}>Sáng tạo – Uy tín – Chất lượng</Text>, chúng tôi cam kết mang đến cho khách hàng
+                                sản phẩm <Text strong style={{ fontSize: '1.2rem' }}>Thẩm mỹ – Bền Vững – Hiệu quả quảng bá cao</Text>.
                             </Paragraph>
                         </Col>
                     </Row>
@@ -86,17 +81,25 @@ const AboutPage = () => {
                     <Row gutter={[40, 40]}>
                         <Col xs={24} md={8}>
                             <Card style={{ textAlign: 'center', height: '100%', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-                                <EyeOutlined style={{ fontSize: '3rem', color: '#004D40', marginBottom: '20px' }} />
+                                <img
+                                    src="https://placehold.co/250x250/004D40/ffffff?text=250x250"
+                                    alt="Tầm nhìn"
+                                    style={{ width: '250px', height: '250px', objectFit: 'cover', borderRadius: '8px', marginBottom: '20px' }}
+                                />
                                 <Title level={3} style={{ color: '#004D40' }}>Tầm nhìn</Title>
                                 <Paragraph style={{ fontSize: '1rem', lineHeight: '1.6', color: '#555' }}>
-                                    Trở thành <Text strong>Đơn vị hàng đầu</Text> trong lĩnh vực làm biển hiệu quảng cáo tại Việt Nam,
+                                    Trở thành <Text strong style={{ fontSize: '1.1rem' }}>Đơn vị hàng đầu</Text> trong lĩnh vực làm biển hiệu quảng cáo tại Việt Nam,
                                     tiên phong ứng dụng công nghệ mới (AI, Số hóa quy trình….), mang đến các sản phẩm chất lượng cao, thẩm mỹ và bền vững.
                                 </Paragraph>
                             </Card>
                         </Col>
                         <Col xs={24} md={8}>
                             <Card style={{ textAlign: 'center', height: '100%', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-                                <RocketOutlined style={{ fontSize: '3rem', color: '#004D40', marginBottom: '20px' }} />
+                                <img
+                                    src="https://placehold.co/250x250/004D40/ffffff?text=250x250"
+                                    alt="Sứ mệnh"
+                                    style={{ width: '250px', height: '250px', objectFit: 'cover', borderRadius: '8px', marginBottom: '20px' }}
+                                />
                                 <Title level={3} style={{ color: '#004D40' }}>Sứ mệnh</Title>
                                 <Paragraph style={{ fontSize: '1rem', lineHeight: '1.6', color: '#555' }}>
                                     Giúp doanh nghiệp xây dựng hình ảnh thương hiệu chuyên nghiệp qua từng sản phẩm biển hiệu.
@@ -107,17 +110,96 @@ const AboutPage = () => {
                         </Col>
                         <Col xs={24} md={8}>
                             <Card style={{ textAlign: 'center', height: '100%', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-                                <HeartOutlined style={{ fontSize: '3rem', color: '#004D40', marginBottom: '20px' }} />
+                                <img
+                                    src="https://placehold.co/250x250/004D40/ffffff?text=250x250"
+                                    alt="Giá trị cốt lõi"
+                                    style={{ width: '250px', height: '250px', objectFit: 'cover', borderRadius: '8px', marginBottom: '20px' }}
+                                />
                                 <Title level={3} style={{ color: '#004D40' }}>Giá trị cốt lõi</Title>
+                                
                                 <Paragraph style={{ fontSize: '1rem', lineHeight: '1.6', color: '#555' }}>
-                                    <Text strong>Uy tín:</Text> Luôn đặt lợi ích và sự hài lòng của khách hàng lên hàng đầu.<br/>
-                                    <Text strong>Chất lượng:</Text> Tỉ mỉ trong từng chi tiết, lựa chọn vật liệu tốt nhất.<br/>
-                                    <Text strong>Sáng tạo:</Text> Không ngừng đổi mới để mang đến thiết kế ấn tượng và độc đáo.<br/>
-                                    <Text strong>Tận tâm:</Text> Hỗ trợ khách hàng từ khâu tư vấn đến bảo hành hậu mãi.
+                                   Luôn đặt lợi ích và sự hài lòng của khách hàng lên hàng đầu.
+Tỉ mỉ trong từng chi tiết, lựa chọn vật liệu tốt nhất.
+Không ngừng đổi mới để mang đến thiết kế ấn tượng và độc đáo.
+Hỗ trợ khách hàng từ khâu tư vấn đến bảo hành hậu mãi.
                                 </Paragraph>
                             </Card>
                         </Col>
                     </Row>
+                </Card>
+
+                {/* Image Carousel */}
+                <Card style={{ marginBottom: '40px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+                    <Title level={2} style={{ color: '#004D40', textAlign: 'center', marginBottom: '30px' }}>
+                        Hình Ảnh Dịch Vụ
+                    </Title>
+
+                    {/* Image Carousel */}
+                    <div style={{ overflow: 'hidden', position: 'relative', borderRadius: '12px' }}>
+                        <div style={{
+                            display: 'flex',
+                            animation: 'slide 20s linear infinite',
+                            width: 'fit-content'
+                        }}>
+                            {/* First set of placeholder images */}
+                            {[
+                                '250x250',
+                                '300x200',
+                                '200x250',
+                                '280x220',
+                                '220x280',
+                                '250x250'
+                            ].map((size, index) => (
+                                <img
+                                    key={`first-${index}`}
+                                    src={`https://placehold.co/${size}/004D40/ffffff?text=${size}`}
+                                    alt={`Dịch vụ ${index + 1}`}
+                                    style={{
+                                        width: size.split('x')[0] + 'px',
+                                        height: size.split('x')[1] + 'px',
+                                        objectFit: 'cover',
+                                        flexShrink: 0,
+                                        margin: '0 10px'
+                                    }}
+                                />
+                            ))}
+                            
+                            {/* Duplicate set for seamless loop */}
+                            {[
+                                '250x250',
+                                '300x200',
+                                '200x250',
+                                '280x220',
+                                '220x280',
+                                '250x250'
+                            ].map((size, index) => (
+                                <img
+                                    key={`second-${index}`}
+                                    src={`https://placehold.co/${size}/004D40/ffffff?text=${size}`}
+                                    alt={`Dịch vụ ${index + 1}`}
+                                    style={{
+                                        width: size.split('x')[0] + 'px',
+                                        height: size.split('x')[1] + 'px',
+                                        objectFit: 'cover',
+                                        flexShrink: 0,
+                                        margin: '0 10px'
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* CSS Animation */}
+                    <style jsx>{`
+                        @keyframes slide {
+                            0% {
+                                transform: translateX(0);
+                            }
+                            100% {
+                                transform: translateX(-50%);
+                            }
+                        }
+                    `}</style>
                 </Card>
 
                 {/* Services */}
@@ -127,7 +209,7 @@ const AboutPage = () => {
                     </Title>
 
                     <Paragraph style={{ fontSize: '1.1rem', lineHeight: '1.8', color: '#555', textAlign: 'center', marginBottom: '40px' }}>
-                        Chúng tôi chuyên cung cấp dịch vụ <Text strong>làm biển hiệu quảng cáo</Text> trọn gói, bao gồm:
+                        Chúng tôi chuyên cung cấp dịch vụ <Text strong style={{ fontSize: '1.2rem' }}>làm biển hiệu quảng cáo</Text> trọn gói, bao gồm:
                     </Paragraph>
 
                     <Row gutter={[32, 32]}>
@@ -259,7 +341,7 @@ const AboutPage = () => {
 
                     <div style={{ textAlign: 'center', marginBottom: '30px' }}>
                         <Paragraph style={{ fontSize: '1.2rem', color: '#555', marginBottom: '20px' }}>
-                            Hãy để <Text strong>Quảng cáo Nhân Việt</Text> đồng hành cùng bạn trong việc xây dựng hình ảnh chuyên nghiệp, ấn tượng và khác biệt!
+                            Hãy để <Text strong style={{ fontSize: '1.3rem' }}>Quảng cáo Nhân Việt</Text> đồng hành cùng bạn trong việc xây dựng hình ảnh chuyên nghiệp, ấn tượng và khác biệt!
                         </Paragraph>
                     </div>
 
@@ -292,7 +374,7 @@ const AboutPage = () => {
                     <div style={{ textAlign: 'center' }}>
                         <EnvironmentOutlined style={{ fontSize: '1.5rem', color: '#004D40', marginRight: '10px' }} />
                         <Text style={{ fontSize: '1.1rem', color: '#666' }}>
-                            <Text strong>Xưởng sản xuất:</Text> L10-LK14, khu đất dịch vụ LK20 AB, Phường Dương Nội, Thành phố Hà Nội
+                            <Text strong style={{ fontSize: '1.2rem' }}>Xưởng sản xuất:</Text> L10-LK14, khu đất dịch vụ LK20 AB, Phường Dương Nội, Thành phố Hà Nội
                         </Text>
                     </div>
                 </Card>
@@ -302,3 +384,4 @@ const AboutPage = () => {
 };
 
 export default AboutPage;
+

@@ -33,8 +33,8 @@ const ArticleCategoryClientPage = () => {
         return null;
     };
 
-    // Xác định slug hiện tại để xử lý (có thể là parentSlug hoặc slug)
-    const currentSlug = childSlug || slug;
+    // Xác định slug hiện tại để xử lý (có thể là parentSlug, childSlug hoặc slug)
+    const currentSlug = childSlug || parentSlug || slug;
 
     useEffect(() => {
         console.log('🔍 useEffect triggered with:', { currentSlug, parentSlug, childSlug });
@@ -149,6 +149,12 @@ const ArticleCategoryClientPage = () => {
     // Hàm load dữ liệu danh mục và bài viết
     const loadCategoryTree = async () => {
         console.log('🌳 loadCategoryTree function called');
+        // Reset states trước khi load dữ liệu mới
+        setLoading(true);
+        setError(null);
+        setArticles([]);
+        setSubcategories([]);
+
         try {
             console.log('📡 Calling fetchArticleCategoryTreeAPI...');
             const categoryRes = await fetchArticleCategoryTreeAPI();
@@ -158,13 +164,27 @@ const ArticleCategoryClientPage = () => {
             // Lưu trữ toàn bộ category tree để tính toán số liệu
             if (categoryRes?.data && Array.isArray(categoryRes.data)) {
                 console.log('💾 Setting category tree with', categoryRes.data.length, 'items');
+
+                // Debug: Log tất cả categories và children của chúng
+                console.log('🔍 ALL CATEGORIES IN TREE:');
+                categoryRes.data.forEach(cat => {
+                    console.log(`📁 ${cat.name} (${cat.slug}) - Children: ${cat.children?.length || 0}`);
+                    if (cat.children && cat.children.length > 0) {
+                        cat.children.forEach(child => {
+                            console.log(`  👶 ${child.name} (${child.slug})`);
+                        });
+                    }
+                });
+
                 setCategoryTree(categoryRes.data);
             } else {
                 console.log('⚠️ Category tree data is not an array or is empty');
+                console.log('📊 categoryRes:', categoryRes);
+                console.log('📊 categoryRes.data:', categoryRes?.data);
             }
 
             // Nếu có parentSlug và childSlug, tìm child category và parent category
-            if (parentSlug && childSlug) {
+            if (parentSlug && childSlug && currentSlug === childSlug) {
                 console.log('🔍 Finding parent and child categories:', { parentSlug, childSlug });
                 const parentCat = findCategoryBySlug(categoryRes.data, parentSlug);
                 console.log("🏆 Found parent category:", parentCat);
@@ -187,22 +207,36 @@ const ArticleCategoryClientPage = () => {
                     setError('Không tìm thấy danh mục bài viết cha');
                 }
             } else {
-                // Trường hợp chỉ có một slug (category cấp 1)
-                console.log('🔍 Finding single category with slug:', currentSlug);
+                // Trường hợp chỉ có một slug (category cấp 1 hoặc category cha)
+                console.log('🔍 Finding category with slug:', currentSlug);
                 const foundCategory = findCategoryBySlug(categoryRes.data, currentSlug);
                 console.log("🏆 Found category:", foundCategory);
+                console.log("🏆 Found category children:", foundCategory?.children);
 
                 if (foundCategory) {
                     console.log('✅ Setting found category');
+                    console.log('📋 Category details:', {
+                        id: foundCategory.id,
+                        name: foundCategory.name,
+                        slug: foundCategory.slug,
+                        childrenCount: foundCategory.children?.length || 0,
+                        children: foundCategory.children?.map(c => ({ name: c.name, slug: c.slug })) || []
+                    });
                     setCategory(foundCategory);
                     setParentCategory(null);
 
                     // Lấy subcategories nếu có
                     if (foundCategory.children && foundCategory.children.length > 0) {
                         console.log('📁 Setting subcategories:', foundCategory.children.length, 'items');
+                        console.log('📁 Subcategories details:', foundCategory.children.map(c => ({
+                            id: c.id,
+                            name: c.name,
+                            slug: c.slug
+                        })));
                         setSubcategories(foundCategory.children);
                     } else {
                         console.log('📁 No subcategories found');
+                        setSubcategories([]);
                     }
                 } else {
                     console.log('❌ Category not found');
@@ -210,46 +244,84 @@ const ArticleCategoryClientPage = () => {
                 }
             }
 
-            // Lấy articles của category này
+            // Lấy articles của category hiện tại và tất cả danh mục con
             try {
-                let articlesRes;
-                if (parentSlug && childSlug) {
-                    // Nếu có cả parent và child slug, lấy bài viết theo cả hai
-                    console.log("📖 Fetching articles for parent:", parentSlug, "child:", childSlug);
-                    articlesRes = await fetchArticlesByCategorySlugAPI(parentSlug, childSlug);
-                } else {
-                    // Nếu chỉ có một slug, lấy bài viết theo slug đó
-                    console.log("📖 Fetching articles for slug:", currentSlug);
-                    articlesRes = await fetchArticlesByCategorySlugAPI(currentSlug);
-                }
+                console.log("📖 Fetching articles for category:", currentSlug);
+                let allArticles = [];
 
-                console.log("📨 Articles response:", articlesRes);
-                console.log("📋 Articles data:", articlesRes.data);
-                console.log("📋 Articles data type:", typeof articlesRes.data);
-                console.log("📋 Is array:", Array.isArray(articlesRes.data));
+                // Lấy bài viết của category hiện tại
+                const currentCategoryArticles = await fetchArticlesByCategorySlugAPI(currentSlug);
+                console.log("📨 Current category articles response:", currentCategoryArticles);
+                console.log("📊 Response data type:", typeof currentCategoryArticles.data);
+                console.log("📊 Response data content:", currentCategoryArticles.data);
 
-                // Xử lý response từ API
-                if (Array.isArray(articlesRes.data)) {
-                    console.log("✅ Setting articles:", articlesRes.data.length, "items");
-                    setArticles(articlesRes.data);
-                } else if (typeof articlesRes.data === 'string') {
-                    // Nếu API trả về message string thay vì array
-                    console.log("⚠️ API returned string message:", articlesRes.data);
-                    setArticles([]);
-                } else if (articlesRes.data && typeof articlesRes.data === 'object') {
-                    // Nếu API trả về object có thuộc tính content hoặc data
-                    const articlesArray = articlesRes.data.content || articlesRes.data.data || [];
+                if (Array.isArray(currentCategoryArticles.data)) {
+                    allArticles.push(...currentCategoryArticles.data);
+                    console.log(`✅ Added ${currentCategoryArticles.data.length} articles from current category`);
+                } else if (typeof currentCategoryArticles.data === 'string') {
+                    console.log("⚠️ API returned string message:", currentCategoryArticles.data);
+                    // Nếu API trả về string, thử parse nó như JSON
+                    try {
+                        const parsedData = JSON.parse(currentCategoryArticles.data);
+                        if (Array.isArray(parsedData)) {
+                            allArticles.push(...parsedData);
+                            console.log(`✅ Added ${parsedData.length} articles from parsed string`);
+                        } else {
+                            console.log("⚠️ Parsed string is not an array:", parsedData);
+                        }
+                    } catch (parseErr) {
+                        console.log("⚠️ Could not parse string response:", parseErr.message);
+                    }
+                } else if (currentCategoryArticles.data && typeof currentCategoryArticles.data === 'object') {
+                    const articlesArray = currentCategoryArticles.data.content || currentCategoryArticles.data.data || [];
                     if (Array.isArray(articlesArray)) {
-                        console.log("✅ Setting articles from object:", articlesArray.length, "items");
-                        setArticles(articlesArray);
+                        allArticles.push(...articlesArray);
+                        console.log(`✅ Added ${articlesArray.length} articles from current category object`);
                     } else {
-                        console.log("⚠️ No valid articles array found in response");
-                        setArticles([]);
+                        console.log("⚠️ Object response doesn't contain articles array:", currentCategoryArticles.data);
                     }
                 } else {
-                    console.log("⚠️ API returned unexpected format");
-                    setArticles([]);
+                    console.log("⚠️ Unexpected response format:", currentCategoryArticles.data);
                 }
+
+                // Nếu có danh mục con, lấy bài viết của từng danh mục con
+                if (subcategories.length > 0) {
+                    console.log(`📁 Fetching articles from ${subcategories.length} subcategories`);
+
+                    for (const subcategory of subcategories) {
+                        try {
+                            console.log(`📖 Fetching articles for subcategory: ${subcategory.slug}`);
+                            const subcategoryArticles = await fetchArticlesByCategorySlugAPI(subcategory.slug);
+                            console.log(`📨 Subcategory ${subcategory.slug} response:`, subcategoryArticles);
+
+                            if (Array.isArray(subcategoryArticles.data)) {
+                                allArticles.push(...subcategoryArticles.data);
+                                console.log(`✅ Added ${subcategoryArticles.data.length} articles from subcategory ${subcategory.slug}`);
+                            } else if (typeof subcategoryArticles.data === 'object') {
+                                const articlesArray = subcategoryArticles.data.content || subcategoryArticles.data.data || [];
+                                if (Array.isArray(articlesArray)) {
+                                    allArticles.push(...articlesArray);
+                                    console.log(`✅ Added ${articlesArray.length} articles from subcategory ${subcategory.slug} (object)`);
+                                } else {
+                                    console.log(`⚠️ No articles array in subcategory ${subcategory.slug} object response`);
+                                }
+                            } else if (typeof subcategoryArticles.data === 'string') {
+                                console.log(`⚠️ Subcategory ${subcategory.slug} returned string:`, subcategoryArticles.data);
+                            }
+                        } catch (subErr) {
+                            console.error(`❌ Error fetching articles for subcategory ${subcategory.slug}:`, subErr);
+                        }
+                    }
+                }
+
+                // Loại bỏ bài viết trùng lặp dựa trên ID
+                const uniqueArticles = allArticles.filter((article, index, self) =>
+                    index === self.findIndex(a => a.id === article.id)
+                );
+
+                console.log(`📋 Final unique articles count: ${uniqueArticles.length}`);
+                console.log(`📋 Sample articles:`, uniqueArticles.slice(0, 3));
+                setArticles(uniqueArticles);
             } catch (err) {
                 console.error('❌ Error loading articles:', err);
                 setArticles([]);
@@ -262,10 +334,6 @@ const ArticleCategoryClientPage = () => {
             setLoading(false);
         }
     };
-
-    useEffect(() => {
-        loadCategoryTree();
-    }, [currentSlug, parentSlug]);
 
     // Các hàm thống kê không cần thiết nữa vì dữ liệu đã có sẵn từ backend
     // const fetchArticleCountForCategory = ... (removed)
@@ -557,280 +625,115 @@ const ArticleCategoryClientPage = () => {
                 </div>
             )}
 
-            {/* Subcategories Grid */}
-            {subcategories.length > 0 && (
-                <div style={{ marginBottom: '50px' }}>
-                    <div style={{
-                        textAlign: 'center',
-                        marginBottom: '40px'
-                    }}>
-                        <Title level={2} style={{
-                            fontSize: '2.5rem',
-                            fontWeight: '700',
-                            color: '#004D40',
-                            marginBottom: '15px',
-                            position: 'relative',
-                            display: 'inline-block'
+            {/* Articles Section - luôn hiển thị cho mọi category (cha hoặc con) */}
+            {(() => {
+                // Luôn hiển thị bài viết nếu có, bất kể là category cha hay con
+                if (articles.length > 0) {
+                    return (
+                        <div style={{ marginTop: '50px' }}>
+                            {/* <div style={{
+                                textAlign: 'center',
+                                marginBottom: '40px'
+                            }}>
+                                <Title level={2} style={{
+                                    fontSize: '2.5rem',
+                                    fontWeight: '700',
+                                    color: '#004D40',
+                                    marginBottom: '15px'
+                                }}>
+                                    Tất cả bài viết trong danh mục
+                                </Title>
+                                <Text style={{
+                                    fontSize: '1.1rem',
+                                    color: '#666',
+                                    maxWidth: '600px',
+                                    display: 'block',
+                                    margin: '0 auto'
+                                }}>
+                                    Bao gồm bài viết của danh mục hiện tại và tất cả danh mục con
+                                </Text>
+                            </div> */}
+                            <Row gutter={[16, 16]}>
+                                {articles.map(article => (
+                                    <Col xs={24} sm={12} md={8} key={article.id}>
+                                        <Card
+                                            hoverable
+                                            cover={
+                                                article.imageBase64 ? (
+                                                    <LazyImage
+                                                        src={`data:image/jpeg;base64,${article.imageBase64}`}
+                                                        alt={`Hình ảnh bài viết: ${article.title} - Biển quảng cáo từ Sign Board`}
+                                                        style={{ height: '200px', objectFit: 'cover' }}
+                                                        onError={(e) => {
+                                                            console.error('Failed to load base64 image');
+                                                            e.target.style.display = 'none';
+                                                        }}
+                                                    />
+                                                ) : article.featuredImageUrl ? (
+                                                    <LazyImage
+                                                        src={`${import.meta.env.VITE_BACKEND_URL}${article.featuredImageUrl}`}
+                                                        alt={`Hình ảnh bài viết: ${article.title} - Biển quảng cáo từ Sign Board`}
+                                                        style={{ height: '200px', objectFit: 'cover' }}
+                                                        onError={(e) => {
+                                                            console.error('Failed to load image:', article.featuredImageUrl);
+                                                            e.target.style.display = 'none';
+                                                        }}
+                                                    />
+                                                ) : null
+                                            }
+                                        >
+                                            <Card.Meta
+                                                title={article.title}
+                                                description={
+                                                    <div
+                                                        className="article-card-description"
+                                                        data-text={processArticleContent(article.content)}
+                                                    >
+                                                        {processArticleContent(article.content)}
+                                                    </div>
+                                                }
+                                            />
+                                            <div style={{ marginTop: '10px' }}>
+                                                <Link to={article.slug ? `/news/${article.slug}` : `/news/detail/${article.id}`}>
+                                                    Đọc thêm →
+                                                </Link>
+                                            </div>
+                                        </Card>
+                                    </Col>
+                                ))}
+                            </Row>
+                        </div>
+                    );
+                } else {
+                    // Hiển thị thông báo khi không có bài viết
+                    return (
+                        <div style={{
+                            textAlign: 'center',
+                            padding: '60px 20px',
+                            background: '#f8f9fa',
+                            borderRadius: '20px',
+                            marginTop: '50px'
                         }}>
-                            Khám phá danh mục
                             <div style={{
-                                width: '80px',
-                                height: '4px',
-                                background: 'linear-gradient(90deg, #004D40, #26A69A)',
-                                margin: '15px auto 0',
-                                borderRadius: '2px'
-                            }}></div>
-                        </Title>
-                        <Text style={{
-                            fontSize: '1.1rem',
-                            color: '#666',
-                            maxWidth: '600px',
-                            display: 'block',
-                            margin: '0 auto'
-                        }}>
-                            Chọn danh mục phù hợp để khám phá các bài viết và dịch vụ của chúng tôi
-                        </Text>
-                    </div>
+                                fontSize: '3rem',
+                                marginBottom: '20px',
+                                opacity: 0.5
+                            }}>
+                                📝
+                            </div>
+                            <Title level={3} style={{ color: '#666', marginBottom: '10px' }}>
+                                Đang cập nhật nội dung
+                            </Title>
+                            <Text style={{ color: '#999', fontSize: '1.1rem' }}>
+                                Danh mục này hiện chưa có bài viết nào. Chúng tôi sẽ sớm cập nhật nội dung cho bạn!
+                            </Text>
+                        </div>
+                    );
+                }
+            })()}
 
-                    <Row gutter={[32, 32]}>
-                        {subcategories.map((sub, index) => (
-                            <Col xs={24} sm={12} lg={8} key={sub.id}>
-                                <div
-                                    className="category-card"
-                                    style={{
-                                        position: 'relative',
-                                        borderRadius: '25px',
-                                        overflow: 'hidden',
-                                        background: '#ffffff',
-                                        transition: 'all 0.3s ease',
-                                        cursor: 'pointer',
-                                        boxShadow: '0 8px 25px rgba(0, 77, 64, 0.1)',
-                                        height: '100%'
-                                    }}
-                                    onMouseEnter={(e) => {
-                                        e.currentTarget.style.transform = 'translateY(-10px)';
-                                        e.currentTarget.style.boxShadow = '0 20px 40px rgba(0, 77, 64, 0.2)';
-                                    }}
-                                    onMouseLeave={(e) => {
-                                        e.currentTarget.style.transform = 'translateY(0)';
-                                        e.currentTarget.style.boxShadow = '0 8px 25px rgba(0, 77, 64, 0.1)';
-                                    }}
-                                >
-                                    <Link to={`/${currentSlug}/${sub.slug}`} style={{ textDecoration: 'none' }}>
-                                        {/* Card Header with Gradient Background */}
-                                        <div style={{
-                                            height: '160px',
-                                            background: `linear-gradient(135deg, ${index % 3 === 0 ? '#004D40' : index % 3 === 1 ? '#00796B' : '#26A69A'}, ${index % 3 === 0 ? '#00796B' : index % 3 === 1 ? '#26A69A' : '#4DB6AC'})`,
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            position: 'relative'
-                                        }}>
-                                            <div style={{
-                                                textAlign: 'center',
-                                                color: 'white',
-                                                position: 'relative',
-                                                zIndex: 2
-                                            }}>
-                                                <div style={{
-                                                    fontSize: '3.5rem',
-                                                    marginBottom: '10px',
-                                                    opacity: 0.8
-                                                }}>
-                                                    📁
-                                                </div>
-                                                <div style={{
-                                                    fontSize: '1.3rem',
-                                                    fontWeight: '600',
-                                                    lineHeight: '1.2'
-                                                }}>
-                                                    {sub.name}
-                                                </div>
-                                            </div>
-                                            <div style={{
-                                                position: 'absolute',
-                                                top: 0,
-                                                left: 0,
-                                                right: 0,
-                                                bottom: 0,
-                                                background: 'rgba(255, 255, 255, 0.1)',
-                                                opacity: 0,
-                                                transition: 'opacity 0.3s ease'
-                                            }}
-                                            onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-                                            onMouseLeave={(e) => e.currentTarget.style.opacity = '0'}
-                                            ></div>
-                                        </div>
-
-                                        {/* Card Content */}
-                                        <div style={{ padding: '25px' }}>
-                                            {sub.description && (
-                                                <Text style={{
-                                                    color: '#666',
-                                                    lineHeight: '1.6',
-                                                    display: 'block',
-                                                    marginBottom: '20px'
-                                                }}>
-                                                    {sub.description.length > 100
-                                                        ? `${sub.description.substring(0, 100)}...`
-                                                        : sub.description
-                                                    }
-                                                </Text>
-                                            )}
-
-                                            {/* Stats */}
-                                            <div style={{
-                                                display: 'flex',
-                                                justifyContent: 'space-around',
-                                                alignItems: 'center',
-                                                marginBottom: '25px',
-                                                padding: '20px 15px',
-                                                background: 'linear-gradient(135deg, #f8f9fa 0%, #e8f5e8 100%)',
-                                                borderRadius: '15px',
-                                                border: '1px solid #e0f2e0'
-                                            }}>
-                                                <div className="stats-counter" style={{ textAlign: 'center', flex: 1 }}>
-                                                    <div style={{
-                                                        fontSize: '2rem',
-                                                        fontWeight: '800',
-                                                        color: '#004D40',
-                                                        lineHeight: '1',
-                                                        marginBottom: '5px'
-                                                    }}>
-                                                        {getArticleCountForCategory(sub.slug)}
-                                                    </div>
-                                                    <div style={{
-                                                        fontSize: '0.9rem',
-                                                        color: '#666',
-                                                        fontWeight: '500',
-                                                        textTransform: 'uppercase',
-                                                        letterSpacing: '0.5px'
-                                                    }}>
-                                                        {getArticleCountForCategory(sub.slug) > 0 ? 'Bài viết' : 'Chưa có bài viết'}
-                                                    </div>
-                                                </div>
-                                                <div className="stats-divider" style={{
-                                                    width: '1px',
-                                                    height: '40px',
-                                                    background: '#ddd',
-                                                    margin: '0 10px'
-                                                }}></div>
-                                                <div className="stats-counter" style={{ textAlign: 'center', flex: 1 }}>
-                                                    <div style={{
-                                                        fontSize: '2rem',
-                                                        fontWeight: '800',
-                                                        color: '#00796B',
-                                                        lineHeight: '1',
-                                                        marginBottom: '5px'
-                                                    }}>
-                                                        {getSubcategoryCount(sub.slug)}
-                                                    </div>
-                                                    <div style={{
-                                                        fontSize: '0.9rem',
-                                                        color: '#666',
-                                                        fontWeight: '500',
-                                                        textTransform: 'uppercase',
-                                                        letterSpacing: '0.5px'
-                                                    }}>
-                                                        {getSubcategoryCount(sub.slug) > 0 ? 'Danh mục con' : 'Không giới hạn'}
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {/* Action Button */}
-                                            <Button
-                                                type="primary"
-                                                block
-                                                shape="round"
-                                                style={{
-                                                    background: 'linear-gradient(135deg, #004D40, #00796B)',
-                                                    border: 'none',
-                                                    height: '45px',
-                                                    fontWeight: '600',
-                                                    fontSize: '1rem'
-                                                }}
-                                            >
-                                                Khám phá ngay →
-                                            </Button>
-                                        </div>
-                                    </Link>
-                                </div>
-                            </Col>
-                        ))}
-                    </Row>
-                </div>
-            )}
-
-            {/* Articles Section - Only show if no subcategories */}
-            {articles.length > 0 && subcategories.length === 0 && (
-                <div style={{ marginTop: '50px' }}>
-                    <div style={{
-                        textAlign: 'center',
-                        marginBottom: '40px'
-                    }}>
-                        <Title level={2} style={{
-                            fontSize: '2.5rem',
-                            fontWeight: '700',
-                            color: '#004D40',
-                            marginBottom: '15px'
-                        }}>
-                            Bài viết liên quan
-                        </Title>
-                    </div>
-                    <Row gutter={[16, 16]}>
-                        {articles.map(article => (
-                            <Col xs={24} sm={12} md={8} key={article.id}>
-                                <Card
-                                    hoverable
-                                    cover={
-                                        article.imageBase64 ? (
-                                            <LazyImage
-                                                src={`data:image/jpeg;base64,${article.imageBase64}`}
-                                                alt={`Hình ảnh bài viết: ${article.title} - Biển quảng cáo từ Sign Board`}
-                                                style={{ height: '200px', objectFit: 'cover' }}
-                                                onError={(e) => {
-                                                    console.error('Failed to load base64 image');
-                                                    e.target.style.display = 'none';
-                                                }}
-                                            />
-                                        ) : article.featuredImageUrl ? (
-                                            <LazyImage
-                                                src={`${import.meta.env.VITE_BACKEND_URL}${article.featuredImageUrl}`}
-                                                alt={`Hình ảnh bài viết: ${article.title} - Biển quảng cáo từ Sign Board`}
-                                                style={{ height: '200px', objectFit: 'cover' }}
-                                                onError={(e) => {
-                                                    console.error('Failed to load image:', article.featuredImageUrl);
-                                                    e.target.style.display = 'none';
-                                                }}
-                                            />
-                                        ) : null
-                                    }
-                                >
-                                    <Card.Meta
-                                        title={article.title}
-                                        description={
-                                            <div
-                                                className="article-card-description"
-                                                data-text={processArticleContent(article.content)}
-                                            >
-                                                {processArticleContent(article.content)}
-                                            </div>
-                                        }
-                                    />
-                                    <div style={{ marginTop: '10px' }}>
-                                        <Link to={article.slug ? `/news/${article.slug}` : `/news/detail/${article.id}`}>
-                                            Đọc thêm →
-                                        </Link>
-                                    </div>
-                                </Card>
-                            </Col>
-                        ))}
-                    </Row>
-                </div>
-            )}
-
-            {/* Empty state */}
-            {articles.length === 0 && subcategories.length === 0 && (
+            {/* Empty state - chỉ hiển thị khi không có bài viết nào cả */}
+            {articles.length === 0 && (
                 <div style={{
                     textAlign: 'center',
                     padding: '80px 20px',
