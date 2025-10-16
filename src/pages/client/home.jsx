@@ -20,27 +20,9 @@ export const HomePage = () => {
     }, []);
 
     const slides = [
-        {
-            title: "Quảng Cáo Nhân Việt",
-            subtitle: "Giải pháp bảng hiệu thông minh thời đại mới",
-            buttonText: "Thiết kế ngay",
-            background: "url('/img/banner/Banner 1.jpg')",
-            overlay: "transparent"
-        },
-        {
-            title: "Biển Hiệu LED Hiện Đại",
-            subtitle: "Công nghệ tiên tiến, tiết kiệm năng lượng",
-            buttonText: "Xem sản phẩm",
-            background: "url('/img/banner/banner2.jpg')",
-            overlay: "transparent"
-        },
-        {
-            title: "Thiết Kế Chuyên Nghiệp",
-            subtitle: "Đội ngũ kinh nghiệm hơn 10 năm",
-            buttonText: "Liên hệ ngay",
-            background: "url('/img/banner/Banner 3.jpg')",
-            overlay: "transparent"
-        }
+        { background: "url('/img/banner/Banner 1.jpg')" },
+        { background: "url('/img/banner/banner2.jpg')" },
+        { background: "url('/img/banner/Banner 3.jpg')" },
     ];
 
     return (
@@ -52,295 +34,108 @@ export const HomePage = () => {
                 url={window.location.href}
             />
             <style jsx global>{`
+                .slick-slider {
+                    overflow: visible !important;
+                }
+                .slick-initialized .slick-slide {
+                    display: block !important;
+                }
                 .hero-slide {
-                    position: relative !important;
                     width: 100%;
-                    height: 100%;
+                    height: 70vh;
+                    min-height: 500px;
                     background-size: cover;
                     background-position: center;
                     background-repeat: no-repeat;
-                    background-color: #000;
-                    z-index: 1;
-                    background-image: var(--bg-image);
                 }
-
-                .hero-content {
-                    position: relative;
-                    z-index: 2;
-                }
-
-                .fade-in {
-                    animation: fadeInUp 1s ease-out;
-                }
-
-                @keyframes fadeInUp {
-                    from { opacity: 0; transform: translateY(30px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
-
-                .slide-in-left {
-                    animation: slideInLeft 0.8s ease-out;
-                }
-
-                @keyframes slideInLeft {
-                    from { opacity: 0; transform: translateX(-50px); }
-                    to { opacity: 1; transform: translateX(0); }
-                }
-
-                .slide-in-right {
-                    animation: slideInRight 0.8s ease-out;
-                }
-
-                @keyframes slideInRight {
-                    from { opacity: 0; transform: translateX(50px); }
-                    to { opacity: 1; transform: translateX(0); }
-                }
-
-                .scale-in {
-                    animation: scaleIn 0.8s ease-out;
-                }
-
-                @keyframes scaleIn {
-                    from { opacity: 0; transform: scale(0.8); }
-                    to { opacity: 1; transform: scale(1); }
-                }
-
-                .partners-scroll {
-                    display: flex;
-                    animation: scroll 30s linear infinite;
-                }
-
-                @keyframes scroll {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
-                }
-
-                .counter-animate {
-                    transition: all 2s ease-out;
-                }
-
-                .section-card {
-                    transition: all 0.3s ease;
-                    border: none;
-                    box-shadow: 0 4px 20px rgba(0, 77, 64, 0.1);
-                }
-
-                .section-card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 8px 30px rgba(0, 77, 64, 0.2);
-                }
-
-                .service-card {
-                    background: linear-gradient(145deg, #ffffff, #f8f9fa);
-                    border: 2px solid transparent;
-                    transition: all 0.3s ease;
-                }
-
-                .service-card:hover {
-                    border-color: #004D40;
-                    transform: translateY(-3px);
-                }
-
-                .stats-gradient {
-                    background: linear-gradient(135deg, #004D40 0%, #00796B 50%, #26A69A 100%);
-                }
-
                 .custom-dots .ant-carousel-dot {
                     background: rgba(255, 255, 255, 0.5);
                     width: 12px;
                     height: 12px;
                     border-radius: 50%;
                 }
-
-                .hero-container {
-                    position: relative;
-                    height: 90vh;
-                    overflow: hidden;
+                .partners-scroll {
+                    display: flex;
+                    animation: scroll 30s linear infinite;
                 }
-
-                @media (max-width: 1024px) {
-                    .hero-container {
-                        height: 70vh;
-                        min-height: 400px;
-                    }
-                    .hero-slide {
-                        background-size: cover !important;
-                        height: 70vh;
-                        min-height: 400px;
-                    }
-                    .hero-content {
-                        padding: 0 15px;
-                    }
-                    .hero-content h1 {
-                        font-size: 2.5rem !important;
-                    }
-                    .hero-content p {
-                        font-size: 1.2rem !important;
-                        max-width: 90%;
-                    }
-                    .hero-content button {
-                        height: 45px !important;
-                        font-size: 1rem !important;
-                        padding: 0 30px !important;
-                    }
+                @keyframes scroll {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
                 }
-
-                @media (max-width: 768px) {
-                    .hero-container {
-                        height: 60vh;
-                        min-height: 350px;
-                    }
-                    .hero-slide {
-                        background-size: cover !important;
-                        height: 60vh;
-                        min-height: 350px;
-                    }
-                    .hero-content h1 {
-                        font-size: 2rem !important;
-                    }
-                    .hero-content p {
-                        font-size: 1rem !important;
-                    }
-                    .hero-content button {
-                        height: 40px !important;
-                        font-size: 0.9rem !important;
-                    }
+                .counter-animate {
+                    transition: all 2s ease-out;
                 }
-
-                @media (max-width: 480px) {
-                    .hero-container {
-                        height: 50vh;
-                        min-height: 300px;
-                    }
-                    .hero-slide {
-                        background-size: cover !important;
-                        height: 50vh;
-                        min-height: 300px;
-                    }
-                    .hero-content h1 {
-                        font-size: 1.5rem !important;
-                    }
-                    .hero-content p {
-                        font-size: 0.9rem !important;
-                        margin-bottom: 20px !important;
-                    }
-                    .hero-content button {
-                        height: 35px !important;
-                        font-size: 0.85rem !important;
-                        padding: 0 20px !important;
-                    }
+                .section-card {
+                    transition: all 0.3s ease;
+                    border: none;
+                    box-shadow: 0 4px 20px rgba(0, 77, 64, 0.1);
                 }
-
-                @media (max-width: 400px) {
-                    .hero-content h1 {
-                        font-size: 1.3rem !important;
-                    }
-                    .hero-content p {
-                        font-size: 0.8rem !important;
-                    }
+                .section-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 0 8px 30px rgba(0, 77, 64, 0.2);
+                }
+                .service-card {
+                    background: linear-gradient(145deg, #ffffff, #f8f9fa);
+                    border: 2px solid transparent;
+                    transition: all 0.3s ease;
+                }
+                .service-card:hover {
+                    border-color: #004D40;
+                    transform: translateY(-3px);
+                }
+                .stats-gradient {
+                    background: linear-gradient(135deg, #004D40 0%, #00796B 50%, #26A69A 100%);
                 }
             `}</style>
 
-            <div className="hero-container">
-                <Carousel
-                    autoplay
-                    autoplaySpeed={5000}
-                    dots={{ className: 'custom-dots' }}
-                    arrows
-                    prevArrow={<LeftOutlined style={{ fontSize: '24px', color: 'white' }} />}
-                    nextArrow={<RightOutlined style={{ fontSize: '24px', color: 'white' }} />}
-                    afterChange={(current) => setCurrentSlide(current)}
-                    effect="fade"
-                >
-                    {slides.map((slide, index) => (
-                        <div key={index}>
-                            <div
-                                className="hero-slide"
-                                style={{
-                                    '--bg-image': slide.background,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center'
-                                }}
-                            >
-                                <div className="hero-content" style={{
-                                    maxWidth: '1200px',
-                                    margin: '0 auto',
-                                    textAlign: 'center',
-                                    padding: '0 20px',
-                                    width: '100%'
-                                }}>
-                                    <Title level={1} className="fade-in" style={{
-                                        fontSize: '4rem',
-                                        fontWeight: '800',
-                                        color: 'white',
-                                        marginBottom: '20px',
-                                        textShadow: '0 4px 8px rgba(0,0,0,0.5)'
-                                    }}>
-                                        {slide.title}
-                                    </Title>
-                                    <Paragraph className="fade-in" style={{
-                                        fontSize: '1.5rem',
-                                        color: 'rgba(255, 255, 255, 0.9)',
-                                        marginBottom: '40px',
-                                        maxWidth: '800px',
-                                        margin: '0 auto 40px'
-                                    }}>
-                                        {slide.subtitle}
-                                    </Paragraph>
-                                    <Button
-                                        type="primary"
-                                        size="large"
-                                        shape="round"
-                                        className="fade-in"
-                                        style={{
-                                            background: 'linear-gradient(135deg, #004D40, #00796B)',
-                                            border: 'none',
-                                            height: '55px',
-                                            fontSize: '1.2rem',
-                                            fontWeight: '600',
-                                            padding: '0 40px',
-                                            transition: 'all 0.3s ease',
-                                            boxShadow: '0 4px 15px rgba(0, 77, 64, 0.3)'
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            e.currentTarget.style.transform = 'translateY(-2px)';
-                                            e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 77, 64, 0.4)';
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            e.currentTarget.style.transform = 'translateY(0)';
-                                            e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 77, 64, 0.3)';
-                                        }}
-                                    >
-                                        {slide.buttonText}
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </Carousel>
-            </div>
+            <Carousel
+                autoplay
+                autoplaySpeed={5000}
+                dots={{ className: 'custom-dots' }}
+                arrows
+                prevArrow={<LeftOutlined style={{ fontSize: '24px', color: 'white' }} />}
+                nextArrow={<RightOutlined style={{ fontSize: '24px', color: 'white' }} />}
+                afterChange={(current) => setCurrentSlide(current)}
+                effect="fade"
+                style={{ width: '100%', height: '70vh', minHeight: '500px', overflow: 'hidden', position: 'relative' }}
+            >
+                {slides.map((slide, index) => (
+                    <div key={index} style={{ height: '70vh', minHeight: '500px' }}>
+                        <div
+                            className="hero-slide"
+                            style={{
+                                backgroundImage: slide.background,
+                                backgroundSize: 'cover',
+                                backgroundPosition: 'center',
+                                backgroundRepeat: 'no-repeat',
+                                width: '100%',
+                                height: '100%',
+                            }}
+                        />
+                    </div>
+                ))}
+            </Carousel>
 
             {/* Services Section */}
             <div style={{
                 maxWidth: '1200px',
                 margin: '0 auto',
-                padding: '80px 20px',
+                padding: '60px 20px',
                 background: 'linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%)'
             }}>
-                <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+                <div style={{ textAlign: 'center', marginBottom: '40px' }}>
                     <Title level={2} style={{
                         fontSize: '2.5rem',
                         fontWeight: '700',
                         color: '#004D40',
-                        marginBottom: '20px'
+                        marginBottom: '15px'
                     }}>
                         Các Lĩnh Vực Biển Quảng Cáo
                         <div style={{
                             width: '80px',
                             height: '4px',
                             background: 'linear-gradient(90deg, #004D40, #26A69A)',
-                            margin: '20px auto 0',
+                            margin: '15px auto 0',
                             borderRadius: '2px'
                         }}></div>
                     </Title>
@@ -430,7 +225,7 @@ export const HomePage = () => {
 
             {/* Đối tác – khách hàng */}
             <div style={{
-                padding: '80px 20px',
+                padding: '60px 20px',
                 background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
                 position: 'relative',
                 overflow: 'hidden'
@@ -440,19 +235,19 @@ export const HomePage = () => {
                     margin: '0 auto',
                     position: 'relative'
                 }}>
-                    <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '40px' }}>
                         <Title level={2} style={{
                             fontSize: '2.5rem',
                             fontWeight: '700',
                             color: '#004D40',
-                            marginBottom: '20px'
+                            marginBottom: '15px'
                         }}>
                             Đối Tác & Khách Hàng
                             <div style={{
                                 width: '80px',
                                 height: '4px',
                                 background: 'linear-gradient(90deg, #004D40, #26A69A)',
-                                margin: '20px auto 0',
+                                margin: '15px auto 0',
                                 borderRadius: '2px'
                             }}></div>
                         </Title>
@@ -529,7 +324,7 @@ export const HomePage = () => {
 
             {/* Thành tựu nổi bật */}
             <div className="stats-gradient" style={{
-                padding: '80px 20px',
+                padding: '60px 20px',
                 position: 'relative',
                 overflow: 'hidden'
             }}>
@@ -539,12 +334,12 @@ export const HomePage = () => {
                     position: 'relative',
                     zIndex: 2
                 }}>
-                    <div style={{ textAlign: 'center', marginBottom: '60px' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '40px' }}>
                         <Title level={2} style={{
                             fontSize: '2.5rem',
                             fontWeight: '700',
                             color: '#ffffff',
-                            marginBottom: '20px',
+                            marginBottom: '15px',
                             textShadow: '0 2px 4px rgba(0,0,0,0.3)'
                         }}>
                             Thành Tựu Nổi Bật
@@ -552,7 +347,7 @@ export const HomePage = () => {
                                 width: '80px',
                                 height: '4px',
                                 background: 'rgba(255, 255, 255, 0.8)',
-                                margin: '20px auto 0',
+                                margin: '15px auto 0',
                                 borderRadius: '2px'
                             }}></div>
                         </Title>
