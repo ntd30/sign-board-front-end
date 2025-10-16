@@ -372,7 +372,7 @@ const FontCarousel = () => {
                         color: '#004D40',
                         marginBottom: '15px'
                     }}>
-                        <span style={{ marginRight: '10px', color: '#00796B' }}>📝</span>
+                        <span style={{ marginRight: '10px', color: '#00796B' }}></span>
                         Mẫu Chữ Đẹp
                         <div style={{
                             width: '80px',

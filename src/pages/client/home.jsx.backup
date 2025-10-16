@@ -4,7 +4,6 @@ import {
     TeamOutlined, CustomerServiceOutlined, ProjectOutlined, LeftOutlined, RightOutlined
 } from '@ant-design/icons';
 import FontCarousel from '../../components/client/home/FontCarousel';
-import ProjectCarousel from '../../components/client/home/ProjectCarousel';
 import SEO from '../../components/common/SEO';
 const { Title, Paragraph } = Typography;
 
@@ -203,10 +202,12 @@ export const HomePage = () => {
                         </div>
                     </div>
                 ))}
-                </Carousel>
-            </div>
+            </Carousel>
 
-            {/* Services Section */}
+            {/* Dự án tiêu biểu với carousel hiện đại */}
+            <ProjectCarousel />
+
+            {/* Các Lĩnh Vực Biển Quảng Cáo */}
             <div style={{
                 maxWidth: '1200px',
                 margin: '0 auto',
@@ -306,16 +307,6 @@ export const HomePage = () => {
                         </Col>
                     ))}
                 </Row>
-            </div>
-
-            {/* ProjectCarousel Section */}
-            <div style={{
-                maxWidth: '1200px',
-                margin: '0 auto',
-                padding: '30px 20px',
-                background: 'linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)'
-            }}>
-                <ProjectCarousel />
             </div>
 
             {/* FontCarousel */}

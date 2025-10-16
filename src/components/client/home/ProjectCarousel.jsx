@@ -380,7 +380,7 @@ const ProjectCarousel = () => {
                         color: '#004D40',
                         marginBottom: '15px'
                     }}>
-                        <span style={{ marginRight: '10px', color: '#00796B' }}>🏗️</span>
+                        <span style={{ marginRight: '10px', color: '#00796B' }}></span>
                         Dự Án Tiêu Biểu
                         <div style={{
                             width: '80px',
@@ -498,7 +498,7 @@ const ProjectCarousel = () => {
                                     cover={
                                         <div style={{
                                             height: '200px',
-                                            background: `linear-gradient(135deg, ${index % 2 === 0 ? '#004D40' : '#00796B'}, ${index % 2 === 0 ? '#00796B' : '#26A69A'})`,
+                                            background: 'rgba(0, 77, 64, 0.05)', /* Giảm opacity background gradient rất thấp */
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
@@ -513,7 +513,7 @@ const ProjectCarousel = () => {
                                                         width: '100%',
                                                         height: '100%',
                                                         objectFit: 'cover',
-                                                        opacity: 0.8,
+                                                        opacity: 1, /* Tăng opacity để hình rõ nét hơn */
                                                         transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
                                                         transform: 'scale(0.95)'
                                                     }}
@@ -530,7 +530,7 @@ const ProjectCarousel = () => {
                                                         width: '100%',
                                                         height: '100%',
                                                         objectFit: 'cover',
-                                                        opacity: 0.8,
+                                                        opacity: 1, /* Tăng opacity để hình rõ nét hơn */
                                                         transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
                                                         transform: 'scale(0.95)'
                                                     }}
@@ -547,7 +547,7 @@ const ProjectCarousel = () => {
                                                         width: '100%',
                                                         height: '100%',
                                                         objectFit: 'cover',
-                                                        opacity: 0.8,
+                                                        opacity: 1, /* Tăng opacity để hình rõ nét hơn */
                                                         transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
                                                         transform: 'scale(0.95)'
                                                     }}
@@ -559,7 +559,7 @@ const ProjectCarousel = () => {
                                                     onMouseLeave={(e) => {
                                                         e.currentTarget.style.transform = 'scale(0.95) rotate(0deg)';
                                                         e.currentTarget.style.filter = 'brightness(1)';
-                                                        e.currentTarget.style.opacity = '0.8';
+                                                        e.currentTarget.style.opacity = '1'; /* Giữ opacity 1 khi không hover */
                                                     }}
                                                 />
                                             ) : null}
@@ -568,7 +568,7 @@ const ProjectCarousel = () => {
                                                 top: '50%',
                                                 left: '50%',
                                                 transform: 'translate(-50%, -50%)',
-                                                background: 'rgba(255, 255, 255, 0.9)',
+                                                background: 'rgba(255, 255, 255, 0.8)', /* Giảm opacity để không quá nổi bật */
                                                 padding: '8px 16px',
                                                 borderRadius: '20px',
                                                 fontWeight: '600',
