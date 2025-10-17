@@ -35,7 +35,7 @@ const NewsDetail = () => {
     const processImagesInContent = (content) => {
         // Check if content contains images
         const hasImages = /<img[^>]*>/i.test(content);
-        
+
         if (!hasImages) {
             return content;
         }
@@ -44,28 +44,28 @@ const NewsDetail = () => {
         return content
             .replace(/<img([^>]+)>/g, (match, attrs) => {
                 let newAttrs = attrs;
-                
+
                 // Add lazy loading
                 if (!newAttrs.includes('loading=')) {
                     newAttrs += ' loading="lazy"';
                 }
-                
+
                 // Add alt text if missing
                 if (!newAttrs.includes('alt=')) {
                     const srcMatch = newAttrs.match(/src=["']([^"']+)["']/);
                     const altText = srcMatch ? generateImageAlt(srcMatch[1]) : 'Hình ảnh biển quảng cáo';
                     newAttrs += ` alt="${altText}"`;
                 }
-                
+
                 // Detect image type and apply appropriate styling
                 const srcMatch = newAttrs.match(/src=["']([^"']+)["']/);
                 if (srcMatch && srcMatch[1]) {
                     const src = srcMatch[1];
-                    
+
                     // Check if it's a base64 image
                     const isBase64 = src.includes('data:image');
                     const isExternalUrl = src.startsWith('http') && !src.includes(window.location.hostname);
-                    
+
                     // Apply responsive styling based on image type
                     if (isBase64 || isExternalUrl) {
                         // For base64 and external images, apply responsive styling
@@ -75,7 +75,7 @@ const NewsDetail = () => {
                         newAttrs += ' style="max-width: 100%; height: auto; display: block;"';
                     }
                 }
-                
+
                 return `<img${newAttrs}/>`;
             });
     };
@@ -88,7 +88,7 @@ const NewsDetail = () => {
             img.includes('http') && !img.includes(window.location.hostname)
         ).length;
         const localImages = imgTags.length - base64Images - externalImages;
-        
+
         return {
             totalImages: imgTags.length,
             base64Images,
@@ -156,13 +156,13 @@ const NewsDetail = () => {
                         const altText = srcMatch ? generateImageAlt(srcMatch[1]) : 'Hình ảnh biển quảng cáo';
                         newAttrs += ` alt="${altText}"`;
                     }
-                    
+
                     // Thêm responsive styles cho base64 images
                     if (newAttrs.includes('data:image')) {
                         // Thêm CSS inline cho base64 images để đảm bảo responsive
-                        newAttrs += ' style="max-width: 100%; height: auto; display: block; margin: 0 auto;"';
+                        newAttrs += ' style="max-width: 100%; height: auto; display: block; margin: 0 auto';
                     }
-                    
+
                     return `<img${newAttrs}/>`;
                 });
 
@@ -197,7 +197,7 @@ const NewsDetail = () => {
             setTimeout(checkContentReady, 50);
         }
     }, [processedContent, contentRef]);
-    
+
     // Logic cho nút cuộn lên đầu trang (Scroll to Top)
     useEffect(() => {
         const checkScrollTop = () => {
@@ -219,9 +219,9 @@ const NewsDetail = () => {
     const handleTOCClose = () => {
         setShowMobileTOC(false);
     };
-    
+
     const { title, featuredImageUrl, category, createdAt, author, authorAvatar, content, type } = newsItem || {};
-    
+
     // Debug information for image processing
     console.log('Image Statistics:', imageStats);
 
@@ -282,8 +282,8 @@ const NewsDetail = () => {
                                 position: 'fixed',
                                 bottom: '20px',
                                 // THAY ĐỔI: Đặt ở góc trái dưới
-                                left: '20px', 
-                                right: 'auto', 
+                                left: '20px',
+                                right: 'auto',
                                 zIndex: 1000,
                                 display: 'flex',
                                 // THAY ĐỔI: Đặt các phần tử ở bên trái
@@ -571,6 +571,19 @@ const NewsDetail = () => {
                                     </div>
                                 )}
 
+                                <style jsx global>{`
+                .news-article-content img {
+                    max-width: 100%;
+                    height: auto;
+                    display: block;
+                    margin: 16px auto; /* Giữa hình ảnh */
+                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                    border-radius: 8px;
+                    border: 1px solid #e9ecef;
+                    object-fit: contain; /* Đảm bảo hình ảnh không bị cắt */
+                }
+            `}</style>
+
                                 <div className="article-content" style={{
                                     background: '#ffffff',
                                     padding: '16px 12px',
@@ -589,7 +602,7 @@ const NewsDetail = () => {
                                 }}>
                                     <div
                                         ref={contentRef}
-                                        className="news-article-content"
+                                        className="news-article-content "
                                         dangerouslySetInnerHTML={{ __html: processedContent || content }}
                                         style={{
                                             color: '#495057',

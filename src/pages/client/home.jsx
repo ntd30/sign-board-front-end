@@ -21,13 +21,19 @@ export const HomePage = () => {
 
     const slides = [
         {
-            background: "url('img/banner/Banner 1.jpg')"
+            background: "url('img/banner/result_Banner 1 (1).jpg')",
+            title: "Biển Quảng Cáo Chuyên Nghiệp",
+            description: "Thiết kế và thi công biển quảng cáo LED, hộp đèn, mặt dựng alu cao cấp với chất lượng vượt trội"
         },
         {
-            background: "url('img/banner/banner2.jpg')"
+            background: "url('img/banner/banner2.jpg')",
+            title: "Giải Pháp Quảng Cáo Toàn Diện",
+            description: "Đồng hành cùng doanh nghiệp trong việc xây dựng thương hiệu với các giải pháp quảng cáo sáng tạo và hiệu quả"
         },
         {
-            background: "url('img/banner/Banner 3.jpg')"
+            background: "url('img/banner/Banner 3.jpg')",
+            title: "Công Nghệ LED Hiện Đại",
+            description: "Ứng dụng công nghệ LED tiên tiến, tiết kiệm năng lượng và mang lại hiệu quả quảng cáo tối ưu"
         }
     ];
 
@@ -48,8 +54,8 @@ export const HomePage = () => {
                 }
                 .hero-slide {
                     width: 100%;
-                    min-height: 300px; /* Chiều cao tối thiểu */
-                    background-size: contain; /* Hiển thị toàn bộ ảnh không cắt */
+                    min-height: 400px; /* Chiều cao tối thiểu */
+                    background-size: cover; /* Ảnh lấp đầy khung không bị cắt */
                     background-position: center;
                     background-repeat: no-repeat;
                     background-color: #f0f0f0; /* Màu nền nếu ảnh không đủ rộng */
@@ -61,9 +67,11 @@ export const HomePage = () => {
                     color: #ffffff;
                     text-align: center;
                 }
+                
                 .hero-slide-content {
                     position: relative;
                     max-width: 90%;
+                    z-index: 2; /* Đặt trên overlay */
                 }
                 .hero-slide-title {
                     font-size: 2.5rem;
@@ -89,7 +97,7 @@ export const HomePage = () => {
                     }
                     .hero-slide {
                         min-height: 250px; /* Giảm chiều cao cho tablet */
-                        background-size: contain;
+                        background-size: cover; /* Giữ cover để ảnh lấp đầy */
                     }
                     .hero-slide-title {
                         font-size: 2rem;
@@ -106,7 +114,7 @@ export const HomePage = () => {
                     }
                     .hero-slide {
                         min-height: 200px; /* Giảm chiều cao cho mobile */
-                        background-size: contain; /* Hiển thị toàn bộ hình ảnh */
+                        background-size: cover; /* Ảnh lấp đầy khung */
                         margin: 0; /* Không cần margin trên mobile */
                         background-color: #ffffff; /* Nền trắng cho mobile */
                     }
@@ -190,16 +198,16 @@ export const HomePage = () => {
                             className="hero-slide"
                             style={{
                                 backgroundImage: slide.background,
-                                backgroundSize: 'contain',
-                                backgroundPosition: 'center',
-                                backgroundRepeat: 'no-repeat',
-                                backgroundColor: '#f0f0f0',
+                            //     backgroundSize: 'cover', /* Ảnh lấp đầy khung */
+                            //     backgroundPosition: 'center',
+                            //     backgroundRepeat: 'no-repeat',
+                            //     backgroundColor: '#f0f0f0',
                             }}
                         >
-                            <div className="hero-slide-content">
+                            {/* <div className="hero-slide-content">
                                 <h2 className="hero-slide-title">{slide.title}</h2>
                                 <p className="hero-slide-description">{slide.description}</p>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 ))}
