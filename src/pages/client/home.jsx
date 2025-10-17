@@ -21,7 +21,7 @@ export const HomePage = () => {
 
     const slides = [
         {
-            background: "url('img/banner/result_Banner 1 (1).jpg')",
+            background: "url('img/banner/Banner 1.jpg')",
             title: "Biển Quảng Cáo Chuyên Nghiệp",
             description: "Thiết kế và thi công biển quảng cáo LED, hộp đèn, mặt dựng alu cao cấp với chất lượng vượt trội"
         },
