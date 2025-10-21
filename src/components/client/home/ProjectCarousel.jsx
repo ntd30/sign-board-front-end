@@ -563,20 +563,7 @@ const ProjectCarousel = () => {
                                                     }}
                                                 />
                                             ) : null}
-                                            <div style={{
-                                                position: 'absolute',
-                                                top: '50%',
-                                                left: '50%',
-                                                transform: 'translate(-50%, -50%)',
-                                                background: 'rgba(255, 255, 255, 0.8)', /* Giảm opacity để không quá nổi bật */
-                                                padding: '8px 16px',
-                                                borderRadius: '20px',
-                                                fontWeight: '600',
-                                                color: '#004D40',
-                                                fontSize: '0.9rem'
-                                            }}>
-                                                Dự án #{project.id}
-                                            </div>
+                                           
                                         </div>
                                     }
                                 >

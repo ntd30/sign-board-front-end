@@ -45,6 +45,9 @@ export const HomePage = () => {
                 keywords="biển quảng cáo, bảng hiệu, sign board, biển hộp đèn, biển led, thi công quảng cáo, Quảng Cáo Nhân Việt"
                 url={window.location.href}
             />
+            {/* Phần <style> này chứa tất cả các điều chỉnh về responsive.
+              Các kích thước chữ và khoảng cách đã được đưa vào đây.
+            */}
             <style jsx global>{`
                 .slick-slider {
                     overflow: visible !important;
@@ -90,6 +93,38 @@ export const HomePage = () => {
                     height: 12px;
                     border-radius: 50%;
                 }
+
+                /* === CÁC LỚP MỚI ĐỂ RESPONSIVE === */
+                .section-container {
+                    /* Đây là padding mặc định cho desktop */
+                    padding: 30px 20px; 
+                }
+                .section-title {
+                    /* Kích thước chữ tiêu đề section mặc định */
+                    font-size: 2.5rem !important; 
+                }
+                .section-subtitle {
+                    /* Kích thước chữ mô tả section mặc định */
+                    font-size: 1.1rem !important; 
+                }
+                .service-card-title {
+                    font-size: 1.2rem !important;
+                }
+                .service-card-description {
+                    font-size: 0.95rem !important;
+                }
+                .stat-value .ant-statistic-content {
+                     font-size: 2rem !important;
+                }
+                .stat-title {
+                    font-size: 1rem !important;
+                }
+                .stat-description {
+                    font-size: 0.85rem !important;
+                }
+                /* === KẾT THÚC CÁC LỚP MỚI === */
+
+
                 /* Responsive styles */
                 @media (max-width: 1024px) {
                     .carousel-container {
@@ -106,6 +141,7 @@ export const HomePage = () => {
                         font-size: 1.1rem;
                     }
                 }
+                /* Đây là các quy tắc cho điện thoại (màn hình nhỏ hơn 768px) */
                 @media (max-width: 768px) {
                     .carousel-container {
                         maxWidth: '100%', /* Để banner rộng hết màn hình mobile */
@@ -124,7 +160,36 @@ export const HomePage = () => {
                     .hero-slide-description {
                         font-size: 1rem;
                     }
+
+                    /* === CSS RESPONSIVE MỚI CHO MOBILE === */
+                    .section-container {
+                        padding: 20px 10px !important; /* Giảm padding cho section */
+                    }
+                    .section-title {
+                        font-size: 2rem !important; /* Giảm cỡ chữ tiêu đề section */
+                    }
+                    .section-subtitle {
+                        font-size: 1rem !important; /* Giảm cỡ chữ mô tả section */
+                    }
+                    .service-card-title {
+                        font-size: 1.1rem !important;
+                    }
+                    .service-card-description {
+                        font-size: 0.9rem !important;
+                    }
+                    .stat-value .ant-statistic-content {
+                        font-size: 1.8rem !important;
+                    }
+                    .stat-title {
+                        font-size: 0.95rem !important;
+                    }
+                    .stat-description {
+                        font-size: 0.8rem !important;
+                    }
+                    /* === KẾT THÚC CSS MỚI === */
                 }
+
+                /* Đây là các quy tắc cho điện thoại nhỏ (màn hình nhỏ hơn 480px) */
                 @media (max-width: 480px) {
                     .carousel-container {
                         margin: '15px auto 0', /* Khoảng cách nhỏ hơn nữa */
@@ -141,6 +206,33 @@ export const HomePage = () => {
                     .hero-slide-description {
                         font-size: 0.9rem;
                     }
+
+                    /* === CSS RESPONSIVE MỚI CHO MOBILE NHỎ === */
+                    .section-container {
+                        padding: 20px 5px !important; /* Giảm padding thêm */
+                    }
+                    .section-title {
+                        font-size: 1.8rem !important; /* Giảm cỡ chữ thêm */
+                    }
+                    .section-subtitle {
+                        font-size: 0.95rem !important;
+                    }
+                    .service-card-title {
+                        font-size: 1.05rem !important;
+                    }
+                    .service-card-description {
+                        font-size: 0.85rem !important;
+                    }
+                    .stat-value .ant-statistic-content {
+                        font-size: 1.6rem !important;
+                    }
+                    .stat-title {
+                        font-size: 0.9rem !important;
+                    }
+                    .stat-description {
+                        font-size: 0.75rem !important;
+                    }
+                    /* === KẾT THÚC CSS MỚI === */
                 }
                 .partners-scroll {
                     display: flex;
@@ -177,9 +269,9 @@ export const HomePage = () => {
             `}</style>
 
             <div className="carousel-container" style={{
-                maxWidth: '1200px', /* Đồng nhất với các section khác */
-                margin: '40px auto 0', /* Giữ khoảng cách 40px phía trên */
-                padding: '0 20px' /* Khoảng trắng hợp lý */
+                maxWidth: '1200px',
+                margin: '40px auto 0',
+                padding: '0 20px'
             }}>
                 <Carousel
                     autoplay
@@ -198,12 +290,9 @@ export const HomePage = () => {
                             className="hero-slide"
                             style={{
                                 backgroundImage: slide.background,
-                            //     backgroundSize: 'cover', /* Ảnh lấp đầy khung */
-                            //     backgroundPosition: 'center',
-                            //     backgroundRepeat: 'no-repeat',
-                            //     backgroundColor: '#f0f0f0',
                             }}
                         >
+                            {/* Nội dung title/description của slide có thể giữ lại nếu muốn */}
                             {/* <div className="hero-slide-content">
                                 <h2 className="hero-slide-title">{slide.title}</h2>
                                 <p className="hero-slide-description">{slide.description}</p>
@@ -215,19 +304,24 @@ export const HomePage = () => {
             </div>
 
             {/* Services Section */}
-            <div style={{
-                maxWidth: '1200px',
-                margin: '0 auto',
-                padding: '30px 20px', /* Giảm từ 40px xuống 30px */
-                background: 'linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%)'
-            }}>
+            <div 
+                className="section-container" // Đã thêm className
+                style={{
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    // padding: '30px 20px', /* ĐÃ XÓA: Di chuyển vào CSS */
+                    background: 'linear-gradient(180deg, #f8f9fa 0%, #ffffff 100%)'
+                }}>
                 <div style={{ textAlign: 'center', marginBottom: '20px' }}> 
-                    <Title level={2} style={{
-                        fontSize: '2.5rem',
-                        fontWeight: '700',
-                        color: '#004D40',
-                        marginBottom: '15px'
-                    }}>
+                    <Title 
+                        level={2} 
+                        className="section-title" // Đã thêm className
+                        style={{
+                            // fontSize: '2.5rem', /* ĐÃ XÓA: Di chuyển vào CSS */
+                            fontWeight: '700',
+                            color: '#004D40',
+                            marginBottom: '15px'
+                        }}>
                         Các Lĩnh Vực Biển Quảng Cáo
                         <div style={{
                             width: '80px',
@@ -237,12 +331,14 @@ export const HomePage = () => {
                             borderRadius: '2px'
                         }}></div>
                     </Title>
-                    <Paragraph style={{
-                        fontSize: '1.1rem',
-                        color: '#666',
-                        maxWidth: '600px',
-                        margin: '0 auto'
-                    }}>
+                    <Paragraph 
+                        className="section-subtitle" // Đã thêm className
+                        style={{
+                            // fontSize: '1.1rem', /* ĐÃ XÓA: Di chuyển vào CSS */
+                            color: '#666',
+                            maxWidth: '600px',
+                            margin: '0 auto'
+                        }}>
                         Chúng tôi cung cấp đa dạng các loại biển quảng cáo chất lượng cao, đáp ứng mọi nhu cầu của khách hàng
                     </Paragraph>
                 </div>
@@ -292,20 +388,25 @@ export const HomePage = () => {
                             >
                                 <Card.Meta
                                     title={
-                                        <Title level={3} style={{
-                                            color: '#004D40',
-                                            marginBottom: '15px',
-                                            fontSize: '1.2rem'
-                                        }}>
+                                        <Title 
+                                            level={3} 
+                                            className="service-card-title" // Đã thêm className
+                                            style={{
+                                                color: '#004D40',
+                                                marginBottom: '15px',
+                                                // fontSize: '1.2rem' /* ĐÃ XÓA: Di chuyển vào CSS */
+                                            }}>
                                             {service.title}
                                         </Title>
                                     }
                                     description={
-                                        <Paragraph style={{
-                                            color: '#666',
-                                            lineHeight: '1.6',
-                                            fontSize: '0.95rem'
-                                        }}>
+                                        <Paragraph 
+                                            className="service-card-description" // Đã thêm className
+                                            style={{
+                                                color: '#666',
+                                                lineHeight: '1.6',
+                                                // fontSize: '0.95rem' /* ĐÃ XÓA: Di chuyển vào CSS */
+                                            }}>
                                             {service.description}
                                         </Paragraph>
                                     }
@@ -317,12 +418,14 @@ export const HomePage = () => {
             </div>
 
             {/* ProjectCarousel Section */}
-            <div style={{
-                maxWidth: '1200px',
-                margin: '0 auto',
-                padding: '30px 20px',
-                background: 'linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)'
-            }}>
+            <div 
+                className="section-container" // Đã thêm className
+                style={{
+                    maxWidth: '1200px',
+                    margin: '0 auto',
+                    // padding: '30px 20px', /* ĐÃ XÓA: Di chuyển vào CSS */
+                    background: 'linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)'
+                }}>
                 <ProjectCarousel />
             </div>
 
@@ -330,24 +433,29 @@ export const HomePage = () => {
             <FontCarousel />
 
             {/* Đối tác – khách hàng */}
-            <div style={{
-                padding: '30px 20px', /* Giảm từ 40px xuống 30px để cân đối */
-                background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
-                position: 'relative',
-                overflow: 'hidden'
-            }}>
+            <div 
+                className="section-container" // Đã thêm className
+                style={{
+                    // padding: '30px 20px', /* ĐÃ XÓA: Di chuyển vào CSS */
+                    background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                    position: 'relative',
+                    overflow: 'hidden'
+                }}>
                 <div style={{
                     maxWidth: '1200px',
                     margin: '0 auto',
                     position: 'relative'
                 }}>
                     <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                        <Title level={2} style={{
-                            fontSize: '2.5rem',
-                            fontWeight: '700',
-                            color: '#004D40',
-                            marginBottom: '15px'
-                        }}>
+                        <Title 
+                            level={2} 
+                            className="section-title" // Đã thêm className
+                            style={{
+                                // fontSize: '2.5rem', /* ĐÃ XÓA: Di chuyển vào CSS */
+                                fontWeight: '700',
+                                color: '#004D40',
+                                marginBottom: '15px'
+                            }}>
                             Đối Tác & Khách Hàng
                             <div style={{
                                 width: '80px',
@@ -429,11 +537,13 @@ export const HomePage = () => {
             </div>
 
             {/* Thành tựu nổi bật */}
-            <div className="stats-gradient" style={{
-                padding: '30px 20px', /* Giảm từ 40px xuống 30px để cân đối */
-                position: 'relative',
-                overflow: 'hidden'
-            }}>
+            <div 
+                className="stats-gradient section-container" // Đã thêm className
+                style={{
+                    // padding: '30px 20px', /* ĐÃ XÓA: Di chuyển vào CSS */
+                    position: 'relative',
+                    overflow: 'hidden'
+                }}>
                 <div style={{
                     maxWidth: '1200px',
                     margin: '0 auto',
@@ -441,13 +551,16 @@ export const HomePage = () => {
                     zIndex: 2
                 }}>
                     <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                        <Title level={2} style={{
-                            fontSize: '2.5rem',
-                            fontWeight: '700',
-                            color: '#ffffff',
-                            marginBottom: '15px',
-                            textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-                        }}>
+                        <Title 
+                            level={2} 
+                            className="section-title" // Đã thêm className
+                            style={{
+                                // fontSize: '2.5rem', /* ĐÃ XÓA: Di chuyển vào CSS */
+                                fontWeight: '700',
+                                color: '#ffffff',
+                                marginBottom: '15px',
+                                textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+                            }}>
                             Thành Tựu Nổi Bật
                             <div style={{
                                 width: '80px',
@@ -507,7 +620,7 @@ export const HomePage = () => {
                                     }}
                                 >
                                     <div style={{
-                                        fontSize: '3rem',
+                                        fontSize: '3rem', 
                                         color: '#ffffff',
                                         marginBottom: '15px',
                                         opacity: countersVisible ? 1 : 0,
@@ -517,28 +630,34 @@ export const HomePage = () => {
                                         {stat.icon}
                                     </div>
                                     <Statistic
+                                        className="stat-value" // Đã thêm className
                                         value={countersVisible ? stat.value : 0}
                                         suffix={stat.suffix}
                                         valueStyle={{
                                             color: '#ffffff',
-                                            fontSize: '2rem',
+                                            // fontSize: '2rem', /* ĐÃ XÓA: Di chuyển vào CSS */
                                             fontWeight: '700',
                                             marginBottom: '10px'
                                         }}
                                     />
-                                    <Title level={4} style={{
-                                        color: '#ffffff',
-                                        marginBottom: '10px',
-                                        fontSize: '1rem'
-                                    }}>
+                                    <Title 
+                                        level={4} 
+                                        className="stat-title" // Đã thêm className
+                                        style={{
+                                            color: '#ffffff',
+                                            marginBottom: '10px',
+                                            // fontSize: '1rem' /* ĐÃ XÓA: Di chuyển vào CSS */
+                                        }}>
                                         {stat.title}
                                     </Title>
-                                    <Paragraph style={{
-                                        color: 'rgba(255, 255, 255, 0.8)',
-                                        fontSize: '0.85rem',
-                                        lineHeight: '1.4',
-                                        margin: 0
-                                    }}>
+                                    <Paragraph 
+                                        className="stat-description" // Đã thêm className
+                                        style={{
+                                            color: 'rgba(255, 255, 255, 0.8)',
+                                            // fontSize: '0.85rem', /* ĐÃ XÓA: Di chuyển vào CSS */
+                                            lineHeight: '1.4',
+                                            margin: 0
+                                        }}>
                                         {stat.description}
                                     </Paragraph>
                                 </Card>
