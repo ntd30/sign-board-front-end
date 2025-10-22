@@ -1,0 +1,302 @@
+/* CSS cho các Content Blocks */
+
+/* Text Block */
+.content-text-block {
+    margin: 16px 0;
+}
+
+.content-text-block p {
+    margin: 16px 0;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #495057;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+/* Image Block */
+.content-image-block {
+    margin: 24px 0;
+    text-align: center;
+}
+
+.content-image-block img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e9ecef;
+    object-fit: contain;
+    transition: transform 0.2s ease;
+}
+
+.content-image-block img:hover {
+    transform: scale(1.02);
+}
+
+.content-image-block .image-caption {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #6c757d;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Link Block */
+.content-link-block {
+    color: #007bff;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.content-link-block:hover {
+    color: #0056b3;
+    border-bottom-color: #007bff;
+    text-decoration: none;
+}
+
+.content-link-block .anticon {
+    font-size: 12px;
+    opacity: 0.7;
+}
+
+/* Heading Blocks */
+.content-heading-block {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.3;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+}
+
+.content-heading-block.h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 24px 0 16px 0;
+    color: #212529;
+    position: relative;
+}
+
+.content-heading-block.h1::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    border-radius: 2px;
+}
+
+.content-heading-block.h2 {
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 20px 0 14px 0;
+    color: #343a40;
+}
+
+.content-heading-block.h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 18px 0 12px 0;
+    color: #495057;
+}
+
+.content-heading-block.h4 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin: 16px 0 10px 0;
+    color: #6c757d;
+}
+
+.content-heading-block.h5 {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 14px 0 8px 0;
+    color: #6c757d;
+}
+
+.content-heading-block.h6 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin: 12px 0 8px 0;
+    color: #6c757d;
+}
+
+/* List Block */
+.content-list-block {
+    margin: 16px 0;
+    padding-left: 24px;
+    color: #495057;
+}
+
+.content-list-block li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+    font-size: 15px;
+    list-style-position: outside;
+}
+
+.content-list-block ol {
+    list-style-type: decimal;
+}
+
+.content-list-block ul {
+    list-style-type: disc;
+}
+
+.content-list-block li::marker {
+    color: #667eea;
+}
+
+/* Quote Block */
+.content-quote-block {
+    margin: 20px 0;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-left: 4px solid #667eea;
+    border-radius: 0 8px 8px 0;
+    font-style: italic;
+    color: #495057;
+    font-size: 15px;
+    line-height: 1.6;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.content-quote-block::before {
+    content: '"';
+    position: absolute;
+    top: 8px;
+    left: 16px;
+    font-size: 3rem;
+    color: #667eea;
+    opacity: 0.3;
+    font-family: Georgia, serif;
+    line-height: 1;
+}
+
+/* Code Block */
+.content-code-block {
+    margin: 20px 0;
+    padding: 16px;
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    color: #e2e8f0;
+    border-radius: 8px;
+    overflow: auto;
+    font-size: 14px;
+    font-family: 'Monaco', 'Consolas', 'Liberation Mono', 'Courier New', monospace;
+    border: 1px solid #4a5568;
+    box-shadow: 0 4px 12px rgba(45, 55, 72, 0.3);
+    position: relative;
+}
+
+.content-code-block::before {
+    content: attr(data-language);
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 10px;
+    color: #a0aec0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.content-code-block code {
+    background: transparent;
+    color: inherit;
+    padding: 0;
+    font-size: inherit;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .content-text-block p {
+        font-size: 14px;
+        margin: 12px 0;
+    }
+
+    .content-heading-block.h1 {
+        font-size: 1.75rem;
+    }
+
+    .content-heading-block.h2 {
+        font-size: 1.5rem;
+    }
+
+    .content-heading-block.h3 {
+        font-size: 1.25rem;
+    }
+
+    .content-list-block {
+        padding-left: 20px;
+    }
+
+    .content-quote-block {
+        padding: 12px 16px;
+        margin: 16px 0;
+    }
+
+    .content-code-block {
+        padding: 12px;
+        font-size: 13px;
+    }
+}
+
+/* Dark mode support (nếu cần) */
+@media (prefers-color-scheme: dark) {
+    .content-text-block p {
+        color: #e2e8f0;
+    }
+
+    .content-heading-block.h1,
+    .content-heading-block.h2,
+    .content-heading-block.h3,
+    .content-heading-block.h4,
+    .content-heading-block.h5,
+    .content-heading-block.h6 {
+        color: #f7fafc;
+    }
+
+    .content-list-block {
+        color: #e2e8f0;
+    }
+
+    .content-quote-block {
+        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+        color: #e2e8f0;
+    }
+}
+
+/* Animation cho các elements */
+.content-text-block,
+.content-image-block,
+.content-heading-block,
+.content-list-block,
+.content-quote-block,
+.content-code-block {
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+}
+
+.content-text-block:nth-child(1) { animation-delay: 0.1s; }
+.content-text-block:nth-child(2) { animation-delay: 0.2s; }
+.content-text-block:nth-child(3) { animation-delay: 0.3s; }
+.content-image-block:nth-child(1) { animation-delay: 0.15s; }
+.content-heading-block:nth-child(1) { animation-delay: 0.05s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

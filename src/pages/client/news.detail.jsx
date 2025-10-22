@@ -7,6 +7,8 @@ import LazyImage from '../../components/common/LazyImage';
 import SEO from '../../components/common/SEO';
 import TableOfContents from '../../components/client/news/TableOfContents';
 import RelatedArticles from '../../components/client/news/RelatedArticles';
+import ContentRenderer from '../../components/content/ContentRenderer';
+import '../../components/content/ContentBlocks.css';
 
 const NewsDetail = () => {
     const { id, slug } = useParams();
@@ -22,14 +24,9 @@ const NewsDetail = () => {
         localImages: 0
     });
     const { Content } = Layout;
+    console.log("News detail11:", newsItem);
     const { Title, Paragraph, Text } = Typography;
     const contentRef = useRef(null);
-
-    // Helper function to generate alt text for images
-    const generateImageAlt = (src) => {
-        const filename = src.split('/').pop().split('.')[0];
-        return `Hình ảnh: ${filename.replace(/[-_]/g, ' ')}`;
-    };
 
     // Helper function to detect and process images in content
     const processImagesInContent = (content) => {
@@ -112,6 +109,7 @@ const NewsDetail = () => {
 
                 if (response && response.data) {
                     setNewsItem(response.data);
+                    console.log("News detail:", response.data);
                 } else {
                     setError("Không tìm thấy bài viết");
                 }
@@ -130,7 +128,7 @@ const NewsDetail = () => {
 
     // useEffect để xử lý nội dung bài viết và tạo mục lục
     useEffect(() => {
-        if (newsItem?.content && contentRef?.current) {
+        if (newsItem?.content) {
             let content = newsItem.content;
 
             // Decode HTML entities nếu cần
@@ -152,38 +150,52 @@ const NewsDetail = () => {
                         newAttrs += ' loading="lazy"';
                     }
                     if (!newAttrs.includes('alt=')) {
-                        const srcMatch = newAttrs.match(/src=["']([^"']+)["']/);
-                        const altText = srcMatch ? generateImageAlt(srcMatch[1]) : 'Hình ảnh biển quảng cáo';
-                        newAttrs += ` alt="${altText}"`;
+                        newAttrs += ` alt="Hình ảnh bài viết"`;
                     }
 
                     // Thêm responsive styles cho base64 images
                     if (newAttrs.includes('data:image')) {
                         // Thêm CSS inline cho base64 images để đảm bảo responsive
-                        newAttrs += ' style="max-width: 100%; height: auto; display: block; margin: 0 auto';
+                        newAttrs += ' style="max-width: 100%; height: auto; display: block; margin: 0 auto"';
                     }
 
                     return `<img${newAttrs}/>`;
                 });
 
-            // Lưu content đã xử lý và cập nhật DOM
-            setProcessedContent(content);
+            // Tạo một div tạm thời để parse HTML và thêm ID cho headings
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
 
-            // Đặt timeout nhỏ để đảm bảo DOM được cập nhật trước khi tạo mục lục
-            setTimeout(() => {
-                if (contentRef.current) {
-                    contentRef.current.innerHTML = content;
+            // Tìm tất cả các heading và thêm ID nếu chưa có
+            const headingElements = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
+            Array.from(headingElements).forEach((heading, index) => {
+                if (!heading.id) {
+                    const level = parseInt(heading.tagName.charAt(1));
+                    const text = heading.textContent.trim();
+                    
+                    // Tạo ID từ text của heading - chuẩn SEO
+                    let baseSlug = text.toLowerCase()
+                        .replace(/[^\w\s-]/g, '') // Loại bỏ ký tự đặc biệt
+                        .replace(/\s+/g, '-') // Thay thế khoảng trắng bằng dấu gạch ngang
+                        .replace(/^-+|-+$/g, ''); // Loại bỏ dấu gạch ngang ở đầu và cuối
+
+                    let id = `heading-${level}-${index}-${baseSlug}`;
+                    heading.id = id;
                 }
-            }, 10);
+            });
+
+            // Lưu content đã xử lý với ID
+            const processedContentWithIds = tempDiv.innerHTML;
+            setProcessedContent(processedContentWithIds);
         }
-    }, [newsItem?.content, contentRef, generateImageAlt]);
+    }, [newsItem?.content, contentRef]);
 
     // useEffect riêng để đảm bảo mục lục được tạo sau khi content đã sẵn sàng
     useEffect(() => {
-        if (processedContent && contentRef?.current) {
-            // Đảm bảo content đã được hiển thị với ID
+        if (processedContent) {
+            // Đợi một chút để đảm bảo content đã được render bởi ContentRenderer
             const checkContentReady = () => {
-                const headings = contentRef.current.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                const headings = document.querySelectorAll('.content-renderer h1, .content-renderer h2, .content-renderer h3, .content-renderer h4, .content-renderer h5, .content-renderer h6');
                 if (headings.length > 0) {
                     // Force re-render mục lục bằng cách trigger một sự kiện
                     window.dispatchEvent(new Event('resize'));
@@ -196,7 +208,7 @@ const NewsDetail = () => {
             // Đợi một chút để đảm bảo content đã được render
             setTimeout(checkContentReady, 50);
         }
-    }, [processedContent, contentRef]);
+    }, [processedContent]);
 
     // Logic cho nút cuộn lên đầu trang (Scroll to Top)
     useEffect(() => {
@@ -557,7 +569,7 @@ const NewsDetail = () => {
                                                     : newsItem.featuredImageUrl
                                                         ? `${import.meta.env.VITE_BACKEND_URL}${newsItem.featuredImageUrl}`
                                                         : "/default-image.jpg"}
-                                            alt={`Ảnh minh họa cho bài viết: ${title} - Biển quảng cáo chuyên nghiệp từ Sign Board`}
+                                            alt={`${title} - Hình ảnh đại diện bài viết`}
                                             className="article-image"
                                             style={{
                                                 width: '100%',
@@ -571,18 +583,6 @@ const NewsDetail = () => {
                                     </div>
                                 )}
 
-                                <style jsx global>{`
-                .news-article-content img {
-                    max-width: 100%;
-                    height: auto;
-                    display: block;
-                    margin: 16px auto; /* Giữa hình ảnh */
-                    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-                    border-radius: 8px;
-                    border: 1px solid #e9ecef;
-                    object-fit: contain; /* Đảm bảo hình ảnh không bị cắt */
-                }
-            `}</style>
 
                                 <div className="article-content" style={{
                                     background: '#ffffff',
@@ -600,19 +600,7 @@ const NewsDetail = () => {
                                     wordWrap: 'break-word',
                                     overflowWrap: 'break-word'
                                 }}>
-                                    <div
-                                        ref={contentRef}
-                                        className="news-article-content "
-                                        dangerouslySetInnerHTML={{ __html: processedContent || content }}
-                                        style={{
-                                            color: '#495057',
-                                            fontSize: '15px',
-                                            lineHeight: '1.7',
-                                            wordWrap: 'break-word',
-                                            overflowWrap: 'break-word',
-                                            overflowX: 'hidden', // Ngăn ngang overflow cho toàn bộ content
-                                        }}
-                                    />
+                                    <ContentRenderer htmlContent={processedContent || content} />
                                 </div>
 
                                 {/* Related Articles */}
