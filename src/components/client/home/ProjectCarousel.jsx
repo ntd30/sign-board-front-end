@@ -131,7 +131,6 @@ const ProjectCarousel = () => {
                         title: article.title || `Dự án ${index + 1}`,
                         description: article.description || article.excerpt || 'Mô tả dự án chưa được cập nhật.',
                         image: article.thumbnail || article.imageUrl || 'https://placehold.co/400x220/E0F2F1/00796B?text=Dự+án',
-                        category: 'Dự án tiêu biểu',
                         slug: article.slug,
                         content: article.content,
                         featuredImageUrl: article.featuredImageUrl,
@@ -148,28 +147,28 @@ const ProjectCarousel = () => {
                             title: 'Dự Án Biển Quảng Cáo #1',
                             description: 'Thiết kế và thi công biển quảng cáo LED cao cấp cho tòa nhà văn phòng, với hiệu ứng ánh sáng động và công nghệ tiết kiệm năng lượng.',
                             image: 'https://placehold.co/400x220/E0F2F1/00796B?text=Dự+án+1',
-                            category: 'Biển LED tòa nhà'
+                            slug: 'du-an-1'
                         },
                         {
                             id: 2,
                             title: 'Dự Án Biển Hiệu Cửa Hàng #2',
                             description: 'Biển hiệu cửa hàng với thiết kế hiện đại, sử dụng chất liệu mica cao cấp và hệ thống chiếu sáng chuyên nghiệp.',
                             image: 'https://placehold.co/400x220/004D40/ffffff?text=Dự+án+2',
-                            category: 'Biển hiệu cửa hàng'
+                            slug: 'du-an-2'
                         },
                         {
                             id: 3,
                             title: 'Dự Án Quảng Cáo Trung Tâm #3',
                             description: 'Hệ thống biển quảng cáo cho trung tâm thương mại với quy mô lớn, tích hợp công nghệ LED matrix hiện đại.',
                             image: 'https://placehold.co/400x220/00796B/ffffff?text=Dự+án+3',
-                            category: 'Quảng cáo trung tâm'
+                            slug: 'du-an-3'
                         },
                         {
                             id: 4,
                             title: 'Dự Án Biển Quảng Cáo #4',
                             description: 'Biển quảng cáo 3D với hiệu ứng nổi bật, sử dụng công nghệ tiên tiến tạo chiều sâu và thu hút ánh nhìn.',
                             image: 'https://placehold.co/400x220/26A69A/ffffff?text=Dự+án+4',
-                            category: 'Biển 3D'
+                            slug: 'du-an-4'
                         }
                     ]);
                 }
@@ -182,28 +181,28 @@ const ProjectCarousel = () => {
                         title: 'Dự Án Biển Quảng Cáo #1',
                         description: 'Thiết kế và thi công biển quảng cáo LED cao cấp cho tòa nhà văn phòng, với hiệu ứng ánh sáng động và công nghệ tiết kiệm năng lượng.',
                         image: 'https://placehold.co/400x220/E0F2F1/00796B?text=Dự+án+1',
-                        category: 'Biển LED tòa nhà'
+                        slug: 'du-an-1'
                     },
                     {
                         id: 2,
                         title: 'Dự Án Biển Hiệu Cửa Hàng #2',
                         description: 'Biển hiệu cửa hàng với thiết kế hiện đại, sử dụng chất liệu mica cao cấp và hệ thống chiếu sáng chuyên nghiệp.',
                         image: 'https://placehold.co/400x220/004D40/ffffff?text=Dự+án+2',
-                        category: 'Biển hiệu cửa hàng'
+                        slug: 'du-an-2'
                     },
                     {
                         id: 3,
                         title: 'Dự Án Quảng Cáo Trung Tâm #3',
                         description: 'Hệ thống biển quảng cáo cho trung tâm thương mại với quy mô lớn, tích hợp công nghệ LED matrix hiện đại.',
                         image: 'https://placehold.co/400x220/00796B/ffffff?text=Dự+án+3',
-                        category: 'Quảng cáo trung tâm'
+                        slug: 'du-an-3'
                     },
                     {
                         id: 4,
                         title: 'Dự Án Biển Quảng Cáo #4',
                         description: 'Biển quảng cáo 3D với hiệu ứng nổi bật, sử dụng công nghệ tiên tiến tạo chiều sâu và thu hút ánh nhìn.',
                         image: 'https://placehold.co/400x220/26A69A/ffffff?text=Dự+án+4',
-                        category: 'Biển 3D'
+                        slug: 'du-an-4'
                     }
                 ]);
             }
@@ -216,28 +215,28 @@ const ProjectCarousel = () => {
                     title: 'Dự Án Biển Quảng Cáo #1',
                     description: 'Thiết kế và thi công biển quảng cáo LED cao cấp cho tòa nhà văn phòng, với hiệu ứng ánh sáng động và công nghệ tiết kiệm năng lượng.',
                     image: 'https://placehold.co/400x220/E0F2F1/00796B?text=Dự+án+1',
-                    category: 'Biển LED tòa nhà'
+                    slug: 'du-an-1'
                 },
                 {
                     id: 2,
                     title: 'Dự Án Biển Hiệu Cửa Hàng #2',
                     description: 'Biển hiệu cửa hàng với thiết kế hiện đại, sử dụng chất liệu mica cao cấp và hệ thống chiếu sáng chuyên nghiệp.',
                     image: 'https://placehold.co/400x220/004D40/ffffff?text=Dự+án+2',
-                    category: 'Biển hiệu cửa hàng'
+                    slug: 'du-an-2'
                 },
                 {
                     id: 3,
                     title: 'Dự Án Quảng Cáo Trung Tâm #3',
                     description: 'Hệ thống biển quảng cáo cho trung tâm thương mại với quy mô lớn, tích hợp công nghệ LED matrix hiện đại.',
                     image: 'https://placehold.co/400x220/00796B/ffffff?text=Dự+án+3',
-                    category: 'Quảng cáo trung tâm'
+                    slug: 'du-an-3'
                 },
                 {
                     id: 4,
                     title: 'Dự Án Biển Quảng Cáo #4',
                     description: 'Biển quảng cáo 3D với hiệu ứng nổi bật, sử dụng công nghệ tiên tiến tạo chiều sâu và thu hút ánh nhìn.',
                     image: 'https://placehold.co/400x220/26A69A/ffffff?text=Dự+án+4',
-                    category: 'Biển 3D'
+                    slug: 'du-an-4'
                 }
             ]);
         } finally {
@@ -568,18 +567,6 @@ const ProjectCarousel = () => {
                                     }
                                 >
                                     <div style={{ padding: '20px 15px' }}>
-                                        <div style={{
-                                            background: 'linear-gradient(135deg, #004D40, #00796B)',
-                                            color: 'white',
-                                            padding: '4px 12px',
-                                            borderRadius: '15px',
-                                            fontSize: '0.75rem',
-                                            fontWeight: '600',
-                                            display: 'inline-block',
-                                            marginBottom: '12px'
-                                        }}>
-                                            {project.category}
-                                        </div>
                                         <Title level={3} style={{
                                             color: '#004D40',
                                             marginBottom: '12px',

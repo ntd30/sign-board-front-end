@@ -413,16 +413,19 @@ const ArticleCarousel = ({
                                 className="nav-button nav-button-left"
                                 style={{
                                     position: 'absolute',
-                                    left: '-50px',
+                                    left: '-60px',
                                     top: '50%',
                                     transform: 'translateY(-50%)',
                                     zIndex: 10,
-                                    background: 'rgba(0, 77, 64, 0.1)',
-                                    border: '2px solid #004D40',
-                                    color: '#004D40',
-                                    width: '40px',
-                                    height: '40px',
-                                    fontSize: '18px'
+                                    background: 'linear-gradient(135deg, rgba(0, 77, 64, 0.9), rgba(0, 121, 107, 0.9))',
+                                    border: 'none',
+                                    color: '#ffffff',
+                                    width: '48px',
+                                    height: '48px',
+                                    fontSize: '20px',
+                                    boxShadow: '0 4px 15px rgba(0, 77, 64, 0.3)',
+                                    transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                                    backdropFilter: 'blur(10px)'
                                 }}
                             />
                             <Button
@@ -432,16 +435,19 @@ const ArticleCarousel = ({
                                 className="nav-button nav-button-right"
                                 style={{
                                     position: 'absolute',
-                                    right: '-50px',
+                                    right: '-60px',
                                     top: '50%',
                                     transform: 'translateY(-50%)',
                                     zIndex: 10,
-                                    background: 'rgba(0, 77, 64, 0.1)',
-                                    border: '2px solid #004D40',
-                                    color: '#004D40',
-                                    width: '40px',
-                                    height: '40px',
-                                    fontSize: '18px'
+                                    background: 'linear-gradient(135deg, rgba(0, 77, 64, 0.9), rgba(0, 121, 107, 0.9))',
+                                    border: 'none',
+                                    color: '#ffffff',
+                                    width: '48px',
+                                    height: '48px',
+                                    fontSize: '20px',
+                                    boxShadow: '0 4px 15px rgba(0, 77, 64, 0.3)',
+                                    transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                                    backdropFilter: 'blur(10px)'
                                 }}
                             />
                         </>

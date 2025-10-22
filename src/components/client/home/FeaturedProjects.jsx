@@ -62,7 +62,7 @@ const FeaturedProjects = () => {
 
       <Row gutter={[24, 24]}>
         {projects.map((project) => (
-          <Col key={project.id} xs={12} sm={12} md={12} lg={6} style={{ display: 'flex' }}>
+          <Col key={project.id} xs={12} sm={12} md={12} lg={12} xl={12} style={{ display: 'flex' }}>
             <Card
               hoverable
               style={projectCardStyle}
@@ -82,7 +82,10 @@ const FeaturedProjects = () => {
                     borderColor: '#004D40',
                     fontWeight: 'bold',
                     width: 'calc(100% - 32px)',
-                    margin: '0 16px'
+                    margin: '0 16px',
+                    borderRadius: '50px',
+                    height: '50px',
+                    padding: '0 20px'
                   }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.backgroundColor = '#00796B';
@@ -139,6 +142,38 @@ const FeaturedProjects = () => {
           </Col>
         ))}
       </Row>
+
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .ant-card .ant-card-body {
+            padding: 12px !important;
+          }
+          .ant-card .ant-card-cover img {
+            height: 180px !important;
+          }
+          .ant-card-meta-title {
+            font-size: 14px !important;
+          }
+          .ant-card-meta-description {
+            font-size: 12px !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .ant-card .ant-card-body {
+            padding: 10px !important;
+          }
+          .ant-card .ant-card-cover img {
+            height: 160px !important;
+          }
+          .ant-card-meta-title {
+            font-size: 13px !important;
+          }
+          .ant-card-meta-description {
+            font-size: 11px !important;
+          }
+        }
+      `}</style>
     </div>
   );
 };

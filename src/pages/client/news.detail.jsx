@@ -224,6 +224,11 @@ const NewsDetail = () => {
         return () => window.removeEventListener('scroll', checkScrollTop);
     }, []);
 
+    // Thêm useEffect để cuộn lên đầu trang khi component mount
+    useEffect(() => {
+        window.scrollTo(0, 0); // Cuộn lên đầu trang khi trang tải
+    }, []); // Chạy một lần khi component được mount
+
     const handleScrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };

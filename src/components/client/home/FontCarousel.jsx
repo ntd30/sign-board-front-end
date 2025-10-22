@@ -399,9 +399,10 @@ const FontCarousel = () => {
                             background: 'rgba(0, 77, 64, 0.1)',
                             border: '2px solid #004D40',
                             color: '#004D40',
-                            width: '40px',
-                            height: '40px',
-                            fontSize: '18px'
+                            width: '50px',
+                            height: '50px',
+                            fontSize: '20px',
+                            borderRadius: '50%'
                         }}
                     />
                     <Button
@@ -418,9 +419,10 @@ const FontCarousel = () => {
                             background: 'rgba(0, 77, 64, 0.1)',
                             border: '2px solid #004D40',
                             color: '#004D40',
-                            width: '40px',
-                            height: '40px',
-                            fontSize: '18px'
+                            width: '50px',
+                            height: '50px',
+                            fontSize: '20px',
+                            borderRadius: '50%'
                         }}
                     />
 
@@ -581,8 +583,9 @@ const FontCarousel = () => {
                                                     border: 'none',
                                                     fontWeight: '600',
                                                     padding: '0 25px',
-                                                    height: '40px',
+                                                    height: '45px',
                                                     fontSize: '0.9rem',
+                                                    borderRadius: '25px',
                                                     transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'
                                                 }}
                                                 onMouseEnter={(e) => {
@@ -617,8 +620,8 @@ const FontCarousel = () => {
                                 onClick={() => goToSlide(index)}
                                 className={`pagination-dot ${index === currentIndex ? 'active' : ''}`}
                                 style={{
-                                    width: '10px',
-                                    height: '10px',
+                                    width: '14px',
+                                    height: '14px',
                                     borderRadius: '50%',
                                     border: 'none',
                                     background: index === currentIndex ? '#004D40' : 'rgba(0, 77, 64, 0.3)',
@@ -714,7 +717,7 @@ const FontCarousel = () => {
                             gap: 8px !important;
                         }
                         .font-card {
-                            min-width: calc(100% - 10px) !important;
+                            min-width: calc(100% / 2 - 8px) !important;
                             max-width: 240px !important;
                             min-height: 280px !important;
                         }
@@ -735,13 +738,28 @@ const FontCarousel = () => {
                     }
 
                     @media (max-width: 400px) {
+                        .carousel-container {
+                            padding: 0 3px !important;
+                            gap: 6px !important;
+                        }
                         .font-card {
-                            min-width: calc(100% - 8px) !important;
+                            min-width: calc(100% / 2 - 6px) !important;
                             max-width: 220px !important;
                             min-height: 260px !important;
                         }
                         .font-card img {
                             height: 130px !important;
+                        }
+                        .font-card h3 {
+                            font-size: 0.85rem !important;
+                        }
+                        .font-card p {
+                            font-size: 0.7rem !important;
+                        }
+                        .font-card button {
+                            height: 30px !important;
+                            font-size: 0.75rem !important;
+                            padding: 0 12px !important;
                         }
                     }
                 `}</style>
