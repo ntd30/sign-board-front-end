@@ -144,7 +144,6 @@ const Header = () => {
             title={
                 <div className="drawer-title">
                     <img src="/img/nhanvietadv-logo.png" alt="Logo" className="drawer-logo" />
-                    <span className="drawer-title-text">Menu</span>
                 </div>
             }
             placement="right"

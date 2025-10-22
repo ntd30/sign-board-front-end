@@ -72,7 +72,12 @@ const ArticleCarousel = ({
                     e.currentTarget.style.boxShadow = '0 6px 24px rgba(0, 77, 64, 0.15)';
                 }}
                 cover={
-                    item.imageBase64 ? (
+                    <Link to={item.slug ? `/news/${item.slug}` : `/news/detail/${item.id}`} onClick={(e) => {
+                        if (onItemClick) {
+                            e.preventDefault();
+                            onItemClick(item);
+                        }
+                    }}>
                         <div style={{
                             height: imageHeight,
                             background: `linear-gradient(135deg, ${index % 2 === 0 ? '#004D40' : '#00796B'}, ${index % 2 === 0 ? '#00796B' : '#26A69A'})`,
@@ -82,104 +87,86 @@ const ArticleCarousel = ({
                             position: 'relative',
                             overflow: 'hidden'
                         }}>
-                            <LazyImage
-                                src={`data:image/jpeg;base64,${item.imageBase64}`}
-                                alt={`Hình ảnh: ${item.title || item.name}`}
-                                style={{
-                                    width: '90%',
-                                    height: '90%',
-                                    objectFit: 'cover',
-                                    borderRadius: '15px',
-                                    boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
-                                    transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                    transform: 'scale(0.95)'
-                                }}
-                                onError={(e) => {
-                                    console.error('Failed to load base64 image');
-                                    e.target.style.display = 'none';
-                                }}
-                            />
+                            {item.imageBase64 ? (
+                                <LazyImage
+                                    src={`data:image/jpeg;base64,${item.imageBase64}`}
+                                    alt={`Hình ảnh: ${item.title || item.name}`}
+                                    style={{
+                                        width: '90%',
+                                        height: '90%',
+                                        objectFit: 'cover',
+                                        borderRadius: '15px',
+                                        boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+                                        transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                                        transform: 'scale(0.95)'
+                                    }}
+                                    onError={(e) => {
+                                        console.error('Failed to load base64 image');
+                                        e.target.style.display = 'none';
+                                    }}
+                                />
+                            ) : item.featuredImageUrl ? (
+                                <LazyImage
+                                    src={`${import.meta.env.VITE_BACKEND_URL}${item.featuredImageUrl}`}
+                                    alt={`Hình ảnh: ${item.title || item.name}`}
+                                    style={{
+                                        width: '90%',
+                                        height: '90%',
+                                        objectFit: 'cover',
+                                        borderRadius: '15px',
+                                        boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+                                        transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                                        transform: 'scale(0.95)'
+                                    }}
+                                    onError={(e) => {
+                                        console.error('Failed to load image:', item.featuredImageUrl);
+                                        e.target.style.display = 'none';
+                                    }}
+                                />
+                            ) : item.thumbnail || item.image ? (
+                                <img
+                                    src={item.thumbnail || item.image}
+                                    alt={item.title || item.name}
+                                    style={{
+                                        width: '90%',
+                                        height: '90%',
+                                        objectFit: 'cover',
+                                        borderRadius: '15px',
+                                        boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+                                        transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                                        transform: 'scale(0.95)'
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        e.currentTarget.style.transform = 'scale(1.05) rotate(2deg)';
+                                        e.currentTarget.style.filter = 'brightness(1.1)';
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        e.currentTarget.style.transform = 'scale(0.95) rotate(0deg)';
+                                        e.currentTarget.style.filter = 'brightness(1)';
+                                    }}
+                                />
+                            ) : (
+                                <div style={{
+                                    height: imageHeight,
+                                    background: `linear-gradient(135deg, #004D40, #00796B)`,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    borderRadius: '15px 15px 0 0'
+                                }}>
+                                    <span style={{
+                                        color: 'white',
+                                        fontSize: '3rem',
+                                        opacity: 0.7
+                                    }}>
+                                        📄
+                                    </span>
+                                </div>
+                            )}
                         </div>
-                    ) : item.featuredImageUrl ? (
-                        <div style={{
-                            height: imageHeight,
-                            background: `linear-gradient(135deg, ${index % 2 === 0 ? '#004D40' : '#00796B'}, ${index % 2 === 0 ? '#00796B' : '#26A69A'})`,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            position: 'relative',
-                            overflow: 'hidden'
-                        }}>
-                            <LazyImage
-                                src={`${import.meta.env.VITE_BACKEND_URL}${item.featuredImageUrl}`}
-                                alt={`Hình ảnh: ${item.title || item.name}`}
-                                style={{
-                                    width: '90%',
-                                    height: '90%',
-                                    objectFit: 'cover',
-                                    borderRadius: '15px',
-                                    boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
-                                    transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                    transform: 'scale(0.95)'
-                                }}
-                                onError={(e) => {
-                                    console.error('Failed to load image:', item.featuredImageUrl);
-                                    e.target.style.display = 'none';
-                                }}
-                            />
-                        </div>
-                    ) : item.thumbnail || item.image ? (
-                        <div style={{
-                            height: imageHeight,
-                            background: `linear-gradient(135deg, ${index % 2 === 0 ? '#004D40' : '#00796B'}, ${index % 2 === 0 ? '#00796B' : '#26A69A'})`,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            position: 'relative',
-                            overflow: 'hidden'
-                        }}>
-                            <img
-                                src={item.thumbnail || item.image}
-                                alt={item.title || item.name}
-                                style={{
-                                    width: '90%',
-                                    height: '90%',
-                                    objectFit: 'cover',
-                                    borderRadius: '15px',
-                                    boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
-                                    transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                    transform: 'scale(0.95)'
-                                }}
-                                onMouseEnter={(e) => {
-                                    e.currentTarget.style.transform = 'scale(1.05) rotate(2deg)';
-                                    e.currentTarget.style.filter = 'brightness(1.1)';
-                                }}
-                                onMouseLeave={(e) => {
-                                    e.currentTarget.style.transform = 'scale(0.95) rotate(0deg)';
-                                    e.currentTarget.style.filter = 'brightness(1)';
-                                }}
-                            />
-                        </div>
-                    ) : (
-                        <div style={{
-                            height: imageHeight,
-                            background: `linear-gradient(135deg, #004D40, #00796B)`,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            borderRadius: '15px 15px 0 0'
-                        }}>
-                            <span style={{
-                                color: 'white',
-                                fontSize: '3rem',
-                                opacity: 0.7
-                            }}>
-                                📄
-                            </span>
-                        </div>
-                    )
+                    </Link>
                 }
             >
                 <div style={{ padding: '15px' }}>

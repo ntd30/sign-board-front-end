@@ -495,75 +495,76 @@ const ProjectCarousel = () => {
                                         e.currentTarget.style.boxShadow = '0 6px 24px rgba(0, 77, 64, 0.15)';
                                     }}
                                     cover={
-                                        <div style={{
-                                            height: '200px',
-                                            background: 'rgba(0, 77, 64, 0.05)', /* Giảm opacity background gradient rất thấp */
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            position: 'relative',
-                                            overflow: 'hidden'
-                                        }}>
-                                            {project.imageBase64 ? (
-                                                <LazyImage
-                                                    src={`data:image/jpeg;base64,${project.imageBase64}`}
-                                                    alt={`Hình ảnh dự án: ${project.title} - Biển quảng cáo từ Sign Board`}
-                                                    style={{
-                                                        width: '100%',
-                                                        height: '100%',
-                                                        objectFit: 'cover',
-                                                        opacity: 1, /* Tăng opacity để hình rõ nét hơn */
-                                                        transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                                        transform: 'scale(0.95)'
-                                                    }}
-                                                    onError={(e) => {
-                                                        console.error('Failed to load base64 image');
-                                                        e.target.style.display = 'none';
-                                                    }}
-                                                />
-                                            ) : project.featuredImageUrl ? (
-                                                <LazyImage
-                                                    src={`${import.meta.env.VITE_BACKEND_URL}${project.featuredImageUrl}`}
-                                                    alt={`Hình ảnh dự án: ${project.title} - Biển quảng cáo từ Sign Board`}
-                                                    style={{
-                                                        width: '100%',
-                                                        height: '100%',
-                                                        objectFit: 'cover',
-                                                        opacity: 1, /* Tăng opacity để hình rõ nét hơn */
-                                                        transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                                        transform: 'scale(0.95)'
-                                                    }}
-                                                    onError={(e) => {
-                                                        console.error('Failed to load image:', project.featuredImageUrl);
-                                                        e.target.style.display = 'none';
-                                                    }}
-                                                />
-                                            ) : project.image ? (
-                                                <img
-                                                    src={project.image}
-                                                    alt={project.title}
-                                                    style={{
-                                                        width: '100%',
-                                                        height: '100%',
-                                                        objectFit: 'cover',
-                                                        opacity: 1, /* Tăng opacity để hình rõ nét hơn */
-                                                        transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                                        transform: 'scale(0.95)'
-                                                    }}
-                                                    onMouseEnter={(e) => {
-                                                        e.currentTarget.style.transform = 'scale(1.05) rotate(2deg)';
-                                                        e.currentTarget.style.filter = 'brightness(1.1)';
-                                                        e.currentTarget.style.opacity = '1';
-                                                    }}
-                                                    onMouseLeave={(e) => {
-                                                        e.currentTarget.style.transform = 'scale(0.95) rotate(0deg)';
-                                                        e.currentTarget.style.filter = 'brightness(1)';
-                                                        e.currentTarget.style.opacity = '1'; /* Giữ opacity 1 khi không hover */
-                                                    }}
-                                                />
-                                            ) : null}
-                                           
-                                        </div>
+                                        <Link to={project.slug ? `/news/${project.slug}` : `/news/detail/${project.id}`}>
+                                            <div style={{
+                                                height: '200px',
+                                                background: 'rgba(0, 77, 64, 0.05)', /* Giảm opacity background gradient rất thấp */
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                position: 'relative',
+                                                overflow: 'hidden'
+                                            }}>
+                                                {project.imageBase64 ? (
+                                                    <LazyImage
+                                                        src={`data:image/jpeg;base64,${project.imageBase64}`}
+                                                        alt={`Hình ảnh dự án: ${project.title} - Biển quảng cáo từ Sign Board`}
+                                                        style={{
+                                                            width: '100%',
+                                                            height: '100%',
+                                                            objectFit: 'cover',
+                                                            opacity: 1, /* Tăng opacity để hình rõ nét hơn */
+                                                            transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                                                            transform: 'scale(0.95)'
+                                                        }}
+                                                        onError={(e) => {
+                                                            console.error('Failed to load base64 image');
+                                                            e.target.style.display = 'none';
+                                                        }}
+                                                    />
+                                                ) : project.featuredImageUrl ? (
+                                                    <LazyImage
+                                                        src={`${import.meta.env.VITE_BACKEND_URL}${project.featuredImageUrl}`}
+                                                        alt={`Hình ảnh dự án: ${project.title} - Biển quảng cáo từ Sign Board`}
+                                                        style={{
+                                                            width: '100%',
+                                                            height: '100%',
+                                                            objectFit: 'cover',
+                                                            opacity: 1, /* Tăng opacity để hình rõ nét hơn */
+                                                            transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                                                            transform: 'scale(0.95)'
+                                                        }}
+                                                        onError={(e) => {
+                                                            console.error('Failed to load image:', project.featuredImageUrl);
+                                                            e.target.style.display = 'none';
+                                                        }}
+                                                    />
+                                                ) : project.image ? (
+                                                    <img
+                                                        src={project.image}
+                                                        alt={project.title}
+                                                        style={{
+                                                            width: '100%',
+                                                            height: '100%',
+                                                            objectFit: 'cover',
+                                                            opacity: 1, /* Tăng opacity để hình rõ nét hơn */
+                                                            transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
+                                                            transform: 'scale(0.95)'
+                                                        }}
+                                                        onMouseEnter={(e) => {
+                                                            e.currentTarget.style.transform = 'scale(1.05) rotate(2deg)';
+                                                            e.currentTarget.style.filter = 'brightness(1.1)';
+                                                            e.currentTarget.style.opacity = '1';
+                                                        }}
+                                                        onMouseLeave={(e) => {
+                                                            e.currentTarget.style.transform = 'scale(0.95) rotate(0deg)';
+                                                            e.currentTarget.style.filter = 'brightness(1)';
+                                                            e.currentTarget.style.opacity = '1'; /* Giữ opacity 1 khi không hover */
+                                                        }}
+                                                    />
+                                                ) : null}
+                                            </div>
+                                        </Link>
                                     }
                                 >
                                     <div style={{ padding: '20px 15px' }}>

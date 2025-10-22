@@ -482,6 +482,7 @@ const FontCarousel = () => {
                                         e.currentTarget.style.boxShadow = '0 6px 24px rgba(0, 77, 64, 0.15)';
                                     }}
                                     cover={
+                                        <Link to={font.slug ? `/news/${font.slug}` : `/news/detail/${font.id}`}>
                                         <div style={{
                                             height: '180px',
                                             background: `linear-gradient(135deg, ${index % 2 === 0 ? '#004D40' : '#00796B'}, ${index % 2 === 0 ? '#00796B' : '#26A69A'})`,
@@ -551,6 +552,7 @@ const FontCarousel = () => {
                                                 />
                                             ) : null}
                                         </div>
+                                        </Link>
                                     }
                                 >
                                     <div style={{ padding: '15px' }}>
