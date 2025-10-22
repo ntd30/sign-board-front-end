@@ -54,7 +54,7 @@ const Header = () => {
                     const menuItems = validCategories.map(category => ({
                         key: category.slug,
                         label: (
-                                <Link to={`/${category.slug}`}>{category.name}</Link>
+                            <Link to={`/${category.slug}?id=${category.id}`}>{category.name}</Link>
                         ),
                     }));
                     setCategories(menuItems);

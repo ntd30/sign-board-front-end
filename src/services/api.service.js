@@ -385,6 +385,14 @@ const fetchArticleCategoryTreeAPI = () => {
     return axios.get(URL_BACKEND)
 }
 
+const getAllArticlesByCategoryAndSubcategoriesWithSearchAPI = (id, page = 0, size = 10, search = null) => {
+    let URL_BACKEND = `/api/admin/article-categories/getAllArticles/${id}?page=${page}&size=${size}`
+    if (search && search.trim()) {
+        URL_BACKEND += `&search=${encodeURIComponent(search)}`
+    }
+    return axios.get(URL_BACKEND)
+}
+
 const fetchAllArticleCategoriesAPI = (current, pageSize) => {
     const URL_BACKEND = `/api/admin/article-categories?page=${current}&size=${pageSize}`
     return axios.get(URL_BACKEND)
@@ -459,5 +467,6 @@ export {
     deleteArticleAPI, createArticleAPI, updateArticleAPI, updateRoleAPI, goNhieuQuyenChoVaiTro, updateDesignAPI, updateContactAPI,
     getProfileAPI,GetProductById,GetNewById,GetArticleBySlug,fetchAllBannersAPI,updateBannerAPI ,createBannerAPI,deleteBannerAPI,
     fetchArticleCategoryTreeAPI, fetchAllArticleCategoriesAPI, fetchArticleCategoryByIdAPI, createArticleCategoryAPI,
-    updateArticleCategoryAPI, deleteArticleCategoryAPI, searchArticleCategoriesAPI, fetchArticlesByCategorySlugAPI, fetchCategoryStatsAPI
+    updateArticleCategoryAPI, deleteArticleCategoryAPI, searchArticleCategoriesAPI, fetchArticlesByCategorySlugAPI, fetchCategoryStatsAPI,
+    getAllArticlesByCategoryAndSubcategoriesWithSearchAPI
 }
