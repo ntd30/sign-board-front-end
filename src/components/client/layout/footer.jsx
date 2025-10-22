@@ -65,7 +65,7 @@ const AppFooter = () => {
             {/* Nhúng iframe từ Google Maps */}
             {/* Thay thế src bằng mã nhúng bản đồ của bạn */}
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3725.1214208498036!2d105.74402267601486!3d20.987769380651304!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3134539533df56f5%3A0x33242b802bb49891!2zS2h1IMSR4bqldCBk4buLY2ggduG7pSBDTDIxLTI5!5e0!3m2!1svi!2s!4v1759548470146!5m2!1svi!2s" // Thay link này
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d2290.547913733201!2d105.7505441!3d20.9736845!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135ad2549a106e1%3A0x34b4798fb3752599!2zUXXhuqNuZyBDw6FvIE5ow6JuIFZp4buHdA!5e1!3m2!1svi!2s!4v1761105393605!5m2!1svi!2s" // Thay link này
               width="100%"
               height="350px" // Điều chỉnh chiều cao nếu cần
               style={{ border: 0 }}
