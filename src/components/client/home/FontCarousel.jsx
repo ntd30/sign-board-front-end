@@ -453,6 +453,9 @@ const FontCarousel = () => {
                         {extendedFontsArray.map((font, index) => (
                             <div
                                 key={`${font.id || index}-${Math.floor(index / fontsArray.length)}`}
+                                className={`font-card-wrapper ${
+                                    index % fontsArray.length === currentIndex ? 'is-active' : ''
+                                }`}
                                 style={{
                                     minWidth: 'calc(100% / 4 - 15px)',
                                     maxWidth: '300px',
@@ -485,7 +488,8 @@ const FontCarousel = () => {
                                         <Link to={font.slug ? `/news/${font.slug}` : `/news/detail/${font.id}`}>
                                         <div style={{
                                             height: '180px',
-                                            background: `linear-gradient(135deg, ${index % 2 === 0 ? '#004D40' : '#00796B'}, ${index % 2 === 0 ? '#00796B' : '#26A69A'})`,
+                                            // *** THAY ĐỔI 1: Bỏ nền gradient màu xanh ***
+                                            // background: `linear-gradient(135deg, ${index % 2 === 0 ? '#004D40' : '#00796B'}, ${index % 2 === 0 ? '#00796B' : '#26A69A'})`,
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
@@ -497,13 +501,15 @@ const FontCarousel = () => {
                                                     src={`data:image/jpeg;base64,${font.imageBase64}`}
                                                     alt={`Hình ảnh mẫu chữ: ${font.title || font.name} - Mẫu chữ đẹp từ Sign Board`}
                                                     style={{
-                                                        width: '90%',
-                                                        height: '90%',
+                                                        // *** THAY ĐỔI 2: Hiển thị full ảnh ***
+                                                        width: '100%',
+                                                        height: '100%',
                                                         objectFit: 'cover',
-                                                        borderRadius: '15px',
-                                                        boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+                                                        // *** THAY ĐỔI 3: Bỏ borderRadius, boxShadow, transform ***
+                                                        // borderRadius: '15px',
+                                                        // boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
                                                         transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                                        transform: 'scale(0.95)'
+                                                        // transform: 'scale(0.95)'
                                                     }}
                                                     onError={(e) => {
                                                         console.error('Failed to load base64 image');
@@ -515,13 +521,15 @@ const FontCarousel = () => {
                                                     src={`${import.meta.env.VITE_BACKEND_URL}${font.featuredImageUrl}`}
                                                     alt={`Hình ảnh mẫu chữ: ${font.title || font.name} - Mẫu chữ đẹp từ Sign Board`}
                                                     style={{
-                                                        width: '90%',
-                                                        height: '90%',
+                                                        // *** THAY ĐỔI 2: Hiển thị full ảnh ***
+                                                        width: '100%',
+                                                        height: '100%',
                                                         objectFit: 'cover',
-                                                        borderRadius: '15px',
-                                                        boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+                                                        // *** THAY ĐỔI 3: Bỏ borderRadius, boxShadow, transform ***
+                                                        // borderRadius: '15px',
+                                                        // boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
                                                         transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                                        transform: 'scale(0.95)'
+                                                        // transform: 'scale(0.95)'
                                                     }}
                                                     onError={(e) => {
                                                         console.error('Failed to load image:', font.featuredImageUrl);
@@ -533,20 +541,22 @@ const FontCarousel = () => {
                                                     src={font.thumbnail || font.image}
                                                     alt={font.title || font.name}
                                                     style={{
-                                                        width: '90%',
-                                                        height: '90%',
+                                                        // *** THAY ĐỔI 2: Hiển thị full ảnh ***
+                                                        width: '100%',
+                                                        height: '100%',
                                                         objectFit: 'cover',
-                                                        borderRadius: '15px',
-                                                        boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+                                                        // *** THAY ĐỔI 3: Bỏ borderRadius, boxShadow, transform ***
+                                                        // borderRadius: '15px',
+                                                        // boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
                                                         transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                                        transform: 'scale(0.95)'
+                                                        // transform: 'scale(0.95)'
                                                     }}
                                                     onMouseEnter={(e) => {
-                                                        e.currentTarget.style.transform = 'scale(1.05) rotate(2deg)';
+                                                        e.currentTarget.style.transform = 'scale(1.05)'; // Giữ lại hiệu ứng zoom nhỏ
                                                         e.currentTarget.style.filter = 'brightness(1.1)';
                                                     }}
                                                     onMouseLeave={(e) => {
-                                                        e.currentTarget.style.transform = 'scale(0.95) rotate(0deg)';
+                                                        e.currentTarget.style.transform = 'scale(1)'; // Trở về scale 1
                                                         e.currentTarget.style.filter = 'brightness(1)';
                                                     }}
                                                 />
@@ -673,13 +683,19 @@ const FontCarousel = () => {
                         .carousel-container {
                             gap: 12px !important;
                         }
-                        .font-card {
+                        /* Chuyển style kích thước sang wrapper */
+                        .font-card-wrapper {
                             min-width: calc(100% / 3 - 12px) !important;
                             max-width: 280px !important;
+                        }
+                        .font-card {
                             min-height: 320px !important;
                         }
+                        /* Đảm bảo ảnh full trong mobile mode */
                         .font-card img {
-                            height: 160px !important;
+                            height: 100% !important; /* Đảm bảo full height */
+                            width: 100% !important; /* Đảm bảo full width */
+                            object-fit: cover !important;
                         }
                         .font-card h3 {
                             font-size: 0.95rem !important;
@@ -703,28 +719,64 @@ const FontCarousel = () => {
                             padding: 0 8px !important;
                             gap: 10px !important;
                         }
-                        .font-card {
+                        /* Chuyển style kích thước sang wrapper */
+                        .font-card-wrapper {
                             min-width: calc(100% / 2 - 10px) !important;
                             max-width: 260px !important;
+                        }
+                        .font-card {
                             min-height: 300px !important;
                         }
+                         /* Đảm bảo ảnh full trong mobile mode */
                         .font-card img {
-                            height: 150px !important;
+                            height: 100% !important;
+                            width: 100% !important;
+                            object-fit: cover !important;
                         }
                     }
 
+                    /* --- BẮT ĐẦU CHỈNH SỬA CHO ĐIỆN THOẠI (CENTER MODE) --- */
                     @media (max-width: 480px) {
                         .carousel-container {
-                            padding: 0 5px !important;
+                            padding: 0 10px !important;
                             gap: 8px !important;
                         }
+
+                        /* Ghi đè style của .font-card */
                         .font-card {
-                            min-width: calc(100% / 2 - 8px) !important;
-                            max-width: 240px !important;
+                            min-width: 100% !important;
+                            max-width: none !important;
                             min-height: 280px !important;
+                            opacity: 0.7; /* Thẻ không active mờ đi */
+                            transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
                         }
+
+                        /* Style cho wrapper mới */
+                        .font-card-wrapper {
+                            min-width: 85% !important;
+                            max-width: 85% !important;
+                            flex: 0 0 85% !important;
+                            transform: scale(0.92); /* Thẻ không active nhỏ lại */
+                            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+                        }
+
+                        /* Style cho wrapper active (ở giữa) */
+                        .font-card-wrapper.is-active {
+                            transform: scale(1);
+                        }
+
+                        /* Style cho thẻ card bên trong wrapper active */
+                        .font-card-wrapper.is-active .font-card {
+                            opacity: 1;
+                            box-shadow: 0 10px 30px rgba(0, 77, 64, 0.2) !important;
+                        }
+                        /* --- KẾT THÚC CHỈNH SỬA --- */
+
+                        /* Đảm bảo ảnh full trong mobile mode */
                         .font-card img {
-                            height: 140px !important;
+                            height: 100% !important;
+                            width: 100% !important;
+                            object-fit: cover !important;
                         }
                         .font-card h3 {
                             font-size: 0.9rem !important;
@@ -740,17 +792,20 @@ const FontCarousel = () => {
                     }
 
                     @media (max-width: 400px) {
-                        .carousel-container {
-                            padding: 0 3px !important;
-                            gap: 6px !important;
+                        /* Điều chỉnh cho màn hình nhỏ hơn */
+                        .font-card-wrapper {
+                            min-width: 90% !important;
+                            max-width: 90% !important;
+                            flex: 0 0 90% !important;
                         }
                         .font-card {
-                            min-width: calc(100% / 2 - 6px) !important;
-                            max-width: 220px !important;
                             min-height: 260px !important;
                         }
+                        /* Đảm bảo ảnh full trong mobile mode */
                         .font-card img {
-                            height: 130px !important;
+                            height: 100% !important;
+                            width: 100% !important;
+                            object-fit: cover !important;
                         }
                         .font-card h3 {
                             font-size: 0.85rem !important;

@@ -186,6 +186,43 @@
     font-weight: 600 !important;
 }
 
+/* === Submenu in Mobile Drawer === */
+.mobile-drawer .ant-menu-submenu-popup {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border: 1px solid #e9ecef;
+    margin-top: 4px;
+    animation: submenuFadeIn 0.3s ease-out;
+}
+
+.mobile-drawer .ant-menu-submenu-popup.ant-menu-submenu-hidden {
+    animation: submenuFadeOut 0.2s ease-in;
+}
+
+.mobile-drawer .ant-menu-submenu-popup .ant-menu {
+    background: transparent;
+    border: none;
+}
+
+.mobile-drawer .ant-menu-submenu-popup .ant-menu-item {
+    padding: 8px 16px !important;
+    margin: 2px 0 !important;
+    border-radius: 6px !important;
+    font-size: 14px !important;
+}
+
+.mobile-drawer .ant-menu-submenu-popup .ant-menu-item:hover {
+    background-color: rgba(9, 76, 45, 0.1) !important;
+    color: #094C2D !important;
+}
+
+.mobile-drawer .ant-menu-submenu-popup .ant-menu-item-selected {
+    background: linear-gradient(135deg, #094C2D 0%, #0A5A35 100%) !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+
 /* === Header Right Section (User menu, buttons) === */
 .header-right {
     display: flex;
@@ -327,6 +364,44 @@
     font-weight: 500;
 }
 
-.mobile-auth-buttons .ant-btn-primary {
-    margin-bottom: 12px;
+/* === Submenu với hiệu ứng mũi tên === */
+.submenu-with-arrow .ant-menu-submenu-title .ant-menu-title-content .anticon {
+    transition: transform 0.3s ease !important;
+    transform: rotate(0deg);
+}
+
+.submenu-with-arrow.ant-menu-submenu-open .ant-menu-submenu-title .ant-menu-title-content .anticon {
+    transform: rotate(180deg) !important;
+}
+
+/* === Hiệu ứng mở submenu === */
+.header-submenu-popup {
+    animation: submenuFadeIn 0.3s ease-out;
+}
+
+@keyframes submenuFadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* === Hiệu ứng đóng submenu === */
+.header-submenu-popup.ant-menu-submenu-hidden {
+    animation: submenuFadeOut 0.2s ease-in;
+}
+
+@keyframes submenuFadeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
 }

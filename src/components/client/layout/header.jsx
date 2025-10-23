@@ -51,12 +51,53 @@ const Header = () => {
 
                     console.log(`✅ Valid categories: ${validCategories.length}/${res.data.length}`);
 
-                    const menuItems = validCategories.map(category => ({
-                        key: category.slug,
-                        label: (
-                            <Link to={`/${category.slug}?id=${category.id}`}>{category.name}</Link>
-                        ),
-                    }));
+                    // Tạo menuItems với hỗ trợ submenu cho categories có children
+                    const menuItems = validCategories.map(category => {
+                        // Tạo submenu từ children nếu có
+                        const children = category.children || [];
+                        const validChildren = children.filter(child => {
+                            const hasArticles = child.articleCount && child.articleCount > 0;
+                            const hasChildrenArticles = child.totalChildrenArticlesCount && child.totalChildrenArticlesCount > 0;
+                            const hasChildren = child.children && child.children.length > 0;
+                            return hasArticles || hasChildrenArticles || hasChildren;
+                        });
+
+                        // Tạo submenu items từ children hợp lệ
+                        const childrenMenuItems = validChildren.map(child => ({
+                            key: child.slug,
+                            label: (
+                                <Link to={`/${child.slug}?id=${child.id}`}>{child.name}</Link>
+                            ),
+                        }));
+
+                        // Nếu có children hợp lệ, tạo submenu
+                        if (childrenMenuItems.length > 0) {
+                            return {
+                                key: category.slug,
+                                label: (
+                                    <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                                        {category.name}
+                                        <DownOutlined style={{
+                                            fontSize: '10px',
+                                            marginLeft: '8px',
+                                            transition: 'transform 0.3s ease',
+                                            transform: 'rotate(0deg)'
+                                        }} />
+                                    </span>
+                                ),
+                                children: childrenMenuItems,
+                                popupClassName: 'submenu-with-arrow',
+                            };
+                        }
+
+                        // Nếu không có children, tạo menu item thông thường
+                        return {
+                            key: category.slug,
+                            label: (
+                                <Link to={`/${category.slug}?id=${category.id}`}>{category.name}</Link>
+                            ),
+                        };
+                    });
                     setCategories(menuItems);
                 }
             } catch (error) {

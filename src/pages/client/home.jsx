@@ -57,7 +57,7 @@ export const HomePage = () => {
                 }
                 .hero-slide {
                     width: 100%;
-                    min-height: 400px; /* Chiều cao tối thiểu */
+                    min-height: 700px; /* Chiều cao tối thiểu */
                     background-size: cover; /* Ảnh lấp đầy khung không bị cắt */
                     background-position: center;
                     background-repeat: no-repeat;
@@ -101,7 +101,7 @@ export const HomePage = () => {
                 }
                 .section-title {
                     /* Kích thước chữ tiêu đề section mặc định */
-                    font-size: 2.5rem !important; 
+                    font-size: 2.2rem !important; 
                 }
                 .section-subtitle {
                     /* Kích thước chữ mô tả section mặc định */
@@ -128,10 +128,13 @@ export const HomePage = () => {
                 /* Responsive styles */
                 @media (max-width: 1024px) {
                     .carousel-container {
-                        padding: '0 15px', /* Giảm padding trên tablet */
+                       padding: 0 15px !important; /* Thêm !important để ghi đè */
+                        margin-left: auto !important; /* Thêm lề auto */
+                        margin-right: auto !important; /* Thêm lề auto */
+                        max-width: 1024px; /* Giới hạn chiều rộng lại */
                     }
                     .hero-slide {
-                        min-height: 250px; /* Giảm chiều cao cho tablet */
+                        min-height: 600px; /* Giảm chiều cao cho tablet */
                         background-size: cover; /* Giữ cover để ảnh lấp đầy */
                     }
                     .hero-slide-title {
@@ -166,7 +169,7 @@ export const HomePage = () => {
                         padding: 20px 10px !important; /* Giảm padding cho section */
                     }
                     .section-title {
-                        font-size: 2rem !important; /* Giảm cỡ chữ tiêu đề section */
+                        font-size: 1.8rem !important; /* Giảm cỡ chữ tiêu đề section */
                     }
                     .section-subtitle {
                         font-size: 1rem !important; /* Giảm cỡ chữ mô tả section */
@@ -212,7 +215,7 @@ export const HomePage = () => {
                         padding: 20px 5px !important; /* Giảm padding thêm */
                     }
                     .section-title {
-                        font-size: 1.8rem !important; /* Giảm cỡ chữ thêm */
+                        font-size: 1.6rem !important; /* Giảm cỡ chữ thêm */
                     }
                     .section-subtitle {
                         font-size: 0.95rem !important;
@@ -268,11 +271,13 @@ export const HomePage = () => {
                 }
             `}</style>
 
-            <div className="carousel-container" style={{
-                maxWidth: '1200px',
-                margin: '40px auto 0',
-                padding: '0 20px'
-            }}>
+            <div className="carousel-container"
+            //  style={{
+            //     maxWidth: '1200px',
+            //     margin: '40px auto 0',
+            //     padding: '0 20px'
+            // }}
+            >
                 <Carousel
                     autoplay
                     autoplaySpeed={5000}
@@ -360,7 +365,7 @@ export const HomePage = () => {
                         {
                             title: 'Biển Quảng Cáo Tòa Nhà',
                             description: 'Các giải pháp biển quảng cáo cho tòa nhà văn phòng và chung cư cao cấp.',
-                            image: 'https://placehold.co/600x400/26A69A/ffffff?text=Tòa+nhà',
+                            image: 'https://placehold.co/600x400/26A69A/ffffff?text=600x400',
                             gradient: 'linear-gradient(135deg, #26A69A, #4DB6AC)'
                         }
                     ].map((service, index) => (
