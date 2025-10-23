@@ -143,6 +143,18 @@ export const HomePage = () => {
                     .hero-slide-description {
                         font-size: 1.1rem;
                     }
+                    /* Partner logos responsive for tablet */
+                    .partners-scroll {
+                        gap: 30px !important;
+                    }
+                    .partners-scroll > div {
+                        min-width: 120px !important;
+                        height: 70px !important;
+                    }
+                    .partners-scroll img {
+                        height: 40px !important;
+                        max-width: 100px !important;
+                    }
                 }
                 /* Đây là các quy tắc cho điện thoại (màn hình nhỏ hơn 768px) */
                 @media (max-width: 768px) {
@@ -186,10 +198,20 @@ export const HomePage = () => {
                     .stat-title {
                         font-size: 0.95rem !important;
                     }
-                    .stat-description {
-                        font-size: 0.8rem !important;
+                    /* Partner logos responsive for mobile */
+                    .partners-scroll {
+                        gap: 20px !important;
+                        padding: 0 10px !important;
                     }
-                    /* === KẾT THÚC CSS MỚI === */
+                    .partners-scroll > div {
+                        min-width: 100px !important;
+                        height: 60px !important;
+                        padding: 10px !important;
+                    }
+                    .partners-scroll img {
+                        height: 35px !important;
+                        max-width: 80px !important;
+                    }
                 }
 
                 /* Đây là các quy tắc cho điện thoại nhỏ (màn hình nhỏ hơn 480px) */
@@ -234,6 +256,20 @@ export const HomePage = () => {
                     }
                     .stat-description {
                         font-size: 0.75rem !important;
+                    }
+                    /* Partner logos responsive for small mobile */
+                    .partners-scroll {
+                        gap: 15px !important;
+                        padding: 0 5px !important;
+                    }
+                    .partners-scroll > div {
+                        min-width: 80px !important;
+                        height: 50px !important;
+                        padding: 8px !important;
+                    }
+                    .partners-scroll img {
+                        height: 30px !important;
+                        max-width: 65px !important;
                     }
                     /* === KẾT THÚC CSS MỚI === */
                 }
@@ -486,54 +522,88 @@ export const HomePage = () => {
                             alignItems: 'center',
                             justifyContent: 'flex-start',
                             flexWrap: 'nowrap',
-                            overflowX: 'auto',
-                            scrollBehavior: 'smooth',
-                            scrollbarWidth: 'none',
-                            msOverflowStyle: 'none',
-                            WebkitOverflowScrolling: 'touch'
+                            overflowX: 'visible',
+                            width: 'max-content'
                         }}>
                             {[
-                                { name: 'Đối tác Samsung', logo: 'https://placehold.co/200x100/f0f0f0/333333?text=Samsung' },
-                                { name: 'Đối tác LG', logo: 'https://placehold.co/200x100/e0e0e0/333333?text=LG' },
-                                { name: 'Đối tác Sony', logo: 'https://placehold.co/200x100/d0d0d0/333333?text=Sony' },
-                                { name: 'Đối tác Apple', logo: 'https://placehold.co/200x100/c0c0c0/333333?text=Apple' },
-                                { name: 'Đối tác Google', logo: 'https://placehold.co/200x100/b0b0b0/333333?text=Google' },
-                                { name: 'Đối tác Microsoft', logo: 'https://placehold.co/200x100/a0a0a0/333333?text=Microsoft' }
+                                ...[
+                                    { name: 'Đối tác Samsung', logo: 'img/contact/samsung.png', url: 'https://www.samsung.com' },
+                                    { name: 'Đối tác LG', logo: 'img/contact/lg.png', url: 'https://www.lg.com' },
+                                    { name: 'Đối tác Sony', logo: 'img/contact/sony.png', url: 'https://www.sony.com' },
+                                    { name: 'Đối tác Apple', logo: 'img/contact/apple.png', url: 'https://www.apple.com' },
+                                    { name: 'Đối tác Google', logo: 'img/contact/google.png', url: 'https://www.google.com' },
+                                    { name: 'Đối tác Microsoft', logo: 'img/contact/microsoft.png', url: 'https://www.microsoft.com' }
+                                ],
+                                ...[
+                                    { name: 'Đối tác Samsung', logo: 'img/contact/samsung.png', url: 'https://www.samsung.com' },
+                                    { name: 'Đối tác LG', logo: 'img/contact/lg.png', url: 'https://www.lg.com' },
+                                    { name: 'Đối tác Sony', logo: 'img/contact/sony.png', url: 'https://www.sony.com' },
+                                    { name: 'Đối tác Apple', logo: 'img/contact/apple.png', url: 'https://www.apple.com' },
+                                    { name: 'Đối tác Google', logo: 'img/contact/google.png', url: 'https://www.google.com' },
+                                    { name: 'Đối tác Microsoft', logo: 'img/contact/microsoft.png', url: 'https://www.microsoft.com' }
+                                ]
                             ].map((partner, index) => (
                                 <div key={`${partner.name}-${index}`} style={{
                                     flex: '0 0 auto',
                                     minWidth: '150px',
+                                    height: '80px',
                                     opacity: 0.7,
                                     transition: 'all 0.3s ease',
                                     padding: '15px',
                                     borderRadius: '15px',
                                     backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                                    boxShadow: '0 4px 15px rgba(0,0,0,0.1)',
-                                    transform: 'scale(0.9)'
+                                    boxShadow: '0 4px 15px rgba(0,77,64,0.1)',
+                                    transform: 'scale(0.9)',
+                                    willChange: 'transform',
+                                    border: '2px solid transparent'
                                 }}
                                 onMouseEnter={(e) => {
                                     e.currentTarget.style.opacity = '1';
-                                    e.currentTarget.style.transform = 'scale(1)';
-                                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,0,0,0.2)';
+                                    e.currentTarget.style.transform = 'scale(1.1)';
+                                    e.currentTarget.style.boxShadow = '0 8px 25px rgba(0,77,64,0.2)';
+                                    e.currentTarget.style.borderColor = '#26A69A';
+                                    e.currentTarget.parentElement.style.animationPlayState = 'paused';
                                 }}
                                 onMouseLeave={(e) => {
                                     e.currentTarget.style.opacity = '0.7';
                                     e.currentTarget.style.transform = 'scale(0.9)';
-                                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,0,0,0.1)';
+                                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0,77,64,0.1)';
+                                    e.currentTarget.style.borderColor = 'transparent';
+                                    e.currentTarget.parentElement.style.animationPlayState = 'running';
                                 }}>
-                                    <img
-                                        src={partner.logo}
-                                        alt={partner.name}
+                                    <a
+                                        href={partner.url}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
                                         style={{
-                                            height: '50px',
-                                            width: 'auto',
-                                            maxWidth: '120px',
-                                            filter: 'grayscale(100%)',
-                                            transition: 'filter 0.3s ease'
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            height: '100%',
+                                            width: '100%',
+                                            textDecoration: 'none',
+                                            cursor: 'pointer'
                                         }}
-                                        onMouseEnter={(e) => e.currentTarget.style.filter = 'grayscale(0%)'}
-                                        onMouseLeave={(e) => e.currentTarget.style.filter = 'grayscale(100%)'}
-                                    />
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.filter = 'brightness(1.1)';
+                                            e.currentTarget.querySelector('img').style.filter = 'brightness(1.1)';
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.filter = 'brightness(1)';
+                                            e.currentTarget.querySelector('img').style.filter = 'brightness(1)';
+                                        }}
+                                    >
+                                        <img
+                                            src={partner.logo}
+                                            alt={partner.name}
+                                            style={{
+                                                height: '50px',
+                                                width: 'auto',
+                                                maxWidth: '120px',
+                                                transition: 'filter 0.3s ease'
+                                            }}
+                                        />
+                                    </a>
                                 </div>
                             ))}
                         </div>

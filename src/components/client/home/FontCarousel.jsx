@@ -93,7 +93,7 @@ const FontCarousel = () => {
 
                 // Nếu có danh mục con, lấy bài viết của từng danh mục con
                 if (subcategories.length > 0) {
-                    console.log(`📁 Fetching articles from ${subcategories.length} subcategories`);
+                    console.log(` Fetching articles from ${subcategories.length} subcategories`);
 
                     for (const subcategory of subcategories) {
                         try {
