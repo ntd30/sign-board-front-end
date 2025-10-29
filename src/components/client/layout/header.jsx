@@ -14,7 +14,7 @@ const Header = () => {
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [current, setCurrent] = useState('home');
     const [categories, setCategories] = useState([]);
-    const { user, setUser } = useContext(AuthContext); // Giữ lại để dùng cho mobile drawer nếu cần
+    const { user, setUser } = useContext(AuthContext); 
     const navigate = useNavigate();
     const location = useLocation();
     const screens = useBreakpoint();
@@ -116,7 +116,6 @@ const Header = () => {
 
     const mobileMenuItems = [
         ...menuItems,
-        // Giữ lại phần login cho mobile nếu bạn muốn
         ...(!user?.id ? [{
             key: 'login',
             label: <Link to="/login">Đăng nhập</Link>,
@@ -124,7 +123,7 @@ const Header = () => {
         }] : []),
     ];
 
-    const userDropdownMenu = ( // Giữ lại cho mobile drawer
+    const userDropdownMenu = ( 
         <Menu items={[
             {
                 key: 'profile',
@@ -161,7 +160,7 @@ const Header = () => {
                 mode="inline"
                 items={mobileMenuItems}
             />
-            {user?.id ? ( // Vẫn hiển thị user section trong mobile drawer
+            {user?.id ? ( 
                 <div className="mobile-user-section">
                     <div className="mobile-user-info">
                         <Avatar size="large" src={user.avatar} icon={<UserOutlined />} />
@@ -187,43 +186,48 @@ const Header = () => {
         </Drawer>
     );
 
+
     return (
         <>
             <header className="app-header">
-                <Row align="middle" justify="space-between" className="header-row">
-                    {/* === CỘT LOGO (Trái) === */}
-                    <Col xs={12} sm={8} md={6} lg={4} className="header-logo">
-                        <Link to="/">
-                            <img src="/img/nhanvietadv-logo.png" alt="Sign Board Logo" />
-                        </Link>
+                <Row align="middle" justify={isMobile ? "space-between" : "center"} className="header-row">
+                    
+                    {/* CỘT CHỨA LOGO + MENU (hoặc chỉ Logo trên mobile) */}
+                    <Col xs={12} sm={16} md={'auto'} className="header-left-cluster"> 
+                        
+                        {/* Logo */}
+                        <div className="header-logo">
+                            <Link to="/">
+                                <img src="/img/nhanvietadv-logo.png" alt="Sign Board Logo" />
+                            </Link>
+                        </div>
+
+                        {/* Menu (chỉ hiển thị trên desktop) */}
+                        {!isMobile && (
+                            <div className="desktop-nav">
+                                <Menu
+                                    onClick={handleMenuClick}
+                                    selectedKeys={[current]}
+                                    mode="horizontal"
+                                    items={menuItems}
+                                    popupClassName="header-submenu-popup"
+                                    disabledOverflow
+                                />
+                            </div>
+                        )}
                     </Col>
 
-                    {/* === CỘT MENU (Giữa) === */}
-                    {!isMobile && (
-                        <Col md={12} lg={16} className="desktop-nav"> {/* Đổi tên thành desktop-nav để dễ quản lý style */}
-                            <Menu
-                                onClick={handleMenuClick}
-                                selectedKeys={[current]}
-                                mode="horizontal"
-                                items={menuItems}
-                                popupClassName="header-submenu-popup"
-                                disabledOverflow
-                            />
-                        </Col>
-                    )}
-
-                    {/* === CỘT PHẢI (Trống trên desktop, Mobile Button trên mobile) === */}
-                    <Col xs={12} sm={16} md={6} lg={4} className="header-right">
-                        {isMobile && (
+                    {/* CỘT PHẢI (CHỈ CÓ NÚT MOBILE) */}
+                    {isMobile && ( 
+                        <Col xs={12} sm={8} className="header-right">
                             <Button
                                 className="mobile-menu-button"
                                 type="text"
                                 icon={<MenuOutlined />}
                                 onClick={() => setDrawerVisible(true)}
                             />
-                        )}
-                        {/* Trên desktop, cột này sẽ trống để tạo khoảng cách */}
-                    </Col>
+                        </Col>
+                    )}
                 </Row>
             </header>
             {renderMobileDrawer()}
