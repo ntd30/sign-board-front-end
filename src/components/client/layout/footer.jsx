@@ -20,10 +20,10 @@ const AppFooter = () => {
           <Col xs={24} sm={12} md={8}>
             <Title level={5} className="footer-title">CHÍNH SÁCH & ĐIỀU KHOẢN</Title>
             <ul className="footer-links">
-              <li><Link to="/policy/privacy" className="footer-link">Chính Sách Về Quyền Riêng Tư</Link></li>
-              <li><Link to="/policy/useService" className="footer-link">Thỏa Thuận Sử Dụng Dịch Vụ</Link></li>
-              <li><Link to="/policy/refund" className="footer-link">Chính Sách Hoàn Trả</Link></li>
-              <li><Link to="/policy/standard" className="footer-link">Tiêu chuẩn dịch vụ</Link></li>
+              <li><Link to="/policy/privacy" className="footer-link">Bảo mật và quyền riêng tư</Link></li>
+              <li><Link to="/policy/orderPolicy" className="footer-link">Chính sách đặt hàng</Link></li>
+              <li><Link to="/policy/deliveryAndInstallationPolicy" className="footer-link">Chính sách Vận chuyển lắp đặt</Link></li>
+              <li><Link to="/policy/warrantyPolicy" className="footer-link">Chính sách bảo hành</Link></li>
               <li><Link to="/policy/handOver" className="footer-link">Chính Sách Bàn Giao</Link></li>
               <li><Link to="/policy/payment" className="footer-link">Chính Sách Thanh Toán</Link></li>
             </ul>

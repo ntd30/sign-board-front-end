@@ -14,7 +14,7 @@ const Header = () => {
     const [drawerVisible, setDrawerVisible] = useState(false);
     const [current, setCurrent] = useState('home');
     const [categories, setCategories] = useState([]);
-    const { user, setUser } = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext); // Giữ lại để dùng cho mobile drawer nếu cần
     const navigate = useNavigate();
     const location = useLocation();
     const screens = useBreakpoint();
@@ -34,26 +34,14 @@ const Header = () => {
                 console.log('📋 Categories loaded from API:', res?.data);
 
                 if (res?.data) {
-                    // Lọc ra các categories có bài viết hoặc có children có bài viết
                     const validCategories = res.data.filter(category => {
                         const hasArticles = category.articleCount && category.articleCount > 0;
                         const hasChildrenArticles = category.totalChildrenArticlesCount && category.totalChildrenArticlesCount > 0;
                         const hasChildren = category.children && category.children.length > 0;
-
-                        console.log(`📁 Category "${category.name}" (${category.slug}):`);
-                        console.log(`  - Direct articles: ${category.articleCount || 0}`);
-                        console.log(`  - Total children articles: ${category.totalChildrenArticlesCount || 0}`);
-                        console.log(`  - Children count: ${category.childrenCount || 0}`);
-                        console.log(`  - Valid: ${hasArticles || hasChildrenArticles || hasChildren}`);
-
                         return hasArticles || hasChildrenArticles || hasChildren;
                     });
 
-                    console.log(`✅ Valid categories: ${validCategories.length}/${res.data.length}`);
-
-                    // Tạo menuItems với hỗ trợ submenu cho categories có children
                     const menuItems = validCategories.map(category => {
-                        // Tạo submenu từ children nếu có
                         const children = category.children || [];
                         const validChildren = children.filter(child => {
                             const hasArticles = child.articleCount && child.articleCount > 0;
@@ -62,7 +50,6 @@ const Header = () => {
                             return hasArticles || hasChildrenArticles || hasChildren;
                         });
 
-                        // Tạo submenu items từ children hợp lệ
                         const childrenMenuItems = validChildren.map(child => ({
                             key: child.slug,
                             label: (
@@ -70,7 +57,6 @@ const Header = () => {
                             ),
                         }));
 
-                        // Nếu có children hợp lệ, tạo submenu
                         if (childrenMenuItems.length > 0) {
                             return {
                                 key: category.slug,
@@ -90,7 +76,6 @@ const Header = () => {
                             };
                         }
 
-                        // Nếu không có children, tạo menu item thông thường
                         return {
                             key: category.slug,
                             label: (
@@ -102,7 +87,6 @@ const Header = () => {
                 }
             } catch (error) {
                 console.error("Error loading article categories:", error);
-                // You can set fallback categories here if needed
             }
         };
 
@@ -132,6 +116,7 @@ const Header = () => {
 
     const mobileMenuItems = [
         ...menuItems,
+        // Giữ lại phần login cho mobile nếu bạn muốn
         ...(!user?.id ? [{
             key: 'login',
             label: <Link to="/login">Đăng nhập</Link>,
@@ -139,7 +124,7 @@ const Header = () => {
         }] : []),
     ];
 
-    const userDropdownMenu = (
+    const userDropdownMenu = ( // Giữ lại cho mobile drawer
         <Menu items={[
             {
                 key: 'profile',
@@ -155,30 +140,6 @@ const Header = () => {
             }
         ]} />
     );
-
-    const renderUserSection = () => {
-        if (isMobile) return null; // Handled in Drawer for mobile
-
-        if (user?.id) {
-            return (
-                <Dropdown overlay={userDropdownMenu} trigger={['hover']}>
-                    <div className="user-menu-trigger">
-                        <Avatar size="small" src={user.avatar} icon={<UserOutlined />} />
-                        <span className="user-name">{user.fullName || 'User'}</span>
-                        <DownOutlined style={{ fontSize: '12px' }} />
-                    </div>
-                </Dropdown>
-            );
-        }
-
-        return (
-            <Link to="/login">
-                <Button type="primary" ghost className="login-button">
-                    ĐĂNG NHẬP
-                </Button>
-            </Link>
-        );
-    };
 
     const renderMobileDrawer = () => (
         <Drawer
@@ -200,7 +161,7 @@ const Header = () => {
                 mode="inline"
                 items={mobileMenuItems}
             />
-            {user?.id ? (
+            {user?.id ? ( // Vẫn hiển thị user section trong mobile drawer
                 <div className="mobile-user-section">
                     <div className="mobile-user-info">
                         <Avatar size="large" src={user.avatar} icon={<UserOutlined />} />
@@ -230,14 +191,16 @@ const Header = () => {
         <>
             <header className="app-header">
                 <Row align="middle" justify="space-between" className="header-row">
-                    <Col xs={12} sm={8} md={5} lg={4} className="header-logo">
+                    {/* === CỘT LOGO (Trái) === */}
+                    <Col xs={12} sm={8} md={6} lg={4} className="header-logo">
                         <Link to="/">
                             <img src="/img/nhanvietadv-logo.png" alt="Sign Board Logo" />
                         </Link>
                     </Col>
 
+                    {/* === CỘT MENU (Giữa) === */}
                     {!isMobile && (
-                        <Col md={14} lg={16} className="desktop-nav">
+                        <Col md={12} lg={16} className="desktop-nav"> {/* Đổi tên thành desktop-nav để dễ quản lý style */}
                             <Menu
                                 onClick={handleMenuClick}
                                 selectedKeys={[current]}
@@ -249,8 +212,8 @@ const Header = () => {
                         </Col>
                     )}
 
-                    <Col xs={12} sm={16} md={5} lg={4} className="header-right">
-                        {renderUserSection()}
+                    {/* === CỘT PHẢI (Trống trên desktop, Mobile Button trên mobile) === */}
+                    <Col xs={12} sm={16} md={6} lg={4} className="header-right">
                         {isMobile && (
                             <Button
                                 className="mobile-menu-button"
@@ -259,6 +222,7 @@ const Header = () => {
                                 onClick={() => setDrawerVisible(true)}
                             />
                         )}
+                        {/* Trên desktop, cột này sẽ trống để tạo khoảng cách */}
                     </Col>
                 </Row>
             </header>

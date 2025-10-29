@@ -17,13 +17,10 @@ const FontCarousel = () => {
     // Hàm xử lý nội dung bài viết - loại bỏ HTML tags và giới hạn độ dài
     const processArticleContent = (content) => {
         if (!content) return '';
-        // Loại bỏ HTML tags đơn giản
         const textContent = content.replace(/<[^>]*>/g, '');
-        // Giới hạn độ dài và thêm dấu ... nếu quá dài
         return textContent.length > 150 ? `${textContent.substring(0, 150)}...` : textContent;
     };
 
-    // Hàm xử lý nội dung bài viết cho description - loại bỏ HTML tags và giới hạn độ dài
     const processDescription = (content) => {
         if (!content) return '';
         const textContent = content.replace(/<[^>]*>/g, '');
@@ -41,20 +38,16 @@ const FontCarousel = () => {
             setLoading(true);
             console.log('Loading fonts from API...');
 
-            // Lấy thông tin danh mục từ category tree
             const categoryRes = await fetchArticleCategoryTreeAPI();
             console.log('Category tree response:', categoryRes);
 
             let subcategories = [];
             let mainCategorySlug = 'mau-chu';
 
-            // Tìm danh mục "mau-chu" trong category tree
             if (categoryRes?.data && Array.isArray(categoryRes.data)) {
                 const findCategoryBySlug = (categories, slug) => {
                     for (const category of categories) {
-                        if (category.slug === slug) {
-                            return category;
-                        }
+                        if (category.slug === slug) return category;
                         if (category.children && category.children.length > 0) {
                             const found = findCategoryBySlug(category.children, slug);
                             if (found) return found;
@@ -71,67 +64,60 @@ const FontCarousel = () => {
                 }
             }
 
-            // Lấy bài viết của danh mục chính và tất cả danh mục con
             let allFonts = [];
 
             try {
-                // Lấy bài viết của danh mục chính
-                console.log("📖 Fetching articles for main category:", mainCategorySlug);
+                console.log("Fetching articles for main category:", mainCategorySlug);
                 const mainCategoryResponse = await fetchArticlesByCategorySlugAPI(mainCategorySlug);
-                console.log("📨 Main category response:", mainCategoryResponse);
+                console.log("Main category response:", mainCategoryResponse);
 
                 if (Array.isArray(mainCategoryResponse.data)) {
                     allFonts.push(...mainCategoryResponse.data);
-                    console.log(`✅ Added ${mainCategoryResponse.data.length} articles from main category`);
+                    console.log(`Added ${mainCategoryResponse.data.length} articles from main category`);
                 } else if (typeof mainCategoryResponse.data === 'object') {
                     const articlesArray = mainCategoryResponse.data.content || mainCategoryResponse.data.data || [];
                     if (Array.isArray(articlesArray)) {
                         allFonts.push(...articlesArray);
-                        console.log(`✅ Added ${articlesArray.length} articles from main category (object)`);
+                        console.log(`Added ${articlesArray.length} articles from main category (object)`);
                     }
                 }
 
-                // Nếu có danh mục con, lấy bài viết của từng danh mục con
                 if (subcategories.length > 0) {
-                    console.log(` Fetching articles from ${subcategories.length} subcategories`);
-
+                    console.log(`Fetching articles from ${subcategories.length} subcategories`);
                     for (const subcategory of subcategories) {
                         try {
-                            console.log(`📖 Fetching articles for subcategory: ${subcategory.slug}`);
+                            console.log(`Fetching articles for subcategory: ${subcategory.slug}`);
                             const subcategoryResponse = await fetchArticlesByCategorySlugAPI(subcategory.slug);
-                            console.log(`📨 Subcategory ${subcategory.slug} response:`, subcategoryResponse);
+                            console.log(`Subcategory ${subcategory.slug} response:`, subcategoryResponse);
 
                             if (Array.isArray(subcategoryResponse.data)) {
                                 allFonts.push(...subcategoryResponse.data);
-                                console.log(`✅ Added ${subcategoryResponse.data.length} articles from subcategory ${subcategory.slug}`);
+                                console.log(`Added ${subcategoryResponse.data.length} articles from subcategory ${subcategory.slug}`);
                             } else if (typeof subcategoryResponse.data === 'object') {
                                 const articlesArray = subcategoryResponse.data.content || subcategoryResponse.data.data || [];
                                 if (Array.isArray(articlesArray)) {
                                     allFonts.push(...articlesArray);
-                                    console.log(`✅ Added ${articlesArray.length} articles from subcategory ${subcategory.slug} (object)`);
+                                    console.log(`Added ${articlesArray.length} articles from subcategory ${subcategory.slug} (object)`);
                                 }
                             }
                         } catch (subErr) {
-                            console.error(`❌ Error fetching articles for subcategory ${subcategory.slug}:`, subErr);
+                            console.error(`Error fetching articles for subcategory ${subcategory.slug}:`, subErr);
                         }
                     }
                 }
 
-                // Loại bỏ bài viết trùng lặp dựa trên ID
                 const uniqueFonts = allFonts.filter((font, index, self) =>
                     index === self.findIndex(f => f.id === font.id)
                 );
 
-                console.log(`📋 Final unique fonts count: ${uniqueFonts.length}`);
+                console.log(`Final unique fonts count: ${uniqueFonts.length}`);
 
                 if (uniqueFonts.length > 0) {
-                    // Transform API data to match component structure
                     const transformedFonts = uniqueFonts.map((article, index) => ({
                         id: article.id || index + 1,
                         title: article.title || `Mẫu chữ ${index + 1}`,
                         description: article.description || article.excerpt || 'Mô tả mẫu chữ chưa được cập nhật.',
-                        thumbnail: article.thumbnail || article.imageUrl || 'https://placehold.co/300x200/004D40/ffffff?text=Chữ',
-                        category: article.category || 'mau-chu',
+                        image: article.thumbnail || article.imageUrl || 'https://placehold.co/400x220/004D40/ffffff?text=Mẫu+Chữ',
                         slug: article.slug,
                         content: article.content,
                         featuredImageUrl: article.featuredImageUrl,
@@ -140,96 +126,101 @@ const FontCarousel = () => {
                     setFonts(transformedFonts);
                     console.log('Fonts loaded successfully:', transformedFonts.length);
                 } else {
-                    // Không có dữ liệu từ API, sử dụng fallback
                     console.log('No fonts data from API, using fallback');
                     setFonts([
                         {
                             id: 1,
-                            title: 'Mẫu chữ nổi 3D',
+                            title: 'Mẫu Chữ Nổi 3D',
                             description: 'Chữ nổi 3D với hiệu ứng ánh sáng và chiều sâu, tạo điểm nhấn mạnh mẽ cho thương hiệu.',
-                            thumbnail: 'https://placehold.co/300x200/004D40/ffffff?text=Chữ+3D',
-                            category: 'mau-chu',
+                            image: 'https://placehold.co/400x220/004D40/ffffff?text=Chữ+3D',
+                            slug: 'mau-chu-noi-3d'
                         },
                         {
                             id: 2,
-                            title: 'Mẫu chữ LED',
+                            title: 'Mẫu Chữ LED Động',
                             description: 'Chữ LED sáng tạo với hiệu ứng động, thu hút ánh nhìn cả ngày lẫn đêm.',
-                            thumbnail: 'https://placehold.co/300x200/00796B/ffffff?text=Chữ+LED',
-                            category: 'mau-chu',
+                            image: 'https://placehold.co/400x220/00796B/ffffff?text=Chữ+LED',
+                            slug: 'mau-chu-led'
                         },
                         {
                             id: 3,
-                            title: 'Mẫu chữ inox',
+                            title: 'Mẫu Chữ Inox Cao Cấp',
                             description: 'Chữ inox cao cấp với độ bóng cao, sang trọng và bền đẹp theo thời gian.',
-                            thumbnail: 'https://placehold.co/300x200/26A69A/ffffff?text=Chữ+inox',
-                            category: 'mau-chu',
+                            image: 'https://placehold.co/400x220/26A69A/ffffff?text=Chữ+Inox',
+                            slug: 'mau-chu-inox'
                         },
                         {
                             id: 4,
-                            title: 'Mẫu chữ mica',
+                            title: 'Mẫu Chữ Mica Trong Suốt',
                             description: 'Chữ mica trong suốt với hiệu ứng đẹp mắt, hiện đại và tinh tế.',
-                            thumbnail: 'https://placehold.co/300x200/4DB6AC/ffffff?text=Chữ+mica',
-                            category: 'mau-chu',
+                            image: 'https://placehold.co/400x220/4DB6AC/ffffff?text=Chữ+Mica',
+                            slug: 'mau-chu-mica'
                         }
                     ]);
                 }
             } catch (err) {
-                console.error('❌ Error loading fonts:', err);
-                // Fallback to mock data on error
+                console.error('Error loading fonts:', err);
                 setFonts([
                     {
                         id: 1,
-                        title: 'Mẫu chữ nổi 3D',
+                        title: 'Mẫu Chữ Nổi 3D',
                         description: 'Chữ nổi 3D với hiệu ứng ánh sáng và chiều sâu, tạo điểm nhấn mạnh mẽ cho thương hiệu.',
-                        thumbnail: 'https://placehold.co/300x200/004D40/ffffff?text=Chữ+3D',
+                        image: 'https://placehold.co/400x220/004D40/ffffff?text=Chữ+3D',
+                        slug: 'mau-chu-noi-3d'
                     },
                     {
                         id: 2,
-                        title: 'Mẫu chữ LED',
+                        title: 'Mẫu Chữ LED Động',
                         description: 'Chữ LED sáng tạo với hiệu ứng động, thu hút ánh nhìn cả ngày lẫn đêm.',
-                        thumbnail: 'https://placehold.co/300x200/00796B/ffffff?text=Chữ+LED',
+                        image: 'https://placehold.co/400x220/00796B/ffffff?text=Chữ+LED',
+                        slug: 'mau-chu-led'
                     },
                     {
                         id: 3,
-                        title: 'Mẫu chữ inox',
+                        title: 'Mẫu Chữ Inox Cao Cấp',
                         description: 'Chữ inox cao cấp với độ bóng cao, sang trọng và bền đẹp theo thời gian.',
-                        thumbnail: 'https://placehold.co/300x200/26A69A/ffffff?text=Chữ+inox',
+                        image: 'https://placehold.co/400x220/26A69A/ffffff?text=Chữ+Inox',
+                        slug: 'mau-chu-inox'
                     },
                     {
                         id: 4,
-                        title: 'Mẫu chữ mica',
+                        title: 'Mẫu Chữ Mica Trong Suốt',
                         description: 'Chữ mica trong suốt với hiệu ứng đẹp mắt, hiện đại và tinh tế.',
-                        thumbnail: 'https://placehold.co/300x200/4DB6AC/ffffff?text=Chữ+mica',
+                        image: 'https://placehold.co/400x220/4DB6AC/ffffff?text=Chữ+Mica',
+                        slug: 'mau-chu-mica'
                     }
                 ]);
             }
         } catch (error) {
-            console.error('Lỗi khi tải dữ liệu mẫu chữ đẹp:', error);
-            // Fallback to mock data on error
+            console.error('Lỗi khi tải dữ liệu mẫu chữ:', error);
             setFonts([
                 {
                     id: 1,
-                    title: 'Mẫu chữ nổi 3D',
+                    title: 'Mẫu Chữ Nổi 3D',
                     description: 'Chữ nổi 3D với hiệu ứng ánh sáng và chiều sâu, tạo điểm nhấn mạnh mẽ cho thương hiệu.',
-                    thumbnail: 'https://placehold.co/300x200/004D40/ffffff?text=Chữ+3D',
+                    image: 'https://placehold.co/400x220/004D40/ffffff?text=Chữ+3D',
+                    slug: 'mau-chu-noi-3d'
                 },
                 {
                     id: 2,
-                    title: 'Mẫu chữ LED',
+                    title: 'Mẫu Chữ LED Động',
                     description: 'Chữ LED sáng tạo với hiệu ứng động, thu hút ánh nhìn cả ngày lẫn đêm.',
-                    thumbnail: 'https://placehold.co/300x200/00796B/ffffff?text=Chữ+LED',
+                    image: 'https://placehold.co/400x220/00796B/ffffff?text=Chữ+LED',
+                    slug: 'mau-chu-led'
                 },
                 {
                     id: 3,
-                    title: 'Mẫu chữ inox',
+                    title: 'Mẫu Chữ Inox Cao Cấp',
                     description: 'Chữ inox cao cấp với độ bóng cao, sang trọng và bền đẹp theo thời gian.',
-                    thumbnail: 'https://placehold.co/300x200/26A69A/ffffff?text=Chữ+inox',
+                    image: 'https://placehold.co/400x220/26A69A/ffffff?text=Chữ+Inox',
+                    slug: 'mau-chu-inox'
                 },
                 {
                     id: 4,
-                    title: 'Mẫu chữ mica',
+                    title: 'Mẫu Chữ Mica Trong Suốt',
                     description: 'Chữ mica trong suốt với hiệu ứng đẹp mắt, hiện đại và tinh tế.',
-                    thumbnail: 'https://placehold.co/300x200/4DB6AC/ffffff?text=Chữ+mica',
+                    image: 'https://placehold.co/400x220/4DB6AC/ffffff?text=Chữ+Mica',
+                    slug: 'mau-chu-mica'
                 }
             ]);
         } finally {
@@ -357,17 +348,17 @@ const FontCarousel = () => {
     if (fontsArray.length === 0) {
         return (
             <div style={{ textAlign: 'center', padding: '50px' }}>
-                <p>Không có dữ liệu mẫu chữ đẹp để hiển thị.</p>
+                <p>Không có dữ liệu mẫu chữ để hiển thị.</p>
             </div>
         );
     }
 
     return (
-        <div style={{ padding: '60px 15px', background: 'linear-gradient(135deg, #f8f9fa 0%, #e8f5e8 100%)' }}>
+        <div style={{ padding: '60px 15px', background: 'linear-gradient(180deg, #ffffff 0%, #f8f9fa 100%)' }}>
             <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                 <div style={{ textAlign: 'center', marginBottom: '40px' }}>
                     <Title level={2} style={{
-                        fontSize: '2.5rem',
+                        fontSize: '2.2rem',
                         fontWeight: '700',
                         color: '#004D40',
                         marginBottom: '15px'
@@ -382,9 +373,18 @@ const FontCarousel = () => {
                             borderRadius: '2px'
                         }}></div>
                     </Title>
+                    <Paragraph style={{
+                        fontSize: '1.1rem',
+                        color: '#666',
+                        maxWidth: '600px',
+                        margin: '0 auto'
+                    }}>
+                        Bộ sưu tập mẫu chữ sáng tạo, hiện đại và độc đáo cho mọi nhu cầu
+                    </Paragraph>
                 </div>
 
                 <div style={{ position: 'relative' }}>
+                    {/* --- NÚT ĐÃ SỬA (THEO MẪU) --- */}
                     <Button
                         shape="circle"
                         icon={<LeftOutlined />}
@@ -392,19 +392,23 @@ const FontCarousel = () => {
                         className="nav-button nav-button-left"
                         style={{
                             position: 'absolute',
-                            left: '-50px',
+                            left: '-60px',
                             top: '50%',
-                            transform: 'translateY(-50%)',
+                            // transform đã chuyển sang CSS
                             zIndex: 10,
-                            background: 'rgba(0, 77, 64, 0.1)',
-                            border: '2px solid #004D40',
-                            color: '#004D40',
-                            width: '50px',
-                            height: '50px',
+                            background: 'linear-gradient(135deg, rgba(0, 77, 64, 0.9), rgba(0, 121, 107, 0.9))',
+                            border: 'none',
+                            color: '#ffffff',
+                            width: '48px',
+                            height: '48px',
                             fontSize: '20px',
-                            borderRadius: '50%'
+                            boxShadow: '0 4px 15px rgba(0, 77, 64, 0.3)',
+                            // transition đã chuyển sang CSS
+                            backdropFilter: 'blur(10px)'
                         }}
                     />
+                    
+                    {/* --- NÚT ĐÃ SỬA (THEO MẪU) --- */}
                     <Button
                         shape="circle"
                         icon={<RightOutlined />}
@@ -412,17 +416,19 @@ const FontCarousel = () => {
                         className="nav-button nav-button-right"
                         style={{
                             position: 'absolute',
-                            right: '-50px',
+                            right: '-60px',
                             top: '50%',
-                            transform: 'translateY(-50%)',
+                            // transform đã chuyển sang CSS
                             zIndex: 10,
-                            background: 'rgba(0, 77, 64, 0.1)',
-                            border: '2px solid #004D40',
-                            color: '#004D40',
-                            width: '50px',
-                            height: '50px',
+                            background: 'linear-gradient(135deg, rgba(0, 77, 64, 0.9), rgba(0, 121, 107, 0.9))',
+                            border: 'none',
+                            color: '#ffffff',
+                            width: '48px',
+                            height: '48px',
                             fontSize: '20px',
-                            borderRadius: '50%'
+                            boxShadow: '0 4px 15px rgba(0, 77, 64, 0.3)',
+                            // transition đã chuyển sang CSS
+                            backdropFilter: 'blur(10px)'
                         }}
                     />
 
@@ -471,7 +477,7 @@ const FontCarousel = () => {
                                         overflow: 'hidden',
                                         background: '#ffffff',
                                         position: 'relative',
-                                        minHeight: '340px',
+                                        minHeight: '380px',
                                         boxShadow: '0 6px 24px rgba(0, 77, 64, 0.15)',
                                         transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
                                         border: 'none'
@@ -485,11 +491,9 @@ const FontCarousel = () => {
                                         e.currentTarget.style.boxShadow = '0 6px 24px rgba(0, 77, 64, 0.15)';
                                     }}
                                     cover={
-                                        <Link to={font.slug ? `/news/${font.slug}` : `/news/detail/${font.id}`}>
                                         <div style={{
-                                            height: '180px',
-                                            // *** THAY ĐỔI 1: Bỏ nền gradient màu xanh ***
-                                            // background: `linear-gradient(135deg, ${index % 2 === 0 ? '#004D40' : '#00796B'}, ${index % 2 === 0 ? '#00796B' : '#26A69A'})`,
+                                            height: '200px',
+                                            background: 'rgba(0, 77, 64, 0.05)',
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
@@ -499,17 +503,14 @@ const FontCarousel = () => {
                                             {font.imageBase64 ? (
                                                 <LazyImage
                                                     src={`data:image/jpeg;base64,${font.imageBase64}`}
-                                                    alt={`Hình ảnh mẫu chữ: ${font.title || font.name} - Mẫu chữ đẹp từ Sign Board`}
+                                                    alt={`Hình ảnh mẫu chữ: ${font.title} - Mẫu chữ đẹp từ Sign Board`}
                                                     style={{
-                                                        // *** THAY ĐỔI 2: Hiển thị full ảnh ***
                                                         width: '100%',
                                                         height: '100%',
                                                         objectFit: 'cover',
-                                                        // *** THAY ĐỔI 3: Bỏ borderRadius, boxShadow, transform ***
-                                                        // borderRadius: '15px',
-                                                        // boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+                                                        opacity: 1,
                                                         transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                                        // transform: 'scale(0.95)'
+                                                        transform: 'scale(0.95)'
                                                     }}
                                                     onError={(e) => {
                                                         console.error('Failed to load base64 image');
@@ -519,66 +520,45 @@ const FontCarousel = () => {
                                             ) : font.featuredImageUrl ? (
                                                 <LazyImage
                                                     src={`${import.meta.env.VITE_BACKEND_URL}${font.featuredImageUrl}`}
-                                                    alt={`Hình ảnh mẫu chữ: ${font.title || font.name} - Mẫu chữ đẹp từ Sign Board`}
+                                                    alt={`Hình ảnh mẫu chữ: ${font.title} - Mẫu chữ đẹp từ Sign Board`}
                                                     style={{
-                                                        // *** THAY ĐỔI 2: Hiển thị full ảnh ***
                                                         width: '100%',
                                                         height: '100%',
                                                         objectFit: 'cover',
-                                                        // *** THAY ĐỔI 3: Bỏ borderRadius, boxShadow, transform ***
-                                                        // borderRadius: '15px',
-                                                        // boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
+                                                        opacity: 1,
                                                         transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                                        // transform: 'scale(0.95)'
+                                                        transform: 'scale(0.95)'
                                                     }}
                                                     onError={(e) => {
                                                         console.error('Failed to load image:', font.featuredImageUrl);
-                                                        e.target.style.display = 'none';
-                                                    }}
-                                                />
-                                            ) : font.thumbnail || font.image ? (
-                                                <img
-                                                    src={font.thumbnail || font.image}
-                                                    alt={font.title || font.name}
-                                                    style={{
-                                                        // *** THAY ĐỔI 2: Hiển thị full ảnh ***
-                                                        width: '100%',
-                                                        height: '100%',
-                                                        objectFit: 'cover',
-                                                        // *** THAY ĐỔI 3: Bỏ borderRadius, boxShadow, transform ***
-                                                        // borderRadius: '15px',
-                                                        // boxShadow: '0 8px 30px rgba(0,0,0,0.3)',
-                                                        transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                                        // transform: 'scale(0.95)'
-                                                    }}
-                                                    onMouseEnter={(e) => {
-                                                        e.currentTarget.style.transform = 'scale(1.05)'; // Giữ lại hiệu ứng zoom nhỏ
+                                                        e.currentTarget.style.transform = 'scale(1.05) rotate(2deg)';
                                                         e.currentTarget.style.filter = 'brightness(1.1)';
+                                                        e.currentTarget.style.opacity = '1';
                                                     }}
                                                     onMouseLeave={(e) => {
-                                                        e.currentTarget.style.transform = 'scale(1)'; // Trở về scale 1
+                                                        e.currentTarget.style.transform = 'scale(0.95) rotate(0deg)';
                                                         e.currentTarget.style.filter = 'brightness(1)';
+                                                        e.currentTarget.style.opacity = '1';
                                                     }}
                                                 />
                                             ) : null}
                                         </div>
-                                        </Link>
                                     }
                                 >
-                                    <div style={{ padding: '15px' }}>
+                                    <div style={{ padding: '20px 15px' }}>
                                         <Title level={3} style={{
                                             color: '#004D40',
-                                            marginBottom: '10px',
-                                            fontSize: '1rem',
+                                            marginBottom: '12px',
+                                            fontSize: '1.1rem',
                                             fontWeight: '600'
                                         }}>
-                                            {font.title || font.name}
+                                            {font.title}
                                         </Title>
                                         <Paragraph style={{
                                             color: '#666',
                                             lineHeight: '1.5',
                                             fontSize: '0.85rem',
-                                            marginBottom: '15px',
+                                            marginBottom: '18px',
                                             display: '-webkit-box',
                                             WebkitLineClamp: 3,
                                             WebkitBoxOrient: 'vertical',
@@ -589,19 +569,18 @@ const FontCarousel = () => {
                                         <Link to={font.slug ? `/news/${font.slug}` : `/news/detail/${font.id}`}>
                                             <Button
                                                 type="primary"
+                                                block
                                                 shape="round"
                                                 style={{
                                                     background: 'linear-gradient(135deg, #004D40, #00796B)',
                                                     border: 'none',
                                                     fontWeight: '600',
-                                                    padding: '0 25px',
-                                                    height: '45px',
+                                                    height: '42px',
                                                     fontSize: '0.9rem',
-                                                    borderRadius: '25px',
                                                     transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)'
                                                 }}
                                                 onMouseEnter={(e) => {
-                                                    e.currentTarget.style.transform = 'translateY(-3px) scale(1.05)';
+                                                    e.currentTarget.style.transform = 'translateY(-2px) scale(1.05)';
                                                     e.currentTarget.style.boxShadow = '0 6px 20px rgba(0, 77, 64, 0.4)';
                                                     e.currentTarget.style.background = 'linear-gradient(135deg, #00796B, #004D40)';
                                                 }}
@@ -632,8 +611,8 @@ const FontCarousel = () => {
                                 onClick={() => goToSlide(index)}
                                 className={`pagination-dot ${index === currentIndex ? 'active' : ''}`}
                                 style={{
-                                    width: '14px',
-                                    height: '14px',
+                                    width: '10px',
+                                    height: '10px',
                                     borderRadius: '50%',
                                     border: 'none',
                                     background: index === currentIndex ? '#004D40' : 'rgba(0, 77, 64, 0.3)',
@@ -643,8 +622,63 @@ const FontCarousel = () => {
                             />
                         ))}
                     </div>
+
+                    {/* View More Button */}
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: '30px',
+                        marginBottom: '20px',
+                        width: '100%'
+                    }}>
+                        <Link to="/mau-chu?id=3" style={{ textDecoration: 'none' }}>
+                            <Button 
+                                type="primary"
+                                size="large"
+                                style={{
+                                    background: 'transparent',
+                                    border: '2px solid #004D40',
+                                    color: '#004D40',
+                                    fontWeight: 600,
+                                    padding: '0 32px',
+                                    height: '46px',
+                                    borderRadius: '30px',
+                                    transition: 'all 0.3s ease',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    zIndex: 1
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(-2px)';
+                                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 77, 64, 0.2)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = 'none';
+                                }}
+                            >
+                                <span style={{ position: 'relative', zIndex: 2 }}>Xem Thêm Mẫu Chữ</span>
+                                <div style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    width: '0%',
+                                    height: '100%',
+                                    background: 'linear-gradient(135deg, #004D40, #00796B)',
+                                    transition: 'all 0.4s cubic-bezier(0.65, 0, 0.35, 1)',
+                                    zIndex: 1
+                                }} className="button-hover-bg"></div>
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
 
+                {/* --- THAY ĐỔI: CẬP NHẬT CSS CHO NÚT MỚI --- */}
                 <style jsx>{`
                     .font-card {
                         transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -665,48 +699,52 @@ const FontCarousel = () => {
                         scrollbar-width: none;
                     }
 
+                    /* --- CSS CHO NÚT MỚI (THEO MẪU) --- */
                     .nav-button {
                         opacity: 0.8;
-                        transition: all 0.3s ease;
+                        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
                         backdrop-filter: blur(10px);
+                        transform: translateY(-50%); /* Base transform */
                     }
 
                     .nav-button:hover {
                         opacity: 1;
-                        background: rgba(0, 77, 64, 0.2) !important;
-                        border-color: #00796B !important;
-                        color: #00796B !important;
-                        transform: scale(1.1);
+                        transform: translateY(-50%) scale(1.1); /* Combined transform on hover */
                     }
 
                     @media (max-width: 1024px) {
                         .carousel-container {
                             gap: 12px !important;
                         }
-                        /* Chuyển style kích thước sang wrapper */
                         .font-card-wrapper {
                             min-width: calc(100% / 3 - 12px) !important;
                             max-width: 280px !important;
                         }
                         .font-card {
-                            min-height: 320px !important;
+                            min-height: 360px !important;
                         }
-                        /* Đảm bảo ảnh full trong mobile mode */
                         .font-card img {
-                            height: 100% !important; /* Đảm bảo full height */
-                            width: 100% !important; /* Đảm bảo full width */
-                            object-fit: cover !important;
+                            height: 180px !important;
                         }
                         .font-card h3 {
-                            font-size: 0.95rem !important;
+                            font-size: 1rem !important;
                         }
                         .font-card p {
                             font-size: 0.8rem !important;
                         }
                         .font-card button {
-                            height: 36px !important;
-                            font-size: 0.85rem !important;
-                            padding: 0 20px !important;
+                            height: 38px !important;
+                            fontSize: '0.85rem' !important;
+                        }
+
+                        /* --- THÊM CSS RESPONSIVE CHO NÚT --- */
+                        .nav-button-left,
+                        .nav-button-right {
+                            left: '-30px' !important;
+                            right: '-30px' !important;
+                            width: '35px' !important;
+                            height: '35px' !important;
+                            font-size: '16px' !important;
                         }
                     }
 
@@ -719,104 +757,75 @@ const FontCarousel = () => {
                             padding: 0 8px !important;
                             gap: 10px !important;
                         }
-                        /* Chuyển style kích thước sang wrapper */
                         .font-card-wrapper {
                             min-width: calc(100% / 2 - 10px) !important;
                             max-width: 260px !important;
                         }
                         .font-card {
-                            min-height: 300px !important;
+                            min-height: 340px !important;
                         }
-                         /* Đảm bảo ảnh full trong mobile mode */
                         .font-card img {
-                            height: 100% !important;
-                            width: 100% !important;
-                            object-fit: cover !important;
+                            height: 170px !important;
                         }
                     }
 
-                    /* --- BẮT ĐẦU CHỈNH SỬA CHO ĐIỆN THOẠI (CENTER MODE) --- */
                     @media (max-width: 480px) {
                         .carousel-container {
                             padding: 0 10px !important;
                             gap: 8px !important;
                         }
 
-                        /* Ghi đè style của .font-card */
                         .font-card {
                             min-width: 100% !important;
                             max-width: none !important;
-                            min-height: 280px !important;
-                            opacity: 0.7; /* Thẻ không active mờ đi */
+                            min-height: 320px !important;
+                            opacity: 0.7;
                             transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
                         }
 
-                        /* Style cho wrapper mới */
                         .font-card-wrapper {
                             min-width: 85% !important;
                             max-width: 85% !important;
                             flex: 0 0 85% !important;
-                            transform: scale(0.92); /* Thẻ không active nhỏ lại */
+                            transform: scale(0.92);
                             transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
                         }
 
-                        /* Style cho wrapper active (ở giữa) */
                         .font-card-wrapper.is-active {
                             transform: scale(1);
                         }
 
-                        /* Style cho thẻ card bên trong wrapper active */
                         .font-card-wrapper.is-active .font-card {
                             opacity: 1;
                             box-shadow: 0 10px 30px rgba(0, 77, 64, 0.2) !important;
                         }
-                        /* --- KẾT THÚC CHỈNH SỬA --- */
 
-                        /* Đảm bảo ảnh full trong mobile mode */
                         .font-card img {
-                            height: 100% !important;
-                            width: 100% !important;
-                            object-fit: cover !important;
+                            height: 160px !important;
                         }
                         .font-card h3 {
-                            font-size: 0.9rem !important;
+                            font-size: 0.95rem !important;
                         }
                         .font-card p {
                             font-size: 0.75rem !important;
                         }
                         .font-card button {
-                            height: 32px !important;
+                            height: 34px !important;
                             font-size: 0.8rem !important;
-                            padding: 0 15px !important;
                         }
                     }
 
                     @media (max-width: 400px) {
-                        /* Điều chỉnh cho màn hình nhỏ hơn */
                         .font-card-wrapper {
                             min-width: 90% !important;
                             max-width: 90% !important;
                             flex: 0 0 90% !important;
                         }
                         .font-card {
-                            min-height: 260px !important;
+                            min-height: 300px !important;
                         }
-                        /* Đảm bảo ảnh full trong mobile mode */
                         .font-card img {
-                            height: 100% !important;
-                            width: 100% !important;
-                            object-fit: cover !important;
-                        }
-                        .font-card h3 {
-                            font-size: 0.85rem !important;
-                        }
-                        .font-card p {
-                            font-size: 0.7rem !important;
-                        }
-                        .font-card button {
-                            height: 30px !important;
-                            font-size: 0.75rem !important;
-                            padding: 0 12px !important;
+                            height: 150px !important;
                         }
                     }
                 `}</style>

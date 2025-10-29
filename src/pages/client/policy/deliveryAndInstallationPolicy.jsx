@@ -1,18 +1,15 @@
 import React, { useEffect } from 'react';
 import { Typography, Divider, Layout, List, Space, Card } from 'antd';
 import {
-    AuditOutlined,
-    StarOutlined,
-    TeamOutlined,
-    ScheduleOutlined,
-    EditOutlined,
-    CustomerServiceOutlined,
-    ContactsOutlined,
-    PhoneOutlined,
-    MailOutlined
+    CarOutlined,
+    CheckSquareOutlined,
+    ProfileOutlined,
+    ToolOutlined,
+    MessageOutlined,
+    PhoneOutlined
 } from '@ant-design/icons';
 
-const { Title, Paragraph, Text, Link: AntLink } = Typography;
+const { Title, Paragraph, Text } = Typography;
 const { Content } = Layout;
 
 const styles = {
@@ -60,10 +57,6 @@ const styles = {
         fontSize: '16px',
         textAlign: 'justify',
     },
-    contentList: {
-        marginLeft: '0px',
-        paddingLeft: '20px',
-    },
     listItem: {
         padding: '10px 0',
         color: '#343a40',
@@ -107,10 +100,10 @@ const styles = {
     }
 };
 
-const ServiceStandards = () => {
+const DeliveryAndInstallationPolicy = () => {
     useEffect(() => {
         const antdResetCss = document.createElement("link");
-        antdResetCss.id = "antd-reset-css-service-standards";
+        antdResetCss.id = "antd-reset-css-delivery";
         if (!document.getElementById(antdResetCss.id)) {
             antdResetCss.rel = "stylesheet";
             antdResetCss.href = "https://unpkg.com/antd/dist/reset.css";
@@ -120,19 +113,22 @@ const ServiceStandards = () => {
 
     const companyName = "Quảng cáo Nhân Việt";
 
-    const customerResponsibilitiesData = [
-        `Đảm bảo chất lượng của các sản phẩm biển quảng cáo, từ thiết kế đến sản xuất, đáp ứng tiêu chuẩn kỹ thuật và thẩm mỹ.`,
-        `Cung cấp dịch vụ tư vấn và hỗ trợ khách hàng liên tục qua các kênh trực tuyến, điện thoại và tại chỗ.`,
+    const shippingScope = [
+        "Chúng tôi hỗ trợ giao hàng tận nơi trên toàn quốc thông qua các đơn vị vận chuyển uy tín.",
+        "Tại khu vực nội thành TP.HCM, nhân viên của " + companyName + " sẽ trực tiếp giao và lắp đặt sản phẩm cho khách hàng.",
+        "Đối với khu vực ngoài phạm vi hỗ trợ trực tiếp, chúng tôi sẽ hướng dẫn và phối hợp cùng đơn vị vận chuyển để đảm bảo quá trình giao hàng suôn sẻ."
     ];
 
-    const progressReportingData = [
-        `Cung cấp báo cáo tiến độ định kỳ (hàng tuần hoặc theo thỏa thuận) về quá trình thiết kế, sản xuất và lắp đặt biển quảng cáo.`,
-        `Tổ chức các buổi gặp mặt hoặc liên hệ trực tiếp để cập nhật tiến độ và giải đáp thắc mắc của khách hàng.`,
+    const installationPolicy = [
+        "Dịch vụ lắp đặt chỉ áp dụng cho các sản phẩm có yêu cầu kỹ thuật, ví dụ như biển quảng cáo, bảng hiệu, hoặc các thiết bị trưng bày đặc biệt.",
+        "Khách hàng cần chuẩn bị sẵn mặt bằng và điều kiện thi công trước khi đội kỹ thuật đến lắp đặt.",
+        companyName + " sẽ thông báo thời gian lắp đặt cụ thể và thực hiện đúng lịch hẹn đã xác nhận."
     ];
 
-    const editingCommitmentData = [
-        `Thực hiện chỉnh sửa thiết kế biển quảng cáo theo yêu cầu của khách hàng để đảm bảo sản phẩm phù hợp với mục đích sử dụng.`,
-        `Cam kết hỗ trợ chỉnh sửa cho đến khi khách hàng hài lòng, đảm bảo chất lượng và tính thẩm mỹ của sản phẩm.`,
+    const shippingFeePolicy = [
+        "Miễn phí vận chuyển trong nội thành TP.HCM đối với đơn hàng trên 5.000.000 VNĐ.",
+        "Đối với đơn hàng nhỏ hơn hoặc giao đến các tỉnh thành khác, chi phí vận chuyển sẽ được tính theo biểu phí của đơn vị vận chuyển.",
+        "Mọi chi phí phát sinh (bốc xếp, phí cầu đường, phí vào khu vực hạn chế,...) sẽ được thông báo trước cho khách hàng."
     ];
 
     return (
@@ -140,90 +136,77 @@ const ServiceStandards = () => {
             <Content style={styles.content}>
                 <Card bordered={false} style={styles.contentContainer} bodyStyle={{ padding: '30px 40px' }}>
                     <Title level={2} style={styles.mainTitle}>
-                        <AuditOutlined style={{ marginRight: '12px' }} />
-                        TIÊU CHUẨN DỊCH VỤ
+                        <CarOutlined style={{ marginRight: '12px' }} />
+                        CHÍNH SÁCH VẬN CHUYỂN & LẮP ĐẶT
                     </Title>
                     <Divider style={styles.customDivider} />
 
                     <Title level={4} style={styles.sectionTitle}>
-                        <StarOutlined style={styles.sectionTitleIcon} />
-                        1. Chất lượng Dịch vụ
+                        <CheckSquareOutlined style={styles.sectionTitleIcon} />
+                        1. Phạm vi Áp dụng
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        <Text style={styles.codeText}>{companyName}</Text> cam kết cung cấp dịch vụ thiết kế, sản xuất và lắp đặt biển quảng cáo chất lượng cao, bao gồm các loại biển LED, biển chữ nổi, biển hộp đèn và biển in bạt, đáp ứng đầy đủ yêu cầu về thẩm mỹ và kỹ thuật của khách hàng.
+                        Chính sách vận chuyển và lắp đặt được áp dụng cho tất cả các đơn hàng đặt tại <Text style={styles.codeText}>{companyName}</Text>.  
+                        Chúng tôi cam kết mang đến dịch vụ giao hàng và lắp đặt nhanh chóng, an toàn và đúng hẹn.
                     </Paragraph>
 
                     <Title level={4} style={styles.sectionTitle}>
-                        <TeamOutlined style={styles.sectionTitleIcon} />
-                        2. Trách nhiệm Đối với Khách hàng
+                        <ProfileOutlined style={styles.sectionTitleIcon} />
+                        2. Phương thức Vận chuyển
                     </Title>
                     <List
-                        style={styles.contentList}
-                        dataSource={customerResponsibilitiesData}
+                        dataSource={shippingScope}
                         renderItem={(item, index) => (
-                            <List.Item style={index === customerResponsibilitiesData.length - 1 ? styles.listItemLast : styles.listItem}>
+                            <List.Item style={index === shippingScope.length - 1 ? styles.listItemLast : styles.listItem}>
                                 <Text>{item}</Text>
                             </List.Item>
                         )}
                     />
 
                     <Title level={4} style={styles.sectionTitle}>
-                        <ScheduleOutlined style={styles.sectionTitleIcon} />
-                        3. Tiến độ và Báo cáo
+                        <ToolOutlined style={styles.sectionTitleIcon} />
+                        3. Chính sách Lắp đặt
                     </Title>
                     <List
-                        style={styles.contentList}
-                        dataSource={progressReportingData}
+                        dataSource={installationPolicy}
                         renderItem={(item, index) => (
-                            <List.Item style={index === progressReportingData.length - 1 ? styles.listItemLast : styles.listItem}>
+                            <List.Item style={index === installationPolicy.length - 1 ? styles.listItemLast : styles.listItem}>
                                 <Text>{item}</Text>
                             </List.Item>
                         )}
                     />
 
                     <Title level={4} style={styles.sectionTitle}>
-                        <EditOutlined style={styles.sectionTitleIcon} />
-                        4. Cam kết Chỉnh sửa
+                        <CheckSquareOutlined style={styles.sectionTitleIcon} />
+                        4. Phí Vận chuyển và Lắp đặt
                     </Title>
                     <List
-                        style={styles.contentList}
-                        dataSource={editingCommitmentData}
+                        dataSource={shippingFeePolicy}
                         renderItem={(item, index) => (
-                            <List.Item style={index === editingCommitmentData.length - 1 ? styles.listItemLast : styles.listItem}>
+                            <List.Item style={index === shippingFeePolicy.length - 1 ? styles.listItemLast : styles.listItem}>
                                 <Text>{item}</Text>
                             </List.Item>
                         )}
                     />
 
                     <Title level={4} style={styles.sectionTitle}>
-                        <CustomerServiceOutlined style={styles.sectionTitleIcon} />
-                        5. Phản hồi và Hỗ trợ
+                        <MessageOutlined style={styles.sectionTitleIcon} />
+                        5. Liên hệ và Hỗ trợ
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        Đội ngũ chăm sóc khách hàng của <Text style={styles.codeText}>{companyName}</Text> luôn sẵn sàng tiếp nhận phản hồi và cung cấp hỗ trợ kỹ thuật, bảo trì để đảm bảo sự hài lòng và hiệu quả sử dụng biển quảng cáo.
-                    </Paragraph>
-
-                    <Title level={4} style={styles.sectionTitle}>
-                        <ContactsOutlined style={styles.sectionTitleIcon} />
-                        6. Kênh Liên hệ
-                    </Title>
-                    <Paragraph style={styles.sectionContent}>
-                        Để được tư vấn và hỗ trợ, khách hàng vui lòng liên hệ qua:
+                        Nếu có bất kỳ câu hỏi hoặc yêu cầu hỗ trợ nào về vận chuyển và lắp đặt, vui lòng liên hệ:
                         <Space direction="vertical" size="small" style={{ marginTop: '15px', display: 'block', width: '100%' }}>
                             <div style={styles.contactInfoItem}>
                                 <PhoneOutlined style={styles.contactIcon} />
                                 <Text>Hotline: <Text strong>0973.454.140</Text></Text>
                             </div>
-                            {/* <div style={styles.contactInfoItem}>
-                                <MailOutlined style={styles.contactIcon} />
-                                <Text>Email: <Text strong><AntLink href="mailto:ai@idai.vn">ai@idai.vn</AntLink></Text></Text>
-                            </div> */}
                         </Space>
                     </Paragraph>
 
                     <Divider style={styles.customDivider} />
                     <Paragraph style={styles.noteText}>
-                        Lưu ý: Chúng tôi luôn lắng nghe phản hồi từ khách hàng để không ngừng nâng cao chất lượng dịch vụ, đảm bảo mang đến những sản phẩm biển quảng cáo đáp ứng tốt nhất nhu cầu quảng bá thương hiệu.
+                        Lưu ý: Chính sách vận chuyển và lắp đặt có thể được điều chỉnh tùy theo từng khu vực và loại sản phẩm.  
+                        Quý khách vui lòng kiểm tra kỹ trước khi xác nhận đơn hàng.
                     </Paragraph>
                 </Card>
             </Content>
@@ -231,4 +214,4 @@ const ServiceStandards = () => {
     );
 };
 
-export default ServiceStandards;
+export default DeliveryAndInstallationPolicy;

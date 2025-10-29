@@ -11,11 +11,22 @@
 }
 
 .header-row {
-    padding: 0 24px;
     height: 72px;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    width: 100%;
 }
 
 /* === Logo === */
+.header-logo {
+    padding-left: 0px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    margin-left: 0px;
+}
+
 .header-logo a {
     display: flex;
     align-items: center;
@@ -23,19 +34,26 @@
 }
 
 .header-logo img {
-    height: clamp(40px, 5vw, 55px); /* Responsive height */
+    height: clamp(28px, 3vw, 35px);
     width: auto;
     transition: transform 0.3s ease;
+}
+
+@media (min-width: 768px) {
+    .header-logo img {
+        height: 32px;
+    }
 }
 
 .header-logo img:hover {
     transform: scale(1.05);
 }
 
-/* === Desktop Navigation === */
+/* === Desktop Navigation (Cột Menu ở giữa) === */
 .desktop-nav {
     display: flex;
-    justify-content: center;
+    justify-content: center; /* Căn giữa Menu trong cột này */
+    align-items: center;
     height: 100%;
 }
 
@@ -47,6 +65,7 @@
     height: 100%;
     display: flex;
     align-items: center;
+    text-transform: uppercase;
 }
 
 .desktop-nav .ant-menu-item::before,
@@ -223,13 +242,16 @@
     font-weight: 600 !important;
 }
 
-/* === Header Right Section (User menu, buttons) === */
+/* === Header Right Section (Chỉ chứa nút mobile) === */
 .header-right {
     display: flex;
-    justify-content: flex-end;
+    justify-content: flex-end; /* Căn phải nút mobile */
     align-items: center;
     gap: 16px;
 }
+
+/* Các style .user-menu-trigger và .login-button giờ không áp dụng trên desktop */
+/* Nếu bạn muốn giữ lại cho mobile drawer, bạn có thể để nguyên */
 
 .user-menu-trigger {
     display: flex;
@@ -370,7 +392,7 @@
     transform: rotate(0deg);
 }
 
-.submenu-with-arrow.ant-menu-submenu-open .ant-menu-submenu-title .ant-menu-title-content .anticon {
+.submenu-with-arrow.ant-menu-submenu-open .ant-menu-submenu-title .anticon { /* Sửa lại selector cho đúng */
     transform: rotate(180deg) !important;
 }
 

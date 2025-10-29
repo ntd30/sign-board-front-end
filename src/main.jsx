@@ -35,9 +35,9 @@ import { DashboardPage } from './pages/admin/dashboard.jsx';
 import GoogleAuthCallback from './components/google.auth.callback.jsx';
 import AuthCallback from './components/google.auth.callback.jsx';
 import Privacy from './pages/client/policy/privacy.jsx';
-import UseService from './pages/client/policy/useService.jsx';
-import RefundPolicy from './pages/client/policy/refund.jsx';
-import ServiceStandards from './pages/client/policy/standard.jsx';
+import OrderPolicy from './pages/client/policy/orderPolicy.jsx';
+import DeliveryAndInstallationPolicy from './pages/client/policy/deliveryAndInstallationPolicy.jsx';
+import WarrantyPolicy from './pages/client/policy/warrantyPolicy.jsx';
 import HandoverPolicy from './pages/client/policy/handOver.jsx';
 import PaymentPolicy from './pages/client/policy/payment.jsx';
 import BannerPage from './pages/admin/banner.jsx';
@@ -95,16 +95,16 @@ const router = createBrowserRouter([
         element: <Privacy />
       },
       {
-        path: "policy/useService",
-        element: <UseService />
+        path: "policy/orderPolicy",
+        element: < OrderPolicy />
       },
       {
-        path: "policy/refund",
-        element: <RefundPolicy />
+        path: "policy/deliveryAndInstallationPolicy",
+        element: <DeliveryAndInstallationPolicy />
       },
       {
-        path: "policy/standard",
-        element: <ServiceStandards />
+        path: "policy/warrantyPolicy",
+        element: <WarrantyPolicy />
       },
       {
         path: "policy/handOver",

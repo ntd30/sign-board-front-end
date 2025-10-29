@@ -403,20 +403,27 @@ const fetchArticleCategoryByIdAPI = (id) => {
     return axios.get(URL_BACKEND)
 }
 
-const createArticleCategoryAPI = (name, parentId, description) => {
-    const URL_BACKEND = "/api/admin/article-categories"
+const createArticleCategoryAPI = (name, parentId, description, image64) => {
+    const URL_BACKEND = "/api/admin/article-categories";
     const data = {
         name: name,
-        description: description
-    }
+        description: description,
+    };
 
-    // Only include parentId if it's not null/undefined
+    // Chỉ thêm parentId nếu có giá trị
     if (parentId != null && parentId !== undefined) {
-        data.parentId = parentId
+        data.parentId = parentId;
     }
 
-    return axios.post(URL_BACKEND, data)
-}
+    // Chỉ thêm image64 nếu có giá trị (không rỗng)
+    if (image64 && typeof image64 === 'string' && image64.startsWith('data:image')) {
+        data.image64 = image64;
+    }
+
+    console.log("Gửi dữ liệu lên backend:", data); // Debug
+
+    return axios.post(URL_BACKEND, data);
+};
 
 const updateArticleCategoryAPI = (id, name, parentId, description) => {
     const URL_BACKEND = `/api/admin/article-categories/${id}`

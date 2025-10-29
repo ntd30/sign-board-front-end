@@ -400,6 +400,8 @@ const ProjectCarousel = () => {
                 </div>
 
                 <div style={{ position: 'relative' }}>
+                    
+                    {/* --- NÚT ĐÃ SỬA (THEO MẪU) --- */}
                     <Button
                         shape="circle"
                         icon={<LeftOutlined />}
@@ -407,18 +409,23 @@ const ProjectCarousel = () => {
                         className="nav-button nav-button-left"
                         style={{
                             position: 'absolute',
-                            left: '-50px',
+                            left: '-60px',
                             top: '50%',
-                            transform: 'translateY(-50%)',
+                            // transform đã chuyển sang CSS
                             zIndex: 10,
-                            background: 'rgba(0, 77, 64, 0.1)',
-                            border: '2px solid #004D40',
-                            color: '#004D40',
-                            width: '40px',
-                            height: '40px',
-                            fontSize: '18px'
+                            background: 'linear-gradient(135deg, rgba(0, 77, 64, 0.9), rgba(0, 121, 107, 0.9))',
+                            border: 'none',
+                            color: '#ffffff',
+                            width: '48px',
+                            height: '48px',
+                            fontSize: '20px',
+                            boxShadow: '0 4px 15px rgba(0, 77, 64, 0.3)',
+                            // transition đã chuyển sang CSS
+                            backdropFilter: 'blur(10px)'
                         }}
                     />
+                    
+                    {/* --- NÚT ĐÃ SỬA (THEO MẪU) --- */}
                     <Button
                         shape="circle"
                         icon={<RightOutlined />}
@@ -426,16 +433,19 @@ const ProjectCarousel = () => {
                         className="nav-button nav-button-right"
                         style={{
                             position: 'absolute',
-                            right: '-50px',
+                            right: '-60px',
                             top: '50%',
-                            transform: 'translateY(-50%)',
+                            // transform đã chuyển sang CSS
                             zIndex: 10,
-                            background: 'rgba(0, 77, 64, 0.1)',
-                            border: '2px solid #004D40',
-                            color: '#004D40',
-                            width: '40px',
-                            height: '40px',
-                            fontSize: '18px'
+                            background: 'linear-gradient(135deg, rgba(0, 77, 64, 0.9), rgba(0, 121, 107, 0.9))',
+                            border: 'none',
+                            color: '#ffffff',
+                            width: '48px',
+                            height: '48px',
+                            fontSize: '20px',
+                            boxShadow: '0 4px 15px rgba(0, 77, 64, 0.3)',
+                            // transition đã chuyển sang CSS
+                            backdropFilter: 'blur(10px)'
                         }}
                     />
 
@@ -466,12 +476,10 @@ const ProjectCarousel = () => {
                         {extendedProjectsArray.map((project, index) => (
                             <div
                                 key={`${project.id || index}-${Math.floor(index / projectsArray.length)}`}
-                                // *** THAY ĐỔI 1: Thêm className động ***
                                 className={`project-card-wrapper ${
                                     index % projectsArray.length === currentIndex ? 'is-active' : ''
                                 }`}
                                 style={{
-                                    // Style cho desktop giữ nguyên
                                     minWidth: 'calc(100% / 4 - 15px)',
                                     maxWidth: '300px',
                                     flex: '0 0 auto',
@@ -540,22 +548,6 @@ const ProjectCarousel = () => {
                                                     }}
                                                     onError={(e) => {
                                                         console.error('Failed to load image:', project.featuredImageUrl);
-                                                        e.target.style.display = 'none';
-                                                    }}
-                                                />
-                                            ) : project.image ? (
-                                                <img
-                                                    src={project.image}
-                                                    alt={project.title}
-                                                    style={{
-                                                        width: '100%',
-                                                        height: '100%',
-                                                        objectFit: 'cover',
-                                                        opacity: 1,
-                                                        transition: 'all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1)',
-                                                        transform: 'scale(0.95)'
-                                                    }}
-                                                    onMouseEnter={(e) => {
                                                         e.currentTarget.style.transform = 'scale(1.05) rotate(2deg)';
                                                         e.currentTarget.style.filter = 'brightness(1.1)';
                                                         e.currentTarget.style.opacity = '1';
@@ -648,9 +640,63 @@ const ProjectCarousel = () => {
                             />
                         ))}
                     </div>
+                    
+                    {/* View More Button */}
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        marginTop: '30px',
+                        marginBottom: '20px',
+                        width: '100%'
+                    }}>
+                        <Link to="/du-an?id=4" style={{ textDecoration: 'none' }}>
+                            <Button 
+                                type="primary"
+                                size="large"
+                                style={{
+                                    background: 'transparent',
+                                    border: '2px solid #004D40',
+                                    color: '#004D40',
+                                    fontWeight: 600,
+                                    padding: '0 32px',
+                                    height: '46px',
+                                    borderRadius: '30px',
+                                    transition: 'all 0.3s ease',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    textTransform: 'uppercase',
+                                    letterSpacing: '0.5px',
+                                    position: 'relative',
+                                    overflow: 'hidden',
+                                    zIndex: 1
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(-2px)';
+                                    e.currentTarget.style.boxShadow = '0 4px 15px rgba(0, 77, 64, 0.2)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.transform = 'translateY(0)';
+                                    e.currentTarget.style.boxShadow = 'none';
+                                }}
+                            >
+                                <span style={{ position: 'relative', zIndex: 2 }}>Xem Thêm Dự Án</span>
+                                <div style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    width: '0%',
+                                    height: '100%',
+                                    background: 'linear-gradient(135deg, #004D40, #00796B)',
+                                    transition: 'all 0.4s cubic-bezier(0.65, 0, 0.35, 1)',
+                                    zIndex: 1
+                                }} className="button-hover-bg"></div>
+                            </Button>
+                        </Link>
+                    </div>
                 </div>
 
-                {/* *** THAY ĐỔI 2: Cập nhật CSS *** */}
+                {/* *** THAY ĐỔI: CẬP NHẬT CSS CHO NÚT MỚI *** */}
                 <style jsx>{`
                     .project-card {
                         transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
@@ -671,25 +717,24 @@ const ProjectCarousel = () => {
                         scrollbar-width: none;
                     }
 
+                    /* --- CSS CHO NÚT MỚI (THEO MẪU) --- */
                     .nav-button {
                         opacity: 0.8;
-                        transition: all 0.3s ease;
+                        transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
                         backdrop-filter: blur(10px);
+                        transform: translateY(-50%); /* Base transform */
                     }
 
                     .nav-button:hover {
                         opacity: 1;
-                        background: rgba(0, 77, 64, 0.2) !important;
-                        border-color: #00796B !important;
-                        color: #00796B !important;
-                        transform: scale(1.1);
+                        transform: translateY(-50%) scale(1.1); /* Combined transform on hover */
                     }
+
 
                     @media (max-width: 1024px) {
                         .carousel-container {
                             gap: 12px !important;
                         }
-                        /* Điều chỉnh cho .project-card-wrapper thay vì .project-card */
                         .project-card-wrapper {
                             min-width: calc(100% / 3 - 12px) !important;
                             max-width: 280px !important;
@@ -710,18 +755,27 @@ const ProjectCarousel = () => {
                             height: 38px !important;
                             font-size: 0.85rem !important;
                         }
+                        
+                        /* --- ẨN NÚT TRÊN RESPONSIVE (TỪ MẪU) --- */
+                        .nav-button-left,
+                        .nav-button-right {
+                            left: '-30px' !important;
+                            right: '-30px' !important;
+                            width: '35px' !important;
+                            height: '35px' !important;
+                            font-size: '16px' !important;
+                        }
                     }
 
                     @media (max-width: 768px) {
                         .nav-button-left,
                         .nav-button-right {
-                            display: none !important;
+                            display: none !important; /* Ẩn hoàn toàn trên mobile */
                         }
                         .carousel-container {
                             padding: 0 8px !important;
                             gap: 10px !important;
                         }
-                        /* Điều chỉnh cho .project-card-wrapper */
                         .project-card-wrapper {
                             min-width: calc(100% / 2 - 10px) !important;
                             max-width: 260px !important;
@@ -734,48 +788,36 @@ const ProjectCarousel = () => {
                         }
                     }
 
-                    /* --- BẮT ĐẦU CHỈNH SỬA CHO ĐIỆN THOẠI --- */
                     @media (max-width: 480px) {
                         .carousel-container {
-                            /* Thêm padding 2 bên để thẻ giữa không bị sát mép */
                             padding: 0 10px !important; 
                             gap: 8px !important;
                         }
 
-                        /* Ghi đè style của .project-card */
                         .project-card {
-                            min-width: 100% !important; /* Lấp đầy wrapper */
-                            max-width: none !important; /* Xóa max-width cũ */
+                            min-width: 100% !important;
+                            max-width: none !important;
                             min-height: 320px !important;
-                            
-                            /* Thẻ không active sẽ mờ đi */
                             opacity: 0.7;
                             transition: opacity 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
                         }
 
-                        /* Style cho wrapper mới */
                         .project-card-wrapper {
-                            /* Chiếm 85% chiều rộng để "thấy mép" 2 bên */
                             min-width: 85% !important; 
                             max-width: 85% !important;
-                            flex: 0 0 85% !important; /* Đảm bảo flex-basis */
-
-                            /* Thẻ không active sẽ nhỏ lại */
+                            flex: 0 0 85% !important;
                             transform: scale(0.92);
                             transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
                         }
 
-                        /* Style cho wrapper active (ở giữa) */
                         .project-card-wrapper.is-active {
                             transform: scale(1);
                         }
 
-                        /* Style cho thẻ card bên trong wrapper active */
                         .project-card-wrapper.is-active .project-card {
                             opacity: 1;
                             box-shadow: 0 10px 30px rgba(0, 77, 64, 0.2) !important;
                         }
-                        /* --- KẾT THÚC CHỈNH SỬA --- */
 
                         .project-card img {
                             height: 160px !important;
@@ -794,7 +836,6 @@ const ProjectCarousel = () => {
 
                     @media (max-width: 400px) {
                         .project-card-wrapper {
-                             /* Tăng kích thước 1 chút cho màn hình nhỏ hơn */
                             min-width: 90% !important;
                             max-width: 90% !important;
                             flex: 0 0 90% !important;

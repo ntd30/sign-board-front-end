@@ -1,11 +1,10 @@
 import React, { useEffect } from 'react';
-import { Typography, Divider, Layout, List, Space, Card } from 'antd'; // List might not be needed based on new content
-import { UndoOutlined, CheckSquareOutlined, ProfileOutlined, SyncOutlined, MessageOutlined, PhoneOutlined, MailOutlined } from '@ant-design/icons'; // Relevant icons
+import { Typography, Divider, Layout, Space, Card } from 'antd';
+import { SafetyCertificateOutlined, CheckCircleOutlined, ProfileOutlined, ToolOutlined, MessageOutlined, PhoneOutlined } from '@ant-design/icons';
 
-const { Title, Paragraph, Text, Link: AntLink } = Typography;
+const { Title, Paragraph, Text } = Typography;
 const { Content } = Layout;
 
-// Định nghĩa styles bằng object - tái sử dụng và tinh chỉnh từ các trang trước
 const styles = {
     layout: {
         minHeight: '100vh',
@@ -51,25 +50,6 @@ const styles = {
         fontSize: '16px',
         textAlign: 'justify',
     },
-    // contentList and listItem styles can be kept for potential future use, but not directly used if content is all paragraphs
-    contentList: {
-        marginLeft: '0px',
-        paddingLeft: '20px',
-    },
-    listItem: {
-        padding: '10px 0',
-        color: '#343a40',
-        borderBottom: '1px dashed #dee2e6',
-        fontSize: '16px',
-        textAlign: 'justify',
-    },
-    listItemLast: {
-        padding: '10px 0',
-        color: '#343a40',
-        borderBottom: 'none',
-        fontSize: '16px',
-        textAlign: 'justify',
-    },
     codeText: {
         background: '#e9ecef',
         padding: '3px 8px',
@@ -99,10 +79,10 @@ const styles = {
     }
 };
 
-const RefundPolicy = () => {
+const WarrantyPolicy = () => {
     useEffect(() => {
         const antdResetCss = document.createElement("link");
-        antdResetCss.id = "antd-reset-css-refund"; // ID riêng cho trang này
+        antdResetCss.id = "antd-reset-css-warranty";
         if (!document.getElementById(antdResetCss.id)) {
             antdResetCss.rel = "stylesheet";
             antdResetCss.href = "https://unpkg.com/antd/dist/reset.css";
@@ -110,65 +90,70 @@ const RefundPolicy = () => {
         }
     }, []);
 
-    const companyName = "Quảng cáo Nhân Việt"; // Tên công ty/website
+    const companyName = "Quảng cáo Nhân Việt";
 
     return (
         <Layout style={styles.layout}>
             <Content style={styles.content}>
                 <Card bordered={false} style={styles.contentContainer} bodyStyle={{ padding: '30px 40px' }}>
                     <Title level={2} style={styles.mainTitle}>
-                        <UndoOutlined style={{ marginRight: '12px' }} />
-                        CHÍNH SÁCH HOÀN TRẢ
+                        <SafetyCertificateOutlined style={{ marginRight: '12px' }} />
+                        CHÍNH SÁCH BẢO HÀNH
                     </Title>
                     <Divider style={styles.customDivider} />
 
                     <Title level={4} style={styles.sectionTitle}>
-                        <CheckSquareOutlined style={styles.sectionTitleIcon} />
-                        1. Cam kết Hoàn trả
+                        <CheckCircleOutlined style={styles.sectionTitleIcon} />
+                        1. Thời gian bảo hành
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        <Text style={styles.codeText}>{companyName}</Text> cam kết mang lại sự hài lòng cho khách hàng. Trong trường hợp sản phẩm hoặc dịch vụ không đáp ứng yêu cầu, chúng tôi sẽ thực hiện hoàn tiền theo các điều kiện cụ thể.
+                        <Text style={styles.codeText}>{companyName}</Text> cam kết bảo hành sản phẩm và công trình trong thời gian từ <strong>06 - 12 tháng</strong> tùy theo loại sản phẩm hoặc dịch vụ đã cung cấp, được ghi rõ trong hợp đồng hoặc phiếu bảo hành kèm theo.
                     </Paragraph>
 
                     <Title level={4} style={styles.sectionTitle}>
                         <ProfileOutlined style={styles.sectionTitleIcon} />
-                        2. Điều kiện Hoàn trả
+                        2. Phạm vi bảo hành
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        <strong>Dịch vụ không đạt yêu cầu:</strong> Sản phẩm có lỗi kỹ thuật hoặc không đúng như mô tả sẽ được hoàn tiền đầy đủ.
+                        Chính sách bảo hành áp dụng cho các trường hợp:
+                        <br />- Sản phẩm bị lỗi kỹ thuật do nhà sản xuất hoặc trong quá trình thi công của <Text style={styles.codeText}>{companyName}</Text>. 
+                        <br />- Các linh kiện, phụ kiện còn trong thời hạn bảo hành và có tem, nhãn mác đầy đủ.
                     </Paragraph>
                     <Paragraph style={styles.sectionContent}>
-                        <strong>Thời gian yêu cầu hoàn trả:</strong> Khách hàng cần yêu cầu hoàn trả trong vòng 7 ngày kể từ khi nhận sản phẩm.
+                        Chính sách không áp dụng cho các trường hợp:
+                        <br />- Sản phẩm bị hư hỏng do tác động từ bên ngoài như thiên tai, hỏa hoạn, va đập hoặc do người dùng tự ý sửa chữa, di dời, tháo lắp.
+                        <br />- Sản phẩm hết hạn bảo hành hoặc bị mất phiếu bảo hành.
                     </Paragraph>
 
                     <Title level={4} style={styles.sectionTitle}>
-                        <SyncOutlined style={styles.sectionTitleIcon} />
-                        3. Quy trình Hoàn trả
+                        <ToolOutlined style={styles.sectionTitleIcon} />
+                        3. Quy trình bảo hành
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        Khách hàng liên hệ với chúng tôi qua hotline hoặc email để gửi yêu cầu. <Text style={styles.codeText}>{companyName}</Text> sẽ tiến hành kiểm tra và xử lý yêu cầu hoàn tiền trong vòng 7 ngày làm việc kể từ khi nhận được yêu cầu.
+                        - Khách hàng liên hệ với <Text style={styles.codeText}>{companyName}</Text> để thông báo tình trạng sản phẩm.  
+                        - Bộ phận kỹ thuật của chúng tôi sẽ tiếp nhận và xác minh lỗi.  
+                        - Sau khi kiểm tra, chúng tôi sẽ tiến hành sửa chữa, thay thế hoặc đổi mới sản phẩm (nếu cần) trong vòng <strong>5 - 10 ngày làm việc</strong>.  
+                        - Tất cả chi phí vận chuyển, thay thế trong phạm vi bảo hành sẽ do <Text style={styles.codeText}>{companyName}</Text> chịu.
                     </Paragraph>
 
                     <Title level={4} style={styles.sectionTitle}>
                         <MessageOutlined style={styles.sectionTitleIcon} />
-                        4. Liên hệ và Hỗ trợ
+                        4. Liên hệ bảo hành và hỗ trợ
                     </Title>
                     <Paragraph style={styles.sectionContent}>
-                        Để yêu cầu hoàn trả hoặc có bất kỳ thắc mắc nào, khách hàng có thể liên hệ:
+                        Mọi yêu cầu bảo hành hoặc hỗ trợ kỹ thuật vui lòng liên hệ:
                         <Space direction="vertical" size="small" style={{ marginTop: '15px', display: 'block', width: '100%' }}>
                             <div style={styles.contactInfoItem}>
                                 <PhoneOutlined style={styles.contactIcon} />
                                 <Text>Hotline: <Text strong>0973.454.140</Text></Text>
                             </div>
-                            {/* <div style={styles.contactInfoItem}>
-                                <MailOutlined style={styles.contactIcon} />
-                                <Text>Email: <Text strong><AntLink href="mailto:ai@idai.vn">ai@idai.vn</AntLink></Text></Text>
-                            </div> */}
                         </Space>
                     </Paragraph>
+
                     <Divider style={styles.customDivider} />
                     <Paragraph style={styles.noteText}>
-                        Lưu ý: Chính sách hoàn trả chỉ áp dụng đối với sản phẩm và dịch vụ mua tại <Text style={styles.codeText}>{companyName}</Text> và theo đúng các điều khoản nêu trên.
+                        Lưu ý: Chính sách bảo hành được áp dụng thống nhất cho toàn bộ sản phẩm và dịch vụ của <Text style={styles.codeText}>{companyName}</Text>, 
+                        trừ khi có thỏa thuận riêng ghi trong hợp đồng.
                     </Paragraph>
                 </Card>
             </Content>
@@ -176,4 +161,4 @@ const RefundPolicy = () => {
     );
 };
 
-export default RefundPolicy;
+export default WarrantyPolicy;
