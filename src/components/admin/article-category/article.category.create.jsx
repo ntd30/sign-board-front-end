@@ -1,4 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import axios from 'axios';
 import { Button, Col, Form, Input, Modal, notification, Row, Select, Upload, Image } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { createArticleCategoryAPI } from "../../../services/api.service";
@@ -10,7 +11,8 @@ const ArticleCategoryCreate = (props) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [loadingBtn, setLoadingBtn] = useState(false);
     const [form] = Form.useForm();
-    const [previewImage, setPreviewImage] = useState(null); // Preview ảnh
+    const [previewImage, setPreviewImage] = useState(null);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         if (getParentCategoriesSelect) {
@@ -24,7 +26,9 @@ const ArticleCategoryCreate = (props) => {
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            // Kiểm tra kích thước (tùy chọn: < 5MB)
+            console.log('Selected file:', file);
+            
+            // Kiểm tra kích thước (tối đa 5MB)
             if (file.size > 5 * 1024 * 1024) {
                 notification.error({
                     message: "Ảnh quá lớn",
@@ -33,13 +37,37 @@ const ArticleCategoryCreate = (props) => {
                 return;
             }
 
+            // Kiểm tra định dạng file
+            if (!file.type.match('image.*')) {
+                notification.error({
+                    message: "Định dạng không hợp lệ",
+                    description: "Vui lòng chọn file ảnh (JPEG, PNG, etc.)"
+                });
+                return;
+            }
+
             const reader = new FileReader();
-            reader.onloadend = () => {
-                const base64String = reader.result;
+            reader.onload = (event) => {
+                const base64String = event.target.result;
+                console.log('Image loaded successfully, setting preview and form value');
                 setPreviewImage(base64String);
-                form.setFieldsValue({ image64: base64String }); // Lưu base64 vào form
+                form.setFieldsValue({ image64: base64String });
+                
+                // Log the current form values for debugging
+                form.validateFields()
+                    .then(values => console.log('Current form values:', values))
+                    .catch(err => console.log('Form validation error:', err));
+            };
+            reader.onerror = (error) => {
+                console.error("Error reading file:", error);
+                notification.error({
+                    message: "Lỗi",
+                    description: "Không thể đọc file ảnh"
+                });
             };
             reader.readAsDataURL(file);
+        } else {
+            console.log('No file selected or file selection cancelled');
         }
     };
 
@@ -47,15 +75,33 @@ const ArticleCategoryCreate = (props) => {
         setLoadingBtn(true);
 
         const { name, parentId, description, image64 } = values;
-        console.log("Creating article category with data:", { name, parentId, description, image64 });
+        console.log("Creating article category with data:", { name, parentId, description, hasImage: !!image64 });
 
         try {
-            const res = await createArticleCategoryAPI(
-                name,
-                parentId || undefined,
-                description,
-                image64 || undefined // Gửi base64 nếu có
-            );
+            // Create FormData to handle file upload
+            const formData = new FormData();
+            formData.append('name', name);
+            if (parentId) formData.append('parentId', parentId);
+            if (description) formData.append('description', description);
+            
+            // If we have a base64 image, add it to form data
+            if (image64) {
+                // Convert base64 to blob
+                const blob = await fetch(image64).then(res => res.blob());
+                const file = new File([blob], 'category-image.jpg', { type: 'image/jpeg' });
+                formData.append('image', file);
+            }
+
+            console.log('Sending form data:', Object.fromEntries(formData.entries()));
+            
+            // Call the API with FormData
+            const URL_BACKEND = "/api/admin/article-categories";
+            const res = await axios.post(URL_BACKEND, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            
             console.log("Create API Response:", res);
 
             if (res && (res.data || res.id || res.name)) {
@@ -185,23 +231,69 @@ const ArticleCategoryCreate = (props) => {
                             >
                                 <div>
                                     <input
+                                        ref={fileInputRef}
                                         type="file"
                                         accept="image/*"
                                         onChange={handleImageChange}
-                                        style={{ display: 'block', marginBottom: 8 }}
+                                        style={{ display: 'none' }}
                                     />
-                                    {previewImage && (
-                                        <Image
-                                            src={previewImage}
-                                            alt="Preview"
-                                            style={{
-                                                maxWidth: '200px',
-                                                maxHeight: '200px',
-                                                objectFit: 'cover',
-                                                borderRadius: 8,
-                                                border: '1px solid #d9d9d9'
-                                            }}
-                                        />
+                                    <Button 
+                                        icon={<UploadOutlined />} 
+                                        style={{ marginBottom: 8 }}
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            fileInputRef.current?.click();
+                                        }}
+                                    >
+                                        Chọn ảnh
+                                    </Button>
+                                    {previewImage ? (
+                                        <div style={{ marginTop: 8 }}>
+                                            <Image
+                                                src={previewImage}
+                                                alt="Preview"
+                                                style={{ 
+                                                    maxWidth: '100%', 
+                                                    maxHeight: '200px',
+                                                    border: '1px solid #d9d9d9',
+                                                    borderRadius: '4px',
+                                                    padding: '4px',
+                                                    objectFit: 'contain'
+                                                }}
+                                                preview={false}
+                                                onError={(e) => {
+                                                    console.error('Error loading image:', e);
+                                                    notification.error({
+                                                        message: 'Lỗi tải ảnh',
+                                                        description: 'Không thể tải ảnh. Vui lòng thử lại hoặc chọn ảnh khác.'
+                                                    });
+                                                }}
+                                            />
+                                            <div style={{ marginTop: 8, textAlign: 'center' }}>
+                                                <Button 
+                                                    type="link" 
+                                                    danger 
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        setPreviewImage(null);
+                                                        form.setFieldsValue({ image64: null });
+                                                    }}
+                                                >
+                                                    Xóa ảnh
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div style={{ 
+                                            marginTop: 8, 
+                                            padding: '16px', 
+                                            textAlign: 'center',
+                                            border: '1px dashed #d9d9d9',
+                                            borderRadius: '4px',
+                                            color: '#8c8c8c'
+                                        }}>
+                                            Chưa có ảnh nào được chọn
+                                        </div>
                                     )}
                                 </div>
                             </Form.Item>
@@ -213,4 +305,6 @@ const ArticleCategoryCreate = (props) => {
     );
 };
 
+// Export as both named and default for compatibility
+export { ArticleCategoryCreate };
 export default ArticleCategoryCreate;

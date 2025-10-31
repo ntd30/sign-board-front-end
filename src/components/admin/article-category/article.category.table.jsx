@@ -1,8 +1,8 @@
-import { DeleteOutlined, EditOutlined, SearchOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, SearchOutlined, DownOutlined, RightOutlined } from "@ant-design/icons";
 import { Button, Input, notification, Popconfirm, Space, Table, Tag } from "antd";
 import { useEffect, useState } from "react";
 import ArticleCategoryUpdate from "./article.category.update";
-import { deleteArticleCategoryAPI, searchArticleCategoriesAPI } from "../../../services/api.service";
+import { deleteArticleCategoryAPI, searchArticleCategoriesAPI, fetchArticleCategoryTreeAPI } from "../../../services/api.service";
 
 const ArticleCategoryRepository = {
     deleteCategory: async (id) => {
@@ -25,16 +25,16 @@ const ArticleCategoryRepository = {
 
 const ArticleCategoryTable = (props) => {
     const { 
-        dataArticleCategories, 
         current, 
         setCurrent, 
         pageSize, 
         setPageSize, 
-        total, 
         loadingTable, 
-        loadArticleCategories, 
         permissionsOfCurrentUser 
     } = props;
+    
+    const [dataArticleCategories, setDataArticleCategories] = useState([]);
+    const [expandedRowKeys, setExpandedRowKeys] = useState([]);
 
     const [isUpdateOpen, setIsUpdateOpen] = useState(false);
     const [dataUpdate, setDataUpdate] = useState(null);
@@ -42,8 +42,63 @@ const ArticleCategoryTable = (props) => {
     const [searchLoading, setSearchLoading] = useState(false);
 
     useEffect(() => {
-        loadArticleCategories();
+        loadArticleCategoriesTree();
     }, [current, pageSize]);
+    
+    const loadArticleCategoriesTree = async () => {
+        try {
+            const res = await fetchArticleCategoryTreeAPI();
+            const formattedData = formatTreeData(res.data);
+            setDataArticleCategories(formattedData);
+        } catch (error) {
+            console.error("Error loading categories:", error);
+            notification.error({
+                message: "Lỗi",
+                description: "Không thể tải danh sách danh mục"
+            });
+        }
+    };
+    
+    const formatTreeData = (categories, parentId = null, level = 0) => {
+        return categories.reduce((acc, category) => {
+            const newCategory = {
+                ...category,
+                key: category.id,
+                level,
+                parentId,
+                hasChildren: category.children && category.children.length > 0,
+                children: null // We'll handle children with expanded rows
+            };
+            
+            if (category.children && category.children.length > 0) {
+                return [
+                    ...acc,
+                    newCategory,
+                    ...formatTreeData(category.children, category.id, level + 1)
+                ];
+            }
+            return [...acc, newCategory];
+        }, []);
+    };
+    
+    const onExpand = (expanded, record) => {
+        if (expanded) {
+            setExpandedRowKeys([...expandedRowKeys, record.key]);
+        } else {
+            setExpandedRowKeys(expandedRowKeys.filter(key => key !== record.key));
+        }
+    };
+    
+    const isExpanded = (record) => expandedRowKeys.includes(record.key);
+    
+    const getRowClassName = (record) => {
+        return `level-${record.level}`;
+    };
+    
+    const getNestedRows = (record) => {
+        if (!record.hasChildren) return [];
+        return dataArticleCategories.filter(item => item.parentId === record.id);
+    };
 
     const onChange = (pagination) => {
         if (+pagination.current !== +current) {
@@ -55,7 +110,20 @@ const ArticleCategoryTable = (props) => {
     };
 
     const handleEditCategory = (record) => {
-        setDataUpdate(record);
+        // Tạo một bản sao của record và đảm bảo có đầy đủ các trường cần thiết
+        const categoryData = {
+            ...record,
+            // Đảm bảo có các trường bắt buộc
+            id: record.id,
+            name: record.name,
+            description: record.description || '',
+            image64: record.image64 || null,
+            parentId: record.parentId || null,
+            isActive: record.isActive !== undefined ? record.isActive : true
+        };
+        
+        console.log('Setting category data for update:', categoryData);
+        setDataUpdate(categoryData);
         setIsUpdateOpen(true);
     };
 
@@ -85,7 +153,7 @@ const ArticleCategoryTable = (props) => {
 
     const handleSearch = async () => {
         if (!searchKeyword.trim()) {
-            loadArticleCategories();
+            loadArticleCategoriesTree();
             return;
         }
 
@@ -93,15 +161,15 @@ const ArticleCategoryTable = (props) => {
         try {
             const res = await ArticleCategoryRepository.searchCategories(searchKeyword);
             if (res && res.data) {
-                // Update table data with search results - this should be handled by the parent component
-                // For now, we'll just trigger a reload of categories
-                loadArticleCategories();
+                // Flatten the search results for display
+                const formattedData = formatTreeData(res.data);
+                setDataArticleCategories(formattedData);
             }
         } catch (error) {
             console.error("Search error:", error);
             notification.error({
                 message: "Lỗi tìm kiếm",
-                description: "Không thể tìm kiếm danh mục bài viết"
+                description: error.response?.data?.message || "Đã xảy ra lỗi khi tìm kiếm"
             });
         } finally {
             setSearchLoading(false);
@@ -110,10 +178,8 @@ const ArticleCategoryTable = (props) => {
 
     const handleClearSearch = () => {
         setSearchKeyword("");
-        loadArticleCategories();
+        loadArticleCategoriesTree();
     };
-
-
 
     const getLevelTag = (level) => {
         const levels = {
@@ -127,54 +193,38 @@ const ArticleCategoryTable = (props) => {
 
     const columns = [
         {
-            title: 'STT',
-            render: (_, record, index) => (
-                <>
-                    {index + 1 + pageSize * (current - 1)}
-                </>
-            ),
-            width: 70,
-        },
-        {
-            title: 'ID',
-            dataIndex: 'id',
-            width: 80,
-        },
-        {
-            title: 'Tên Danh mục',
+            title: 'Tên danh mục',
             dataIndex: 'name',
-            width: 200,
-            ellipsis: true,
+            key: 'name',
+            render: (text, record) => (
+                <div style={{ display: 'flex', alignItems: 'center', paddingLeft: `${record.level * 20}px` }}>
+                    {record.hasChildren && (
+                        <span style={{ marginRight: 8 }}>
+                            {isExpanded(record) ? <DownOutlined /> : <RightOutlined />}
+                        </span>
+                    )}
+                    {!record.hasChildren && <span style={{ width: 16, display: 'inline-block' }}></span>}
+                    <span>{text}</span>
+                </div>
+            ),
         },
         {
-            title: 'Mô tả',
-            dataIndex: 'description',
-            width: 250,
-            ellipsis: true,
+            title: 'Slug',
+            dataIndex: 'slug',
+            key: 'slug',
         },
+        {
+            title: 'Số bài viết',
+            dataIndex: 'articleCount',
+            key: 'articleCount',
+            align: 'center',
+        },
+        
         {
             title: 'Cấp độ',
             dataIndex: 'level',
             width: 100,
             render: (level) => getLevelTag(level),
-        },
-        {
-            title: 'Danh mục cha',
-            dataIndex: 'parentName',
-            width: 150,
-            render: (parentName) => parentName || 'Danh mục gốc'
-        },
-        {
-            title: 'Ngày tạo',
-            dataIndex: 'createdAt',
-            width: 150,
-            render: (date) => date ? new Date(date).toLocaleDateString('vi-VN') : ''
-        },
-        {
-            title: 'Ngày cập nhật',
-            dataIndex: 'updatedAt',
-            width: 150,
-            render: (date) => date ? new Date(date).toLocaleDateString('vi-VN') : ''
         },
         {
             title: 'Action',
@@ -226,30 +276,36 @@ const ArticleCategoryTable = (props) => {
             </div>
 
             <Table
-                dataSource={dataArticleCategories}
                 columns={columns}
+                dataSource={dataArticleCategories}
                 rowKey="id"
                 pagination={{
-                    current: current,
-                    pageSize: pageSize,
+                    current,
+                    pageSize,
+                    total: dataArticleCategories.length,
                     showSizeChanger: true,
-                    total: total,
-                    showTotal: (total, range) => {
-                        return (<div> {range[0]}-{range[1]} trên {total} rows</div>);
+                    pageSizeOptions: ['10', '20', '50', '100'],
+                    onChange: (page, pageSize) => {
+                        setCurrent(page);
+                        setPageSize(pageSize);
                     },
                 }}
+                loading={loadingTable || searchLoading}
                 onChange={onChange}
-                loading={loadingTable}
-                scroll={{ x: 1200 }}
-                size="small"
-                className="responsive-table"
+                expandable={{
+                    expandedRowKeys,
+                    onExpand: (expanded, record) => onExpand(expanded, record),
+                    rowExpandable: record => record.hasChildren,
+                    expandIcon: () => null,
+                }}
+                rowClassName={getRowClassName}
             />
 
             <ArticleCategoryUpdate
                 isUpdateOpen={isUpdateOpen}
                 setIsUpdateOpen={setIsUpdateOpen}
                 dataUpdate={dataUpdate}
-                loadArticleCategories={loadArticleCategories}
+                loadArticleCategories={loadArticleCategoriesTree}
             />
 
             <style jsx>{`

@@ -23,9 +23,9 @@
 .header-left-cluster {
     display: flex;
     align-items: center;
-    gap: 320px; /* <<< ĐÃ THAY ĐỔI */
+    justify-content: flex-start;
+    gap: clamp(40px, 10vw, 120px); /* 👈 khoảng cách co giãn */
 }
-
 
 /* === Logo === */
 .header-logo {
@@ -44,7 +44,7 @@
 }
 
 .header-logo img {
-    height: clamp(28px, 3vw, 35px);
+    height: 30px;  /* Kích thước mặc định cho mobile */
     width: auto;
     transition: transform 0.3s ease;
     max-width: 100%;
@@ -53,7 +53,7 @@
 
 @media (min-width: 768px) {
     .header-logo img {
-        height: 30px;
+        height: 50px;  /* Kích thước cho màn hình lớn hơn */
     }
 }
 

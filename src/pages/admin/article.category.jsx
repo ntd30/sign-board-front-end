@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect, useCallback } from "react";
 import { fetchAllArticleCategoriesAPI, fetchArticleCategoryTreeAPI } from "../../services/api.service";
 import ArticleCategoryTable from "../../components/admin/article-category/article.category.table";
-import ArticleCategoryCreate from "../../components/admin/article-category/article.category.create";
+import { ArticleCategoryCreate } from "../../components/admin/article-category/article.category.create";
 import { AuthContext } from "../../components/context/auth.context";
 import { Card, Typography, Space, Divider } from "antd";
 

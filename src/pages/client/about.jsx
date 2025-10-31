@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Row, Col, Typography, Card, List, Avatar, Divider } from 'antd';
 import {
     EyeOutlined,
@@ -14,39 +14,104 @@ import {
 const { Title, Text, Paragraph } = Typography;
 
 const AboutPage = () => {
+    const [activeImage, setActiveImage] = useState(null);
+    const carouselRef = useRef(null);
+    const timerRef = useRef(null);
+    
+    // Clear any pending timeouts when component unmounts
+    useEffect(() => {
+        return () => {
+            if (timerRef.current) {
+                clearTimeout(timerRef.current);
+            }
+        };
+    }, []);
+    
+    // Handle touch/click for mobile and desktop
+    const handleImagePress = (e, num) => {
+        // Clear any existing timeout
+        if (timerRef.current) {
+            clearTimeout(timerRef.current);
+        }
+        
+        // Toggle active state
+        if (activeImage === num) {
+            setActiveImage(null);
+        } else {
+            setActiveImage(num);
+            
+            // Auto-close after 3 seconds if no other interaction
+            timerRef.current = setTimeout(() => {
+                setActiveImage(null);
+            }, 3000);
+        }
+        
+        e.preventDefault();
+        e.stopPropagation();
+    };
+    
+    // Handle mouse enter for desktop
+    const handleMouseEnter = (num) => {
+        setActiveImage(num);
+    };
+    
+    // Handle mouse leave for desktop
+    const handleMouseLeave = () => {
+        setActiveImage(null);
+    };
     return (
         <div style={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
             {/* Hero Section */}
             <div style={{
                 background: 'linear-gradient(135deg, #004D40, #00796B, #26A69A)',
-                padding: '80px 20px',
+                padding: '20px 10px',
                 textAlign: 'center',
                 color: 'white'
             }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                    <img
-                        src="https://placehold.co/1200x400/004D40/ffffff?text=1200x400"
-                        alt="Hero Banner"
-                        style={{
-                            width: '100%',
-                            maxWidth: '1200px',
-                            height: '400px',
-                            objectFit: 'cover',
-                            borderRadius: '12px',
-                            boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
-                        }}
-                    />
+                <div style={{ 
+                    maxWidth: '1200px', 
+                    margin: '0 auto',
+                    padding: '0 10px'
+                }}>
+                    <div style={{
+                        position: 'relative',
+                        width: '100%',
+                        paddingBottom: '33.33%', /* 3:1 Aspect Ratio */
+                        borderRadius: '12px',
+                        overflow: 'hidden',
+                        boxShadow: '0 8px 32px rgba(0,0,0,0.3)'
+                    }}>
+                        <img
+                            src="/img/gioithieu/Black and Green Elegant Modern Business Expo Facebook Post.png"
+                            alt="Hero Banner"
+                            style={{
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                                transition: 'transform 0.3s ease',
+                                ':hover': {
+                                    transform: 'scale(1.02)'
+                                },
+                                '@media (max-width: 600px)': {
+                                    objectPosition: 'center 30%'
+                                }
+                            }}
+                        />
+                    </div>
                 </div>
             </div>
 
             {/* Main Content */}
-            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 20px' }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '30px 15px' }}>
                 {/* Company Introduction */}
                 <Card style={{ marginBottom: '40px', borderRadius: '12px', boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
                     <Row gutter={[40, 40]}>
                         <Col xs={24} md={12}>
                             <img
-                                src="https://placehold.co/600x400/004D40/ffffff?text=600x400"
+                                src="/img/gioithieu/Modern Business Marketing Agency Instagram Post .png"
                                 alt="Quảng Cáo Nhân Việt"
                                 style={{ width: '100%', height: '300px', objectFit: 'cover', borderRadius: '8px' }}
                             />
@@ -82,7 +147,7 @@ const AboutPage = () => {
                         <Col xs={24} md={8}>
                             <Card style={{ textAlign: 'center', height: '100%', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
                                 <img
-                                    src="https://placehold.co/250x250/004D40/ffffff?text=250x250"
+                                    src="/img/gioithieu/tam nhin.jpeg"
                                     alt="Tầm nhìn"
                                     style={{ width: '250px', height: '250px', objectFit: 'cover', borderRadius: '8px', marginBottom: '20px' }}
                                 />
@@ -96,7 +161,7 @@ const AboutPage = () => {
                         <Col xs={24} md={8}>
                             <Card style={{ textAlign: 'center', height: '100%', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
                                 <img
-                                    src="https://placehold.co/250x250/004D40/ffffff?text=250x250"
+                                    src="/img/gioithieu/su menh.jpg"
                                     alt="Sứ mệnh"
                                     style={{ width: '250px', height: '250px', objectFit: 'cover', borderRadius: '8px', marginBottom: '20px' }}
                                 />
@@ -111,7 +176,7 @@ const AboutPage = () => {
                         <Col xs={24} md={8}>
                             <Card style={{ textAlign: 'center', height: '100%', border: 'none', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
                                 <img
-                                    src="https://placehold.co/250x250/004D40/ffffff?text=250x250"
+                                    src="/img/gioithieu/gia tri cot loi.jpg"
                                     alt="Giá trị cốt lõi"
                                     style={{ width: '250px', height: '250px', objectFit: 'cover', borderRadius: '8px', marginBottom: '20px' }}
                                 />
@@ -135,54 +200,86 @@ Hỗ trợ khách hàng từ khâu tư vấn đến bảo hành hậu mãi.
                     </Title>
 
                     {/* Image Carousel */}
-                    <div style={{ overflow: 'hidden', position: 'relative', borderRadius: '12px' }}>
+                    <div style={{ overflow: 'hidden', position: 'relative', borderRadius: '12px', padding: '30px 0' }}>
                         <div style={{
                             display: 'flex',
-                            animation: 'slide 20s linear infinite',
-                            width: 'fit-content'
+                            alignItems: 'center',
+                            animation: activeImage !== null ? 'none' : 'slide 30s linear infinite',
+                            touchAction: 'pan-y',
+                            WebkitOverflowScrolling: 'touch',
+                            transition: 'all 0.3s ease',
+                            width: 'fit-content',
+                            minHeight: '350px',
+                            padding: '10px 0'
                         }}>
-                            {/* First set of placeholder images */}
-                            {[
-                                '250x250',
-                                '300x200',
-                                '200x250',
-                                '280x220',
-                                '220x280',
-                                '250x250'
-                            ].map((size, index) => (
+                            {/* First set of images */}
+                            {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
                                 <img
-                                    key={`first-${index}`}
-                                    src={`https://placehold.co/${size}/004D40/ffffff?text=${size}`}
-                                    alt={`Dịch vụ ${index + 1}`}
+                                    key={`first-${num}`}
+                                    src={`/img/gioithieu/${num}.jpg`}
+                                    alt={`Dịch vụ ${num}`}
+                                    onMouseEnter={() => handleMouseEnter(`first-${num}`)}
+                                    onMouseLeave={handleMouseLeave}
+                                    onTouchStart={(e) => handleImagePress(e, `first-${num}`)}
+                                    onClick={(e) => handleImagePress(e, `first-${num}`)}
                                     style={{
-                                        width: size.split('x')[0] + 'px',
-                                        height: size.split('x')[1] + 'px',
-                                        objectFit: 'cover',
+                                        maxHeight: activeImage === `first-${num}` ? '400px' : '350px',
+                                        maxWidth: '500px',
+                                        width: 'auto',
+                                        height: 'auto',
+                                        objectFit: 'contain',
                                         flexShrink: 0,
-                                        margin: '0 10px'
+                                        margin: '0 25px',
+                                        padding: '20px',
+                                        borderRadius: '12px',
+                                        boxShadow: activeImage === `first-${num}` 
+                                            ? '0 8px 24px rgba(0,0,0,0.2)' 
+                                            : '0 4px 12px rgba(0,0,0,0.15)',
+                                        backgroundColor: '#fff',
+                                        boxSizing: 'border-box',
+                                        transition: 'all 0.3s ease',
+                                        cursor: 'pointer',
+                                        opacity: activeImage === null || activeImage === `first-${num}` ? 1 : 0.7,
+                                        transform: activeImage === `first-${num}` ? 'scale(1.05)' : 'scale(1)',
+                                        zIndex: activeImage === `first-${num}` ? 10 : 1,
+                                        transition: 'all 0.3s ease',
+                                        WebkitTapHighlightColor: 'transparent'
                                     }}
                                 />
                             ))}
                             
                             {/* Duplicate set for seamless loop */}
-                            {[
-                                '250x250',
-                                '300x200',
-                                '200x250',
-                                '280x220',
-                                '220x280',
-                                '250x250'
-                            ].map((size, index) => (
+                            {Array.from({ length: 12 }, (_, i) => i + 1).map((num) => (
                                 <img
-                                    key={`second-${index}`}
-                                    src={`https://placehold.co/${size}/004D40/ffffff?text=${size}`}
-                                    alt={`Dịch vụ ${index + 1}`}
+                                    key={`second-${num}`}
+                                    src={`/img/gioithieu/${num}.jpg`}
+                                    alt={`Dịch vụ ${num}`}
+                                    onMouseEnter={() => handleMouseEnter(`second-${num}`)}
+                                    onMouseLeave={handleMouseLeave}
+                                    onTouchStart={(e) => handleImagePress(e, `second-${num}`)}
+                                    onClick={(e) => handleImagePress(e, `second-${num}`)}
                                     style={{
-                                        width: size.split('x')[0] + 'px',
-                                        height: size.split('x')[1] + 'px',
-                                        objectFit: 'cover',
+                                        maxHeight: activeImage === `second-${num}` ? '400px' : '350px',
+                                        maxWidth: '500px',
+                                        width: 'auto',
+                                        height: 'auto',
+                                        objectFit: 'contain',
                                         flexShrink: 0,
-                                        margin: '0 10px'
+                                        margin: '0 25px',
+                                        padding: '20px',
+                                        borderRadius: '12px',
+                                        boxShadow: activeImage === `second-${num}` 
+                                            ? '0 8px 24px rgba(0,0,0,0.2)' 
+                                            : '0 4px 12px rgba(0,0,0,0.15)',
+                                        backgroundColor: '#fff',
+                                        boxSizing: 'border-box',
+                                        transition: 'all 0.3s ease',
+                                        cursor: 'pointer',
+                                        opacity: activeImage === null || activeImage === `second-${num}` ? 1 : 0.7,
+                                        transform: activeImage === `second-${num}` ? 'scale(1.05)' : 'scale(1)',
+                                        zIndex: activeImage === `second-${num}` ? 10 : 1,
+                                        transition: 'all 0.3s ease',
+                                        WebkitTapHighlightColor: 'transparent'
                                     }}
                                 />
                             ))}

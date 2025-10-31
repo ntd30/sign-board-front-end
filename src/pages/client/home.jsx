@@ -292,16 +292,62 @@ export const HomePage = () => {
             </div>
 
             {/* === PARTNERS === */}
-            <div className="section-container" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)', position: 'relative', overflow: 'hidden' }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
-                    <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-                        <Title level={2} className="section-title" style={{ fontWeight: '700', color: '#004D40', marginBottom: '15px' }}>
+            <div className="section-container" style={{ 
+                    background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)', 
+                    position: 'relative', 
+                    overflow: 'hidden',
+                    padding: '20px 0 40px',
+                    borderTop: '1px solid rgba(0, 77, 64, 0.1)',
+                    borderBottom: '1px solid rgba(0, 77, 64, 0.1)'
+                }}>
+                <div style={{ 
+                    maxWidth: '1200px', 
+                    margin: '0 auto', 
+                    position: 'relative',
+                }}>
+                    <div style={{ 
+                        textAlign: 'center', 
+                        marginBottom: '30px',
+                        position: 'relative',
+                        paddingBottom: '10px'
+                    }}>
+                        <Title level={2} className="section-title" style={{ 
+                            fontWeight: '700', 
+                            color: '#004D40', 
+                            marginBottom: '15px',
+                            position: 'relative',
+                            display: 'inline-block'
+                        }}>
                             Đối Tác & Khách Hàng
-                            <div style={{ width: '80px', height: '4px', background: 'linear-gradient(90deg, #004D40, #26A69A)', margin: '15px auto 0', borderRadius: '2px' }}></div>
+                            <div style={{ 
+                                position: 'absolute',
+                                bottom: '-10px',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                width: '120px',
+                                height: '3px',
+                                background: 'linear-gradient(90deg, #004D40, #26A69A)',
+                                borderRadius: '3px',
+                                boxShadow: '0 2px 8px rgba(0, 150, 136, 0.3)'
+                            }}></div>
                         </Title>
                     </div>
 
-                    <div style={{ overflow: 'hidden', position: 'relative', background: 'rgba(255,255,255,0.8)', borderRadius: '20px', padding: '40px 0', backdropFilter: 'blur(10px)' }}>
+                    <div style={{ 
+                        overflow: 'hidden', 
+                        position: 'relative', 
+                        background: 'rgba(255,255,255,0.9)', 
+                        borderRadius: '16px', 
+                        padding: '40px 20px', 
+                        backdropFilter: 'blur(10px)',
+                        border: '1px solid rgba(0, 77, 64, 0.1)',
+                        boxShadow: '0 8px 32px rgba(0, 77, 64, 0.08)',
+                        transition: 'all 0.3s ease',
+                        ':hover': {
+                            boxShadow: '0 12px 40px rgba(0, 77, 64, 0.12)',
+                            transform: 'translateY(-2px)'
+                        }
+                    }}>
                         <div className="partners-scroll" style={{ display: 'flex', gap: '40px', alignItems: 'center', justifyContent: 'flex-start', flexWrap: 'nowrap', overflowX: 'visible', width: 'max-content' }}>
                             {[
                                 ...[

@@ -403,38 +403,33 @@ const fetchArticleCategoryByIdAPI = (id) => {
     return axios.get(URL_BACKEND)
 }
 
-const createArticleCategoryAPI = (name, parentId, description, image64) => {
-    const URL_BACKEND = "/api/admin/article-categories";
-    const data = {
-        name: name,
-        description: description,
-    };
-
-    // Chỉ thêm parentId nếu có giá trị
-    if (parentId != null && parentId !== undefined) {
-        data.parentId = parentId;
-    }
-
-    // Chỉ thêm image64 nếu có giá trị (không rỗng)
-    if (image64 && typeof image64 === 'string' && image64.startsWith('data:image')) {
-        data.image64 = image64;
-    }
-
-    console.log("Gửi dữ liệu lên backend:", data); // Debug
-
-    return axios.post(URL_BACKEND, data);
+const createArticleCategoryAPI = (formData) => {
+    const URL_BACKEND = `${import.meta.env.VITE_BACKEND_URL}/api/admin/article-categories`;
+    
+    console.log("Gửi dữ liệu lên backend:", Object.fromEntries(formData.entries()));
+    
+    return axios.post(URL_BACKEND, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+            'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+        }
+    });
 };
 
-const updateArticleCategoryAPI = (id, name, parentId, description) => {
-    const URL_BACKEND = `/api/admin/article-categories/${id}`
+const updateArticleCategoryAPI = (id, updateData) => {
+    const URL_BACKEND = `${import.meta.env.VITE_BACKEND_URL}/api/admin/article-categories/${id}`
+    
+    // Create a clean data object with only the fields we want to update
     const data = {
-        name: name,
-        description: description
+        name: updateData.name,
+        description: updateData.description || null,
+        image64: updateData.image64 || null,
+        parentId: updateData.parentId || null
     }
-
-    // Only include parentId if it's not null/undefined
-    if (parentId != null && parentId !== undefined) {
-        data.parentId = parentId
+    
+    // Only include isActive if it's explicitly provided
+    if (updateData.isActive !== undefined) {
+        data.isActive = updateData.isActive;
     }
 
     return axios.put(URL_BACKEND, data)

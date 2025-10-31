@@ -126,16 +126,18 @@ const ProjectCarousel = () => {
 
                 if (uniqueProjects.length > 0) {
                     // Transform API data to match component structure
-                    const transformedProjects = uniqueProjects.map((article, index) => ({
-                        id: article.id || index + 1,
-                        title: article.title || `Dự án ${index + 1}`,
-                        description: article.description || article.excerpt || 'Mô tả dự án chưa được cập nhật.',
-                        image: article.thumbnail || article.imageUrl || 'https://placehold.co/400x220/E0F2F1/00796B?text=Dự+án',
-                        slug: article.slug,
-                        content: article.content,
-                        featuredImageUrl: article.featuredImageUrl,
-                        imageBase64: article.imageBase64
-                    }));
+                    const transformedProjects = uniqueProjects
+                        .slice(0, 5) // Giới hạn chỉ lấy 5 dự án đầu tiên
+                        .map((article, index) => ({
+                            id: article.id || index + 1,
+                            title: article.title || `Dự án ${index + 1}`,
+                            description: article.description || article.excerpt || 'Mô tả dự án chưa được cập nhật.',
+                            image: article.thumbnail || article.imageUrl || 'https://placehold.co/400x220/E0F2F1/00796B?text=Dự+án',
+                            slug: article.slug,
+                            content: article.content,
+                            featuredImageUrl: article.featuredImageUrl,
+                            imageBase64: article.imageBase64
+                        }));
                     setProjects(transformedProjects);
                     console.log('Projects loaded successfully:', transformedProjects.length);
                 } else {
