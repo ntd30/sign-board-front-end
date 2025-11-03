@@ -33,7 +33,9 @@ gap: clamp(60px, 10vw, 1200px); /* Tăng khoảng cách tối thiểu và tối 
     display: flex;
     align-items: center;
     height: 100%;
-    margin-left: 30px;
+    margin-left: 50px;
+        margin-right: 200px; /* thêm khoảng cách giữa logo và menu */
+
     flex-shrink: 0;
 }
 
