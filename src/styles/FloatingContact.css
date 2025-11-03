@@ -1,81 +1,321 @@
-/* Vị trí cố định góc phải dưới */
+/* Floating Contact Container */
 .floating-contact {
   position: fixed;
-  bottom: 20px;
-  right: 20px;
+  bottom: 30px;
+  right: 30px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 16px;
   z-index: 1000;
+  animation: fadeIn 0.5s ease-out;
 }
 
-/* Nút tròn chung */
+/* Base button styles */
 .circle-btn {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 50px;
-  height: 50px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   color: white;
   text-decoration: none;
-  font-size: 22px;
-  font-weight: bold;
-  overflow: hidden; /* Ngăn ảnh bị tràn */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  font-size: 24px;
+  font-weight: 600;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: none;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  will-change: transform, box-shadow;
 }
 
-/* Màu nền Zalo */
+/* Zalo button specific styles */
 .zalo-btn {
-  background: linear-gradient(135deg, #094C2D, #0A5A35);
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+  overflow: visible;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  animation: float 4s ease-in-out infinite, pulseLight 6s infinite alternate;
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
 }
 
-/* Màu nền nút điện thoại */
+.zalo-btn::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 70%);
+  border-radius: 50%;
+  opacity: 0.3;
+  transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+  transform: scale(0.8);
+}
+
+.zalo-btn::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.6s ease-out;
+  z-index: 1;
+}
+
+.zalo-btn:hover::before {
+  opacity: 0.4;
+  transform: scale(1.5);
+}
+
+/* Phone button specific styles */
 .phone-btn {
-  background: linear-gradient(135deg, #094C2D, #056B2F);
+  background: linear-gradient(135deg, #1a73e8, #0d47a1);
+  position: relative;
 }
 
-/* Hiệu ứng hover */
+.phone-btn::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  opacity: 0;
+  transform: scale(0.5);
+  transition: all 0.6s ease-out;
+  z-index: 1;
+}
+
+/* Hover effects */
 .circle-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  transform: translateY(-6px) scale(1.1) rotateY(10deg);
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  filter: brightness(1.1);
 }
 
-/* Icon Zalo - chỉnh kích thước và căn giữa */
+.zalo-btn:hover {
+  box-shadow: 0 0 30px rgba(30, 215, 96, 0.4);
+  transform: translateY(-6px) scale(1.1) rotate(8deg);
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.6);
+  animation-play-state: paused;
+}
+
+.zalo-btn:hover::before {
+  transform: scale(1.5);
+  opacity: 0.5;
+}
+
+.phone-btn:hover {
+  box-shadow: 0 0 35px rgba(26, 115, 232, 0.6);
+  transform: translateY(-6px) scale(1.1) rotateY(-10deg);
+  animation: none;
+}
+
+.circle-btn:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.circle-btn:hover::after {
+  opacity: 1;
+  transform: scale(1.5);
+}
+
+/* Icon styles */
 .icon-img {
-  width: 22px;
-  height: 22px;
+  width: 30px;
+  height: 30px;
   object-fit: contain;
   display: block;
+  z-index: 2;
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+  transform-style: preserve-3d;
+  will-change: transform, filter;
 }
 
-/* Responsive (màn hình nhỏ) */
+.phone-btn .anticon {
+  font-size: 24px;
+  z-index: 2;
+  transition: transform 0.3s ease;
+}
+
+.circle-btn:hover .icon-img,
+.circle-btn:hover .anticon {
+  transform: scale(1.15);
+  filter: brightness(1.1) drop-shadow(0 2px 6px rgba(0, 0, 0, 0.3));
+}
+
+.zalo-btn .icon-img {
+  filter: drop-shadow(0 0 10px rgba(30, 215, 96, 0.5));
+  animation: iconPulse 3s infinite ease-in-out;
+}
+
+.zalo-btn:hover .icon-img {
+  transform: scale(1.25) rotate(-8deg);
+  filter: drop-shadow(0 0 15px rgba(30, 215, 96, 0.9));
+  animation: none;
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-10px) rotate(2deg);
+  }
+}
+
+@keyframes pulseLight {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(30, 215, 96, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(30, 215, 96, 0.5);
+  }
+}
+
+@keyframes iconPulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 10px rgba(30, 215, 96, 0.5));
+  }
+  50% {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 15px rgba(30, 215, 96, 0.8));
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(26, 115, 232, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(26, 115, 232, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(26, 115, 232, 0);
+  }
+}
+
+.phone-btn {
+  animation: pulse 2s infinite, float 4s ease-in-out infinite 0.5s;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 15px rgba(26, 115, 232, 0.5);
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+  background: linear-gradient(135deg, rgba(26, 115, 232, 0.9), rgba(13, 71, 161, 0.9));
+}
+
+.phone-btn .anticon {
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+}
+
+.phone-btn:hover .anticon {
+  transform: scale(1.2) rotate(8deg);
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.8);
+}
+
+/* Hover animations */
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  25% { transform: rotate(-3deg) translateY(-2px); }
+  50% { transform: rotate(0deg) translateY(-4px); }
+  75% { transform: rotate(3deg) translateY(-2px); }
+}
+
+.circle-btn:hover {
+  animation: wiggle 0.8s ease-out;
+}
+
+/* 3D tilt effect */
+.circle-btn:active {
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  transition: all 0.1s ease-out;
+}
+
+/* Tooltip styles */
+.tooltip {
+  position: absolute;
+  right: 70px;
+  background: white;
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 14px;
+  white-space: nowrap;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 1001;
+}
+
+.tooltip::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  right: -5px;
+  transform: translateY(-50%);
+  border-width: 5px 0 5px 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent white;
+}
+
+.circle-btn:hover .tooltip {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .floating-contact {
-    bottom: 10px;
-    right: 10px;
-    gap: 10px;
+    bottom: 20px;
+    right: 15px;
+    gap: 12px;
   }
 
   .circle-btn {
-    width: 45px;
-    height: 45px;
-    font-size: 18px;
+    width: 52px;
+    height: 52px;
+    font-size: 22px;
   }
 
   .icon-img {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
   }
-.icon-img {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-  display: block;
-  border: 2px solid white;
-  border-radius: 50%;
+  
+  .phone-btn .anticon {
+    font-size: 22px;
+  }
+  
+  .tooltip {
+    display: none; /* Hide tooltips on mobile for cleaner UI */
+  }
 }
 
-  
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

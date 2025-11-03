@@ -1,7 +1,7 @@
 import { Card, Col, Row } from "antd"
 import Meta from "antd/es/card/Meta"
 import { useEffect, useState } from "react"
-import { fetchAllNewsAPI } from "../../../services/api.service"
+import { fetchFeaturedNewsAPI } from "../../../services/api.service"
 
 const FeaturedNews = () => {
     const [dataNews, setDataNews] = useState([])
@@ -11,8 +11,12 @@ const FeaturedNews = () => {
     }, [])
 
     const loadNews = async () => {
-        const res = await fetchAllNewsAPI()
-        setDataNews(res.data)
+        try {
+            const res = await fetchFeaturedNewsAPI();
+            setDataNews(res.data);
+        } catch (error) {
+            console.error("Error loading featured news:", error);
+        }
     }
 
     return (
@@ -24,7 +28,7 @@ const FeaturedNews = () => {
 
                 <div>
                     <Row gutter={[40, 50]}>
-                        {dataNews.slice(0, 6).map(post => (
+                        {dataNews.map(post => (
                             <Col sm={24} md={12} lg={8} key={post.id}>
                                 <Card
                                     hoverable

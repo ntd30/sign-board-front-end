@@ -158,6 +158,11 @@ const fetchAllNewsAPI = () => {
     return axios.get(URL_BACKEND)
 }
 
+const fetchFeaturedNewsAPI = () => {
+    const URL_BACKEND = "/api/cms/featured-news"
+    return axios.get(URL_BACKEND)
+}
+
 const GetNewById = (id) => {
     const URL_BACKEND = `/api/cms/${id}`
     return axios.get(URL_BACKEND)
@@ -462,7 +467,7 @@ const fetchCategoryStatsAPI = (categorySlug) => {
 export {
     fetchAllUsersAPI, loginAPI, logoutAPI, registerAPI, createUserAPI, updateUserAPI, deleteUserAPI,
     fetchAllProductsAPI, createProductAPI, deleteProductAPI, updateProductAPI, loginWithGoogle, getAuthCode,
-    resetPasswordAPI, fetchAllCategoriesAPI, fetchAllNewsAPI, fetchAllProjectsAPI, uploadDesign, fetchAllRolesAPI,
+    resetPasswordAPI, fetchAllCategoriesAPI, fetchAllNewsAPI, fetchFeaturedNewsAPI, fetchAllProjectsAPI, uploadDesign, fetchAllRolesAPI,
     createRoleAPI, fetchAllPermissionsAPI, createPermissionAPI, updatePermissionAPI, deletePermissionAPI, fetchAllParentCategoriesAPI,
     createCategoryAPI, ganNhieuQuyenChoVaiTro, fetchRoleByIdAPI, updateCategoryAPI, deleteCategoryAPI, fetchAllDesignsAPI,
     loadProductsByCategoryAPI, createContactAPI, deleteDesignAPI, deleteRoleAPI, fetchAllArticlesAPI, fetchAllContactAPI,
